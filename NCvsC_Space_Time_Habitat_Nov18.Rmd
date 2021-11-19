@@ -6,6 +6,14 @@ output: html_document
 title: "Predator-Prey with Death"
 output: html_document
 ------
+#Data Prep and Overview
+
+##World and Domain Sizes
+Currently, we are working with a world size of 8x12 and a small habitat domain size is 6x8 and a large habitat domain size is 8x12 (the whole world).
+
+## Hunting Strategy
+
+## Shifts in Time, Space and Habitat
 
 ```{r}
 #Import Data
@@ -45,7 +53,7 @@ library(dplyr)
 
 #Import Data
  
-data <- read.csv("Data/YEAR1_MODELS_death_sth.csv", skip = 6, stringsAsFactors = FALSE, col.names=c("run Number", "Pred-Strat", "Prey-Start-Con",  "Pred-Start-Con", "Detect-Black",  "Detect-White", "Step", "ticks", "nearby", "mapAware-table", "Hour-Map",  "Black-Table", "White-Table", "DomainOverlap", "Domain-Prey"))
+data <- read.csv("Data/NCvsC_1year_TSH_8x12_Nov19.csv", skip = 6, stringsAsFactors = FALSE, col.names=c("run Number", "Pred-Strat", "Prey-Start-Con",  "Pred-Start-Con", "Detect-Black",  "Detect-White", "Step", "ticks", "nearby", "mapAware-table", "Hour-Map",  "Black-Table", "White-Table", "DomainOverlap", "Domain-Prey"))
 
 # KO manipulating data
 list_of_list<- as.list(as.list(data$Hour.Map))
@@ -277,11 +285,14 @@ final2 <- final2 %>%
   mutate(nearby = gsub("\\[|\\]", "", data$nearby))
   
 
-write.csv(final2, "/Users/kaggieorrick/Desktop/OneDrive - Yale University/NetLogo/Predator-Prey/NCvsC_1year_TSH_Nov18.csv")
+```
+
+Write that csv file
+```{r}
+write.csv(final2, "Data/NCvsC_1year_TSH_Nov18.csv", row.names = FALSE)
 
 
 ```
-
 
 
 
@@ -289,21 +300,21 @@ write.csv(final2, "/Users/kaggieorrick/Desktop/OneDrive - Yale University/NetLog
 getwd()
 #Import Data 
 ###### ###### CHOSE HERE WHICH YEAR YOU WANT TO LOOK AT ###### ###### 
-data <- read_csv("Data/NCvsC_Space_Time_Habitat_1year_Nov18.csv") 
-## check the data - dont need that first column
-data <- data[-c(1)]
-data<-final2
+data <- read_csv("Data/NCvsC_1year_TSH_Nov18.csv") 
+
+#data<-final2
 
 ```
 
-```{r}
+#Including all individuals (including those who die)
+```{r plotting with all species }
 ## careful, sometimes the columns are a bit off (column 16:39 instead of 14:27 ) so just always double-check!
 
 ## What is different here is that we added propHabitat (no longer PropW) and propSafeSpace
 data <- data %>%
 mutate(Pred.Strat = as.factor(Pred.Strat)) %>%
-mutate(Prey.Start.Con = as.factor(data$Prey.Start.Con)) %>%
-mutate(Pred.Start.Con <- as.factor(data$Pred.Start.Con)) %>%
+mutate(Prey.Start.Con = as.factor(Prey.Start.Con)) %>%
+mutate(Pred.Start.Con <- as.factor(Pred.Start.Con)) %>%
 mutate(propHabitat = White.Table/(Black.Table + White.Table))  %>% #white spaces safer
 mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap))  %>% #white spaces safer
 mutate(f1f2f3 =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
@@ -333,7 +344,7 @@ p5 <- ggplot(data = d, aes(x= Pred.Strat, y=value, fill = variable)) +
   geom_hline(yintercept = 0.5, linetype="dashed", color = "grey30") +
   xlab("Hunting Strategy") +
   ylab("Prop. to avoid predators ") +
-  facet_grid(factor(Pred.Start.Con, levels=c("Small", "Large")) ~ factor(Prey.Start.Con,levels = c("Small", "Large")) )  # (a~b) a is columsn, b is rows
+  facet_grid(factor(Pred.Start.Con, levels=c("Small", "Large")) ~ factor(Prey.Start.Con,levels = c("Small", "Large")) )  # (a~b) a is columns, b is rows
 
 #When plotted, blue is the nearby incidents, red is the number of actual interactions, and black is the average number of years
 
@@ -344,4 +355,64 @@ plots_combined2<- p5 + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), 
 #When plotted, blue text is the nearby incidents, red text is the number of actual interactions, and black text is the average number of years
 
 plots_combined2
+
+
+
+#Only Suriviors
+It is also possible that these shifts only occur for those individuals who surived over the specific time period selected. We might also just see these shifts become more pronounced if we only look at who survived. AKA,those who, we asssume, have adjusted time and space, if they are capable.
+```{r plotting with only survivors}
+
+survivors <- data %>%
+  filter(ticks == 8760) 
+## What is different here is that we added propHabitat (no longer PropW) and propSafeSpace
+survivors <- survivors %>%
+mutate(Pred.Strat = as.factor(Pred.Strat)) %>%
+mutate(Prey.Start.Con = as.factor(Prey.Start.Con)) %>%
+mutate(Pred.Start.Con <- as.factor(Pred.Start.Con)) %>%
+mutate(propHabitat = White.Table/(Black.Table + White.Table))  %>% #white spaces safer
+mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap))  %>% #white spaces safer
+mutate(f1f2f3 =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
+mutate(SumTime = apply(survivors[,c(16:39)], 1, sum)) %>% # proportion of time spent in predator free hrs 13:00-01:00
+mutate(PredOverlap = apply(survivors[,c(16:27)], 1, sum)) %>%
+mutate(propPredFree = 1- PredOverlap/SumTime) %>% ## Predator free
+mutate(interactions = apply(survivors[,c(40:63)], 1, sum)) %>%
+mutate(nearby = as.numeric(nearby))
+
+
+
+s <- survivors %>%
+  select(f1f2f3, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
+  
+s<- melt(s, id.vars= c("f1f2f3", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
+
+gg.summary<- s %>% 
+  group_by(Pred.Strat, Pred.Start.Con, Prey.Start.Con, variable) %>%
+  summarize(mean_years = round(mean(ticks)/365/24, 2), mean_i = mean(interactions), nearby = mean(nearby))
+
+
+```
+#When plotted, blue text is the nearby incidents, red text is the number of actual interactions, and black text is the average number of years
+
+Figure X. Space, habitat and time shift of the three hunting strategies for each combination of small and large habitat domains for predators and prey of ONLY THE SURIVIORS.
+```{r Plot}
+
+p <- ggplot(data = s, aes(x= Pred.Strat, y=value, fill = variable)) +
+  geom_boxplot() +
+  theme_bw(base_size = 16) +
+  scale_fill_viridis_d(alpha = 0.5, labels = c("Space", "Habitat", "Time") ) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  geom_hline(yintercept = 0.5, linetype="dashed", color = "grey30") +
+  xlab("Hunting Strategy") +
+  ylab("Prop. to avoid predators ") +
+  facet_grid(factor(Pred.Start.Con, levels=c("Small", "Large")) ~ factor(Prey.Start.Con,levels = c("Small", "Large")) )  # (a~b) a is columns, b is rows
+
+#When plotted, blue is the nearby incidents, red is the number of actual interactions, and black is the average number of years
+
+p2<- p + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .35, label = format(round(mean_i), digits = 2), color = "blue"), check_overlap= TRUE, show_guide= F) +  geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .1, label = format(round(nearby, digits = 2)), color = "red"), check_overlap= TRUE, show_guide= F) +
+     labs(caption = "SURVIVORS\nred text: interactions\n black: time of death (yrs) \n blue text: nearby", size = 10) 
+
+p2
+```
+
+
 
