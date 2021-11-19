@@ -1,0 +1,347 @@
+---
+title: "Space_Time_Habitat"
+output: html_document
+---
+---
+title: "Predator-Prey with Death"
+output: html_document
+------
+
+```{r}
+#Import Data
+
+invisible(lapply(paste0("package:", names(sessionInfo()$otherPkgs)),   # Unload add-on packages
+                 detach,
+                 character.only = TRUE, unload = TRUE))
+ 
+ipak <- function(pkg){
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if (length(new.pkg)) 
+        install.packages(new.pkg, dependencies = TRUE)
+    sapply(pkg, require, character.only = TRUE)
+}
+
+# Packages that I want
+packages <- c("remotes",
+              "tidyr",
+              "tidyverse",
+              "reshape2",
+              "ggridges",
+              "dplyr") #additional color palettes
+
+remotes::install_github("bobverity/bobfunctions2")
+#Run the ipak loop
+ipak(packages)
+
+
+install.packages()
+library(dplyr)
+
+
+```
+
+#Chose the data
+```{r}
+
+#Import Data
+ 
+data <- read.csv("Data/YEAR1_MODELS_death_sth.csv", skip = 6, stringsAsFactors = FALSE, col.names=c("run Number", "Pred-Strat", "Prey-Start-Con",  "Pred-Start-Con", "Detect-Black",  "Detect-White", "Step", "ticks", "nearby", "mapAware-table", "Hour-Map",  "Black-Table", "White-Table", "DomainOverlap", "Domain-Prey"))
+
+# KO manipulating data
+list_of_list<- as.list(as.list(data$Hour.Map))
+
+#Removing of the brackets
+shortened<- str_split(list_of_list, "] ", simplify = TRUE ) # spliting by the "]" bracket (can't do it the other way because R thinks you are doing something)
+shortened1 <- substring(shortened, 2) #removing the open bracket "["
+shortened2<- as.data.frame(shortened1) #making into a dataframe
+shortened2$V1<-substring(shortened2$V1, 2) #"manually" removing the extra bracket in the first column
+shortened2$V24<-substring(shortened2$V24, 1, nchar(shortened2$V24) - 2) #"manually" removing the last 2 brackets in the last column
+
+#I seriously am unsure if all are needed but this puts the table together
+transposed<- t(shortened2) %>% #first transpose the list, so it's
+  str_split(" ")
+
+df <- as.data.frame(transposed) #turn it into a datframe
+
+
+finished<- as.data.frame(t(df))
+
+
+newdata<- finished[,1:2]
+
+newdata2<- newdata %>%
+  mutate(hours = as.numeric(V1)) %>%
+  mutate(amount_used = as.numeric(V2))
+
+finished2<- newdata2[,3:4]
+
+hour0s <- finished2 %>%
+  filter(hours == 0)
+
+
+hour1s <- finished2 %>%
+  filter(hours == 1)
+
+
+hour2s <- finished2 %>%
+  filter(hours == 2) 
+
+
+hour3s <- finished2 %>%
+  filter(hours == 3) 
+
+hour4s <- finished2 %>%
+  filter(hours == 4) 
+
+hour5s <- finished2 %>%
+  filter(hours == 5) 
+
+hour6s <- finished2 %>%
+  filter(hours == 6) 
+
+hour7s <- finished2 %>%
+  filter(hours == 7)
+
+hour8s <- finished2 %>%
+  filter(hours == 8)
+
+hour9s <- finished2 %>%
+  filter(hours == 9) 
+
+hour10s <- finished2 %>%
+  filter(hours == 10) 
+
+hour11s <- finished2 %>%
+  filter(hours == 11) 
+
+hour12s <- finished2 %>%
+  filter(hours == 12)
+
+hour13s <- finished2 %>%
+  filter(hours == 13) 
+
+hour14s <- finished2 %>%
+  filter(hours == 14)
+
+hour15s <- finished2 %>%
+  filter(hours == 15) 
+
+hour16s <- finished2 %>%
+  filter(hours == 16) 
+
+hour17s <- finished2 %>%
+  filter(hours == 17) 
+
+hour18s <- finished2 %>%
+  filter(hours == 18) 
+
+hour19s <- finished2 %>%
+  filter(hours == 19) 
+
+hour20s <- finished2 %>%
+  filter(hours == 20) 
+
+hour21s <- finished2 %>%
+  filter(hours == 21)
+
+hour22s <- finished2 %>%
+  filter(hours == 22) 
+
+hour23s <- finished2 %>%
+  filter(hours == 23) 
+
+
+full_df<- cbind.data.frame(hour0s[,2], hour1s[,2],hour2s[,2], hour3s[,2], hour4s[,2], hour5s[,2], hour6s[,2], hour7s[,2], hour8s[,2], hour9s[,2], hour10s[,2], hour11s[,2],hour12s[,2], hour13s[,2], hour14s[,2], hour15s[,2], hour16s[,2], hour17s[,2], hour18s[,2], hour19s[,2], hour20s[,2], hour21s[,2],hour22s[,2], hour23s[,2])
+
+
+colnames(full_df)<- c("hour0", "hour1", "hour2","hour3","hour4","hour5", "hour6", "hour7", "hour8","hour9","hour10","hour11", "hour12","hour13","hour14","hour15", "hour16", "hour17", "hour18","hour19","hour20","hour21", "hour22","hour23")
+
+
+
+final<- cbind(data, full_df)
+
+list_of_list<- as.list(as.list(data$mapAware.table))
+
+#Removing of the brackets
+shortened<- str_split(list_of_list, "] ", simplify = TRUE ) # spliting by the "]" bracket (can't do it the other way because R thinks you are doing something)
+shortened1 <- substring(shortened, 2) #removing the open bracket "["
+shortened2<- as.data.frame(shortened1) #making into a dataframe
+shortened2$V1<-substring(shortened2$V1, 2) #"manually" removing the extra bracket in the first column
+shortened2$V24<-substring(shortened2$V24, 1, nchar(shortened2$V24) - 2) #"manually" removing the last 2 brackets in the last column
+
+#I seriously am unsure if all are needed but this puts the table together
+transposed<- t(shortened2) %>% #first transpose the list, so it's
+  str_split(" ")
+
+df <- as.data.frame(transposed) #turn it into a datframe
+
+
+finished<- as.data.frame(t(df))
+
+
+newdata<- finished[,1:2]
+
+newdata2<- newdata %>%
+  mutate(hours = as.numeric(V1)) %>%
+  mutate(amount_used = as.numeric(V2))
+
+finished2<- newdata2[,3:4]
+
+hour0s <- finished2 %>%
+  filter(hours == 0)
+
+
+hour1s <- finished2 %>%
+  filter(hours == 1)
+
+
+hour2s <- finished2 %>%
+  filter(hours == 2) 
+
+
+hour3s <- finished2 %>%
+  filter(hours == 3) 
+
+hour4s <- finished2 %>%
+  filter(hours == 4) 
+
+hour5s <- finished2 %>%
+  filter(hours == 5) 
+
+hour6s <- finished2 %>%
+  filter(hours == 6) 
+
+hour7s <- finished2 %>%
+  filter(hours == 7)
+
+hour8s <- finished2 %>%
+  filter(hours == 8)
+
+hour9s <- finished2 %>%
+  filter(hours == 9) 
+
+hour10s <- finished2 %>%
+  filter(hours == 10) 
+
+hour11s <- finished2 %>%
+  filter(hours == 11) 
+
+hour12s <- finished2 %>%
+  filter(hours == 12)
+
+hour13s <- finished2 %>%
+  filter(hours == 13) 
+
+hour14s <- finished2 %>%
+  filter(hours == 14)
+
+hour15s <- finished2 %>%
+  filter(hours == 15) 
+
+hour16s <- finished2 %>%
+  filter(hours == 16) 
+
+hour17s <- finished2 %>%
+  filter(hours == 17) 
+
+hour18s <- finished2 %>%
+  filter(hours == 18) 
+
+hour19s <- finished2 %>%
+  filter(hours == 19) 
+
+hour20s <- finished2 %>%
+  filter(hours == 20) 
+
+hour21s <- finished2 %>%
+  filter(hours == 21)
+
+hour22s <- finished2 %>%
+  filter(hours == 22) 
+
+hour23s <- finished2 %>%
+  filter(hours == 23) 
+
+
+full_df<- cbind.data.frame(hour0s[,2], hour1s[,2],hour2s[,2], hour3s[,2], hour4s[,2], hour5s[,2], hour6s[,2], hour7s[,2], hour8s[,2], hour9s[,2], hour10s[,2], hour11s[,2],hour12s[,2], hour13s[,2], hour14s[,2], hour15s[,2], hour16s[,2], hour17s[,2], hour18s[,2], hour19s[,2], hour20s[,2], hour21s[,2],hour22s[,2], hour23s[,2])
+
+
+colnames(full_df)<- c("ihour0", "ihour1", "ihour2","ihour3","ihour4","ihour5", "ihour6", "ihour7", "ihour8","ihour9","ihour10","ihour11", "ihour12","ihour13","ihour14","ihour15", "ihour16", "ihour17", "ihour18","ihour19","ihour20","ihour21", "ihour22","ihour23")
+
+rm(list=ls()[ls() %in% c("hour0s", "hour1s", "hour2s","hour3s","hour4s","hour5s", "hour6s", "hour7s", "hour8s","hour9s","hour10s","hour11s", "hour12s","hour13s","hour14s","hour15s", "hour16s", "hour17s", "hour18s","hour19s","hour20s","hour21s", "hour22s","hour23s","transposed", "shortened", "shortened1", "shortened2")])
+
+
+final2<- cbind(final, full_df)
+
+final2 <- final2 %>%
+  mutate(nearby = gsub("\\[|\\]", "", data$nearby))
+  
+
+write.csv(final2, "/Users/kaggieorrick/Desktop/OneDrive - Yale University/NetLogo/Predator-Prey/NCvsC_1year_TSH_Nov18.csv")
+
+
+```
+
+
+
+
+```{r}
+getwd()
+#Import Data 
+###### ###### CHOSE HERE WHICH YEAR YOU WANT TO LOOK AT ###### ###### 
+data <- read_csv("Data/NCvsC_Space_Time_Habitat_1year_Nov18.csv") 
+## check the data - dont need that first column
+data <- data[-c(1)]
+data<-final2
+
+```
+
+```{r}
+## careful, sometimes the columns are a bit off (column 16:39 instead of 14:27 ) so just always double-check!
+
+## What is different here is that we added propHabitat (no longer PropW) and propSafeSpace
+data <- data %>%
+mutate(Pred.Strat = as.factor(Pred.Strat)) %>%
+mutate(Prey.Start.Con = as.factor(data$Prey.Start.Con)) %>%
+mutate(Pred.Start.Con <- as.factor(data$Pred.Start.Con)) %>%
+mutate(propHabitat = White.Table/(Black.Table + White.Table))  %>% #white spaces safer
+mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap))  %>% #white spaces safer
+mutate(f1f2f3 =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
+mutate(SumTime = apply(data[,c(16:39)], 1, sum)) %>% # proportion of time spent in predator free hrs 13:00-01:00
+mutate(PredOverlap = apply(data[,c(16:27)], 1, sum)) %>%
+mutate(propPredFree = 1- PredOverlap/SumTime) %>% ## Predator free
+mutate(interactions = apply(data[,c(40:63)], 1, sum)) %>%
+mutate(nearby = as.numeric(nearby))
+
+
+
+d<- data %>%
+  select(f1f2f3, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
+  
+d<- melt(d, id.vars= c("f1f2f3", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
+
+gg.summary<- d %>% 
+  group_by(Pred.Strat, Pred.Start.Con, Prey.Start.Con, variable) %>%
+  summarize(mean_years = round(mean(ticks)/365/24, 2), mean_i = mean(interactions), nearby = mean(nearby))
+
+
+p5 <- ggplot(data = d, aes(x= Pred.Strat, y=value, fill = variable)) +
+  geom_boxplot() +
+  theme_bw(base_size = 16) +
+  scale_fill_viridis_d(alpha = 0.5, labels = c("Space", "Habitat", "Time") ) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  geom_hline(yintercept = 0.5, linetype="dashed", color = "grey30") +
+  xlab("Hunting Strategy") +
+  ylab("Prop. to avoid predators ") +
+  facet_grid(factor(Pred.Start.Con, levels=c("Small", "Large")) ~ factor(Prey.Start.Con,levels = c("Small", "Large")) )  # (a~b) a is columsn, b is rows
+
+#When plotted, blue is the nearby incidents, red is the number of actual interactions, and black is the average number of years
+
+plots_combined2<- p5 + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .35, label = format(mean_i), color = "blue"), check_overlap= TRUE, show_guide= F) + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .2, label = format(mean_years)), check_overlap= TRUE)  + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .1, label = format(nearby), color = "red"), check_overlap= TRUE, show_guide= F) +
+     labs(caption = "red text: interactions\n black: time of death (yrs) \n blue text: nearby", size = 10) 
+
+```
+#When plotted, blue text is the nearby incidents, red text is the number of actual interactions, and black text is the average number of years
+
+plots_combined2
+
