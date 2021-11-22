@@ -1,10 +1,9 @@
 ---
-title: 'Habitat Domains and Predator-Prey Consumptive and Non-Consumptive Effects:
-  shifts in space, time and habitat'
-output:
-  word_document: default
-  html_document: default
-  pdf_document: default
+title: "Habitat Domains and Predator-Prey Consumptive and Non-Consumptive Effects:
+  shifts in space, time and habitat"
+author: "Netlogo Working Group"
+date: "Nov 21 2021"
+output: html_document
 ---
 
 Working title: Disentangling the role of predator hunting mode and habitat domain size in the landscape of fear
@@ -32,10 +31,9 @@ This document is for predator-prey interactions over 1 year.
 ## Shifts in Time, Space and Habitat
 Both predators and prey in this simulation move on the landscape for 12 hours a day. Predators movements are fixed, they are active from 00:00 - 12:00. Prey-agents are active for 12 hours each day but can chose which hours they are active.
 
-
-
 ## Prey-Agent Habitat Awareness
 To evaluate the non-consumptive effects of various predator hunting strategies, we monitor habitat shifts in prey-agent behavior due to interactions with predator-agents. When a prey-agent is on a patch, the corresponding landscape type of that patch is recorded, creating a count of total presence of the prey-agent in each landscape type over the duration of the model. When predator-agents successfully detect a prey-agent, the landscape type of the patch in which the encounter occurs adds a “fear value”.   
+
 
 ## Prey-Agent Spatial Awareness
 To evaluate the non-consumptive effects of various predator hunting strategies, we monitor spatial shifts in prey-agent behavior due to interactions with predator-agents based on the respective size of habitat domains. Patches are grouped together into 2x2 grids (Slide 8), creating 24 patch-groups. Each patch-group can have overlapping habitat domains, where both predator and prey can be found on the landscape, or can be a prey-only habitat domain, where only prey are found. Prey avoid a patch group based on the lowest value between black and white patches as that patch space. When a prey-agent is on a patch-group, the corresponding habitat domain type of that patch is recorded, creating a count of total presence of the prey-agent in overlapping habitat domain or prey-only habitat domain over the duration of the model. When predator-agents successfully detect a prey-agent, the habitat domain type and vegetation type of the patch in which the encounter occurs adds a “fear value”.   
@@ -385,9 +383,10 @@ tot_sims
 ```
 
 
-
 ## Only Survivors
 It is also possible that these shifts only occur for those individuals who surived over the specific time period selected. This section examines only the simulations when prey survived.
+
+
 ```{r plotting with only survivors, include=FALSE}
 
 survivors <- data %>%
@@ -420,7 +419,8 @@ gg.summary.s<- s %>%
 
 ```
 
-Figure X. Space, habitat and time shift of the three hunting strategies for each combination of small and large habitat domains for predators and prey of ONLY THE SURIVIORS.
+Figure X. Space, habitat and time shift of the three hunting strategies for each combination of small and large habitat domains for predators and prey of only the survivors.
+
 ```{r Plot, echo=FALSE, fig.width=10,fig.height=11}
 
 survivors_p <- ggplot(data = s, aes(x= Pred.Strat, y=value, fill = variable)) +
@@ -536,10 +536,13 @@ gg.summary.s.n<- s.n %>%
 
 ```
 
-Figure X. Space, habitat and time shift of the three hunting strategies for each combination of small and large habitat domains for predators and prey of ONLY THE SURIVIORS.
-```{r Plotting only with survivors - Null, echo=FALSE, , fig.width=10,fig.height=11}
+Figure X. Space, habitat and time shift of the three hunting strategies for each combination of small and large habitat domains for predators and prey of only the survivors. 
 
-suvivors.n.p <- ggplot(data = s.n, aes(x= Pred.Strat, y=value, fill = variable)) +
+
+
+```{r Plot for survivors  of the null, echo=FALSE, fig.width=10,fig.height=11}
+
+survivors_n.p <- ggplot(data = s, aes(x= Pred.Strat, y=value, fill = variable)) +
   geom_boxplot() +
   theme_bw(base_size = 16) +
   scale_fill_viridis_d(alpha = 0.5, labels = c("Space", "Habitat", "Time") ) +
@@ -551,16 +554,16 @@ suvivors.n.p <- ggplot(data = s.n, aes(x= Pred.Strat, y=value, fill = variable))
 
 #When plotted, blue is the nearby incidents, red is the number of actual interactions, and black is the average number of years
 
-suvivors.n.p.final<- suvivors.n.p + geom_text(data = gg.summary.s.n, aes(x = factor(Pred.Strat), y = .35, label = format(round(mean_i), digits = 2), color = "blue"), check_overlap= TRUE, show.legend = FALSE) +  geom_text(data = gg.summary.s.n, aes(x = factor(Pred.Strat), y = .1, label = format(round(nearby, digits = 2)), color = "red"), check_overlap= TRUE, show.legend = FALSE) +
+survivors.n.p.final<- survivors_n.p + geom_text(data = gg.summary.s.n, aes(x = factor(Pred.Strat), y = .35, label = format(round(mean_i), digits = 2), color = "blue"), check_overlap= TRUE, show.legend = FALSE) +  geom_text(data = gg.summary.s.n, aes(x = factor(Pred.Strat), y = .1, label = format(round(nearby, digits = 2)), color = "red"), check_overlap= TRUE, show.legend = FALSE) +
      labs(caption = "Null survivors, one year\nred text: interactions\n black: time of death (yrs) \n blue text: nearby", size = 10) 
 
-suvivors.n.p.final
+survivors.n.p.final
 
 ```
 
 # Null vs Model
 Finally, we're interested in the average age of survival between the null and the spatial-temporal shifts
-```{r, echo=FALSE, fig.width=10,fig.height=11}
+```{r null vs model, echo=FALSE, fig.width=10,fig.height=11}
 
 tot_sims_and_null <- p_tot +  geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .1, label = paste0("s[shifts]: ", format(mean_years))), check_overlap= TRUE, parse = TRUE)  + geom_text(data = gg.summary.n, aes(x = factor(Pred.Strat), y = .15, label = paste0("s[null]: ", format(mean_years))), check_overlap= TRUE, color = "brown", parse = TRUE)  + 
   geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .22, label = paste0("i: ", format(mean_i)), color = "blue"), check_overlap= TRUE, show.legend = FALSE) + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .27, label = paste0("nearby: ", format(nearby)), color = "red"), check_overlap= TRUE, show.legend = FALSE) + labs(caption = "All simulations, one year\nred text: interactions\n black/brown: length of survival (yrs) \n blue text: nearby", size = 10)
@@ -569,9 +572,14 @@ tot_sims_and_null
 
 ```
 
+
+
+
+
 This is interesting because there are instances where the null model has a higher survival rate than the model itself:
 large x large for sit and pursue
 small x small for sit and wait
 large predators small prey sit and wait.
+
 
 We were thinking that these types of incidents, where the null model had higher or similar survival rates, would indiciate that consumptive effects were dominant.
