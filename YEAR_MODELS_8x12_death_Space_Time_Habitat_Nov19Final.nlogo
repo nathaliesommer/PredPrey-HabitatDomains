@@ -57,6 +57,7 @@ patches-own [
   mapAware-white ; remembering where it was hunted and when (linked to the table extension)
   patch-group ; new
  patch-interaction; patch-specific value
+ interaction-here?
 
 ]
 
@@ -367,9 +368,9 @@ to detect
       if random-float 1.0 <= detection [
         hunt]]  ]
 
-    [let potential-prey preys with [not hidden?] in-radius 1 ; other fish-model is 1.5 to look up
+    [let potential-prey preys with [not hidden?] in-radius 1
       if any? potential-prey [
-        ask potential-prey [set nearby nearby + 1 ] ;; should there be a closed bracket here? "]" ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CHANGED THIS
+        ask potential-prey [set nearby nearby + 1 ]
           let detection [Detection-prob] of patch-here ;
           if random-float 1.0 <= detection [
             hunt]]
@@ -378,10 +379,10 @@ end
 
 
 to hunt
-  ; a predator procedure for eating prey ;;;NO ONE IS BEING EATEN BUT NEEDED TO SET THE FEAR-VALUE
        ifelse  random 100 >= 99 [
     ask preys [set dead? TRUE ] ]
  [ ask preys [set fear-value fear-value + 1]
+    ask patch-here [set interaction-here? interaction-here? + 1] ; specific patch keeping track of interactions
         update-awareness-hour
         update-awareness-patch
         if [Checkerboard] of patch-here = 1
@@ -435,7 +436,9 @@ to spatial-temporal-landscape
     [ set LOF 0 ]
   ]
 ask patches [
+    let interaction-count patches with [(Checkerboard = 0) and UNIQUE (patch-group = UNIQUE)] ;;;; Thisis the issue
     set LOF LOF + patch-interaction]  ;;;;;;;; HERE IS WHERE WE NEED TO ADD PATCH-SPECIFIC VALUES ;;;;;;;;;
+
 
 
 ; finding hours to avoid
