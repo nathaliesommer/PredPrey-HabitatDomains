@@ -457,7 +457,7 @@ null <- read_csv("../Data/NCvsC_NULL_5year_TSH_Nov29.csv")
 
 
 ## What is different here is that we added propHabitat (no longer PropW) and propSafeSpace
-null <- null%>%
+null <- null %>%
 mutate(Pred.Strat = as.factor(Pred.Strat)) %>%
 mutate(Prey.Start.Con = as.factor(Prey.Start.Con)) %>%
 mutate(Pred.Start.Con <- as.factor(Pred.Start.Con)) %>%

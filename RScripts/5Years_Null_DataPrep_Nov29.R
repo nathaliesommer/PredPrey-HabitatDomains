@@ -20,7 +20,7 @@ packages <- c("remotes",
 #Run the ipak loop
 ipak(packages)
 
-getwd()
+
 setwd("/Users/kaggieorrick/Desktop/OneDrive - Yale University/NetLogo/Pred-Prey/Pred_PreyHabitatDomains/PredPrey-HabitatDomains/RScripts")
 FILE_TO_READ <- "../Data/YEAR5_NULL_8x12_death_Space_Time_Habitat_Nov29Final YEAR5_MODELS-table.csv"
 
