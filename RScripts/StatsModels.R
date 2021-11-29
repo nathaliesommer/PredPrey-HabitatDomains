@@ -21,7 +21,7 @@ str(data)
 
 # binomial model for black vs. white in frequentist first for fun
 binom_mod <- glm(cbind(Black.Table, White.Table) ~ Pred.Strat + Pred.Start.Con + Prey.Start.Con, 
-                   family = binomial("logit"), data = data)
+                 family = binomial("logit"), data = data)
 summary(binom_mod)
 
 # explore distribution of the data ----
@@ -261,11 +261,11 @@ ggplot(SitWait, aes(y = shifts, x = Pred.Strat, fill = shifts)) +
 # comparing all predators
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
 Predmod <- stan_glm(shifts ~ 0 + Pred.Strat,
-                     data = data,
-                     prior = t_prior,
-                     cores = 2,
-                     seed = 12345,
-                     family = gaussian)
+                    data = data,
+                    prior = t_prior,
+                    cores = 2,
+                    seed = 12345,
+                    family = gaussian)
 
 round(posterior_interval(Predmod, prob = 0.95), 3)
 loo(Predmod)
@@ -273,22 +273,22 @@ loo(Predmod)
 # active predators
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
 Shiftmod <- stan_glm(shifts ~ Pred.Start.Con2*Prey.Start.Con2,
-                 data = Active,
-                 prior = t_prior,
-                 cores = 2,
-                 seed = 12345,
-                 family = gaussian)
+                     data = Active,
+                     prior = t_prior,
+                     cores = 2,
+                     seed = 12345,
+                     family = gaussian)
 
 round(posterior_interval(Shiftmod, prob = 0.95), 3)
 
 # sit-and-pursue predators
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
 SitPursuemod <- stan_glm(shifts ~ Pred.Start.Con*Prey.Start.Con,
-                     data = SitPursue,
-                     prior = t_prior,
-                     cores = 2,
-                     seed = 12345,
-                     family = gaussian)
+                         data = SitPursue,
+                         prior = t_prior,
+                         cores = 2,
+                         seed = 12345,
+                         family = gaussian)
 
 round(posterior_interval(SitPursuemod, prob = 0.95), 3)
 
@@ -298,11 +298,11 @@ round(posterior_interval(SitPursuemod, prob = 0.95), 3)
 # sit-and-wait predators
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
 SitWaitmod <- stan_glm(shifts ~ Pred.Start.Con*Prey.Start.Con,
-                         data = SitWait,
-                         prior = t_prior,
-                         cores = 2,
-                         seed = 12345,
-                         family = gaussian)
+                       data = SitWait,
+                       prior = t_prior,
+                       cores = 2,
+                       seed = 12345,
+                       family = gaussian)
 
 round(posterior_interval(SitWaitmod, prob = 0.95), 3)
 
