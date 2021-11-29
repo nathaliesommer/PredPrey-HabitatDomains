@@ -1,0 +1,89 @@
+---
+title: "Predator-Prey with Death"
+output: html_document
+------
+
+```{r}
+#Import Data
+
+invisible(lapply(paste0("package:", names(sessionInfo()$otherPkgs)),   # Unload add-on packages
+                 detach,
+                 character.only = TRUE, unload = TRUE))
+ 
+ipak <- function(pkg){
+    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+    if (length(new.pkg)) 
+        install.packages(new.pkg, dependencies = TRUE)
+    sapply(pkg, require, character.only = TRUE)
+}
+
+# Packages that I want
+packages <- c("remotes",
+              "tidyr",
+              "tidyverse",
+              "reshape2",
+              "ggridges",
+              "dplyr") #additional color palettes
+
+remotes::install_github("bobverity/bobfunctions2")
+#Run the ipak loop
+ipak(packages)
+
+
+```
+
+
+```{r}
+
+#Import Data 
+###### ###### CHOSE HERE WHICH YEAR YOU WANT TO LOOK AT ###### ###### 
+data <- read_csv("Data/NCvsC_1year_Nov11.csv") 
+## check the data - dont need that first column
+data <- data[-c(1)]
+
+```
+
+```{r}
+## careful, sometimes the columns are a bit off (column 16:39 instead of 14:27 ) so just always double-check!
+
+data <- data %>%
+mutate(Pred.Strat = as.factor(Pred.Strat)) %>%
+mutate(Prey.Start.Con = as.factor(data$Prey.Start.Con)) %>%
+mutate(Pred.Start.Con <- as.factor(data$Pred.Start.Con)) %>%
+mutate(propW = White.Table/(Black.Table + White.Table))  %>% #white spaces safer
+mutate(f1f2f3 =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
+mutate(SumTime = apply(data[,c(14:37)], 1, sum)) %>% # proportion of time spent in predator free hrs 13:00-01:00
+mutate(PredOverlap = apply(data[,c(14:25)], 1, sum)) %>%
+mutate(propPredFree = 1- PredOverlap/SumTime) %>% ## Predator free
+mutate(interactions = apply(data[,c(38:61)], 1, sum)) %>%
+mutate(nearby = as.numeric(nearby))
+
+
+
+d<- data %>%
+  select(f1f2f3, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propW, propPredFree, interactions, ticks, nearby) 
+  
+d<- melt(d, id.vars= c("f1f2f3", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
+
+gg.summary<- d %>% 
+  group_by(Pred.Strat, Pred.Start.Con, Prey.Start.Con, variable) %>%
+  summarize(mean_years = round(mean(ticks)/365/24, 2), mean_i = mean(interactions), nearby = mean(nearby))
+
+
+p5 <- ggplot(data = d, aes(x= Pred.Strat, y=value, fill = variable)) +
+  geom_boxplot() +
+  theme_bw(base_size = 16) +
+  scale_fill_viridis_d(alpha = 0.5, labels = c("Space", "Time") ) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  geom_hline(yintercept = 0.5, linetype="dashed", color = "grey30") +
+  xlab("Hunting Strategy") +
+  ylab("Prop. to avoid predators ") +
+  facet_grid(factor(Pred.Start.Con, levels=c("Small", "Large")) ~ factor(Prey.Start.Con,levels = c("Small", "Large")) )  # (a~b) a is columsn, b is rows
+
+
+
+plots_combined2<- p5 + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .35, label = format(mean_i), color = "red"), check_overlap= TRUE, show_guide= F) + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .2, label = format(mean_years)), check_overlap= TRUE)  + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .1, label = format(nearby), color = "blue"), check_overlap= TRUE, show_guide= F)
+```
+
+plots_combined2
+

@@ -5,5 +5,3 @@
 - Freya Rowland
 - Nathalie Sommer
 - Kristy Ferraro
-
-#Project Start Date
