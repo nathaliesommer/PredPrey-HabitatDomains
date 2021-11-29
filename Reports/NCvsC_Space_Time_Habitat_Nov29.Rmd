@@ -2,7 +2,7 @@
 title: "Habitat Domains and Predator-Prey Consumptive and Non-Consumptive Effects:
   shifts in space, time and habitat"
 author: "Netlogo Working Group"
-date: "Nov 21 2021"
+date: "Nov 29 2021"
 output: html_document
 ---
 
@@ -448,6 +448,7 @@ sur_plot
 
 This is only as interesting as what is happening with the null model. So we are going to do the exact same thing with the null model, which is already prepared
 ```{r Prepping plotting all - null, include=FALSE}
+
 null <- read_csv("../Data/NCvsC_Nullyear_TSH_Nov19.csv") 
 
 
@@ -584,3 +585,14 @@ large predators small prey sit and wait.
 
 
 We were thinking that these types of incidents, where the null model had higher or similar survival rates, would indiciate that consumptive effects were dominant.
+
+## Null vs Model Suvivors
+Finally, we're interested in the average age of survival between the null and the spatial-temporal shifts
+```{r null vs model survivors, echo=FALSE, fig.width=10,fig.height=11}
+
+tot_sims_and_null_s <- survivors_p +  geom_text(data = gg.summary.s, aes(x = factor(Pred.Strat), y = .1, label = paste0("s[shifts]: ", format(mean_years))), check_overlap= TRUE, parse = TRUE)  + geom_text(data = gg.summary.s.n, aes(x = factor(Pred.Strat), y = .15, label = paste0("s[null]: ", format(mean_years))), check_overlap= TRUE, color = "brown", parse = TRUE)  + 
+  geom_text(data = gg.summary.s, aes(x = factor(Pred.Strat), y = .22, label = paste0("i: ", format(mean_i)), color = "blue"), check_overlap= TRUE, show.legend = FALSE) + geom_text(data = gg.summary.s, aes(x = factor(Pred.Strat), y = .27, label = paste0("nearby: ", format(nearby)), color = "red"), check_overlap= TRUE, show.legend = FALSE) + labs(caption = "All simulations, one year\nred text: interactions\n black/brown: length of survival (yrs) \n blue text: nearby", size = 10)
+
+tot_sims_and_null_s
+
+```
