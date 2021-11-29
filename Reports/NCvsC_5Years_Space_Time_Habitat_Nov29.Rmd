@@ -4,7 +4,7 @@ output: html_document
 ---
 ---
 title: "Habitat Domains and Predator-Prey Consumptive and Non-Consumptive Effects:
-  shifts in space, time and habitat"
+  shifts in space, time and habitat for 5 years"
 author: "Netlogo Working Group"
 date: "Nov 21 2021"
 output: html_document
@@ -29,7 +29,7 @@ The purpose of the model is two-fold. First, the purpose of the model is to pred
 ## World and Domain Sizes
 Currently, we are working with a world size of 8x12 and a small habitat domain size is 6x8 and a large habitat domain size is 8x12 (the whole world).
 
-This document is for predator-prey interactions over 1 year.
+This document is for predator-prey interactions over 5 years.
 
 ## Hunting Strategy
 

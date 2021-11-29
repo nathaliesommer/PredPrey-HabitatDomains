@@ -1,6 +1,6 @@
 ---
 title: "Habitat Domains and Predator-Prey Consumptive and Non-Consumptive Effects:
-  shifts in space, time and habitat"
+  shifts in space, time and habitat for one year"
 author: "Netlogo Working Group"
 date: "Nov 29 2021"
 output: html_document
