@@ -10,10 +10,6 @@ output: html_document
 ```{r}
 #Import Data
 
-invisible(lapply(paste0("package:", names(sessionInfo()$otherPkgs)),   # Unload add-on packages
-                 detach,
-                 character.only = TRUE, unload = TRUE))
- 
 ipak <- function(pkg){
     new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
     if (length(new.pkg)) 
@@ -34,9 +30,6 @@ remotes::install_github("bobverity/bobfunctions2")
 ipak(packages)
 
 
-install.packages()
-library(dplyr)
-
 
 ```
 
@@ -45,7 +38,7 @@ library(dplyr)
 
 #Import Data
  
-data <- read.csv("Data/YEAR5_MODELS_4x6_death_Space_Time_Habitat Year5_MODELS-table.csv", skip = 6, stringsAsFactors = FALSE, col.names=c("run Number", "Pred-Strat", "Prey-Start-Con",  "Pred-Start-Con", "Detect-Black",  "Detect-White", "Step", "ticks", "nearby", "mapAware-table", "Hour-Map",  "Black-Table", "White-Table", "DomainOverlap", "Domain-Prey"))
+data <- read.csv("../Data/YEAR5_MODELS_8x12_death_Space_Time_Habitat YEAR5_MODELS-tableNov29.csv", skip = 6, stringsAsFactors = FALSE, col.names=c("run Number", "Pred-Strat", "Prey-Start-Con",  "Pred-Start-Con", "Detect-Black",  "Detect-White", "Step", "ticks", "nearby", "mapAware-table", "Hour-Map",  "Black-Table", "White-Table", "DomainOverlap", "Domain-Prey"))
 
 # KO manipulating data
 list_of_list<- as.list(as.list(data$Hour.Map))
@@ -281,7 +274,7 @@ final2 <- final2 %>%
 ```
 
 ```{r}
-write.csv(final2, "Data/NCvsC_5year_TSH_Nov19.csv", row.names = FALSE)
+write.csv(final2, "../Data/NCvsC_5year_TSH_Nov19.csv", row.names = FALSE)
 
 
 ```
@@ -292,7 +285,7 @@ write.csv(final2, "Data/NCvsC_5year_TSH_Nov19.csv", row.names = FALSE)
 getwd()
 #Import Data 
 ###### ###### CHOSE HERE WHICH YEAR YOU WANT TO LOOK AT ###### ###### 
-data <- read_csv("Data/NCvsC_5year_TSH_Nov19.csv") 
+data <- read_csv("../Data/NCvsC_5year_TSH_Nov19.csv") 
 ## check the data - dont need that first column
 
 
