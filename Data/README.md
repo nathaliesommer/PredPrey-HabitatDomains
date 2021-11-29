@@ -1,6 +1,19 @@
 ## Data Folder: README
 In this folder are the data for the different versions run on Netlogo.
 
+The most up-to-date files are: (From Nov 29 2021)
+1 Year
+- "NCvsC_1year_TSH_Nov29.csv" - 1 year data with consumptive effects and non-consumptive effects.
+- "NCvsC_Nullyear_TSH_Nov19.csv" - 1 year data with only consumptive effects.
+
+
+5 Years
+- "NCvsC_5year_TSH_Nov29.csv" - 5 years data with consumptive effects and non-consumptive effects.
+- "NCvsC_NULL_5year_TSH_Nov29.csv" - 5 years data with only consumptive effects.
+
+
+
+
 Any file with 'NCvsC' means that the model has included prey dying
 Any file with 'NC' means that the model does not include prey dying (predators are always unsuccessful)
 

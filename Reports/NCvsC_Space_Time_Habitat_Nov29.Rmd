@@ -312,7 +312,7 @@ First the data is imported: `r FILE_TO_READ`
 
 
 ```{r write csv files, include=FALSE}
-NAME_OF_CLEAN_DATA <-"../Data/NCvsC_1year_TSH_Nov19.csv"
+NAME_OF_CLEAN_DATA <-"../Data/NCvsC_1year_TSH_Nov29.csv"
 write.csv(data, NAME_OF_CLEAN_DATA, row.names = FALSE)
 
 
