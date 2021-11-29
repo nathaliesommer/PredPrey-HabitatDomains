@@ -384,6 +384,7 @@ to hunt
  [ ask preys [set fear-value fear-value + 1]
         update-awareness-hour
         update-awareness-patch
+    set pcolor red
         if [Checkerboard] of patch-here = 1
         [ask patches with [Checkerboard = 1] [update-awareness-white] ]
 
@@ -413,9 +414,15 @@ to update-awareness-hour ; Setting up a memory table for all patches by the hour
 end
 
 to update-awareness-patch
+  if [Checkerboard] of patch-here = 1 [
     let patch-name [patch-group] of patch-here
-    ask patches with [(patch-group = patch-name)][
-      set patch-interaction patch-interaction + 1]
+    ask patches with [(patch-group = patch-name) and (Checkerboard = 1)][
+      set patch-interaction patch-interaction + 1] ]
+
+    if [Checkerboard] of patch-here = 0 [
+    let patch-name [patch-group] of patch-here
+    ask patches with [(patch-group = patch-name) and (Checkerboard = 0)][
+      set patch-interaction patch-interaction + 1] ]
 
 end
 

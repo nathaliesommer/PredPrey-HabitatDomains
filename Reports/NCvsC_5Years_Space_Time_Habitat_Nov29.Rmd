@@ -452,8 +452,8 @@ sur_plot
 # Null 
 
 This is only as interesting as what is happening with the null model. So we are going to do the exact same thing with the null model, which is already prepared
-```{r Prepping plotting all - null, eval=FALSE, include=FALSE}
-null <- read_csv("../Data/NCvsC_Nullyear_TSH_Nov19.csv") 
+```{r Prepping plotting all - null, include=FALSE}
+null <- read_csv("../Data/NCvsC_NULL_5year_TSH_Nov29.csv") 
 
 
 ## What is different here is that we added propHabitat (no longer PropW) and propSafeSpace
@@ -485,7 +485,7 @@ gg.summary.n<- n %>%
 ```
 
 ## All simulations
-```{r plotting all - NULL, eval=FALSE, fig.height=11, fig.width=10, include=FALSE}
+```{r plotting all - NULL, echo=FALSE, fig.height=11, fig.width=10}
 null_sims <- ggplot(data = n, aes(x= Pred.Strat, y=value, fill = variable)) +
   geom_boxplot() +
   theme_bw(base_size = 16) +
@@ -499,7 +499,7 @@ null_sims <- ggplot(data = n, aes(x= Pred.Strat, y=value, fill = variable)) +
 #When plotted, blue is the nearby incidents, red is the number of actual interactions, and black is the average number of years
 
 null_tot_sims<- null_sims + geom_text(data = gg.summary.n, aes(x = factor(Pred.Strat), y = .35, label = format(mean_i), color = "blue"), check_overlap= TRUE, show.legend = FALSE) + geom_text(data = gg.summary.n, aes(x = factor(Pred.Strat), y = .2, label = format(mean_years)), check_overlap= TRUE, show.legend = FALSE)  + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .1, label = format(nearby), color = "red"), check_overlap= TRUE, show.legend = FALSE) +
-     labs(caption = "Null, one year\nred text: interactions\n black: time of death (yrs) \n blue text: nearby", size = 10) 
+     labs(caption = "Null, five years\nred text: interactions\n black: time of death (yrs) \n blue text: nearby", size = 10) 
 null_tot_sims
 
 
@@ -510,10 +510,10 @@ Figure X. Null model where prey do not shift their space, time and habitat use b
 
 ## Only Survivors
 It is also possible that these shifts only occur for those individuals who surived over the specific time period selected. We might also just see these shifts become more pronounced if we only look at who survived. AKA,those who, we asssume, have adjusted time and space, if they are capable.
-```{r prep plot with only survivors - NULL, eval=FALSE, include=FALSE}
+```{r prep plot with only survivors - NULL, echo=FALSE}
 
 survivors.n <- null %>%
-  filter(ticks == 8760) 
+  filter(ticks == 43800) 
 ## What is different here is that we added propHabitat (no longer PropW) and propSafeSpace
 survivors.n <- survivors.n %>%
 mutate(Pred.Strat = as.factor(Pred.Strat)) %>%
@@ -546,7 +546,7 @@ Figure X. Space, habitat and time shift of the three hunting strategies for each
 
 
 
-```{r Plot for survivors  of the null, echo=FALSE, fig.width=10,fig.height=11}
+```{r Plot for survivors  of the null, echo=FALSE, fig.height=11, fig.width=10}
 
 survivors_n.p <- ggplot(data = s, aes(x= Pred.Strat, y=value, fill = variable)) +
   geom_boxplot() +
@@ -561,18 +561,19 @@ survivors_n.p <- ggplot(data = s, aes(x= Pred.Strat, y=value, fill = variable)) 
 #When plotted, blue is the nearby incidents, red is the number of actual interactions, and black is the average number of years
 
 survivors.n.p.final<- survivors_n.p + geom_text(data = gg.summary.s.n, aes(x = factor(Pred.Strat), y = .35, label = format(round(mean_i), digits = 2), color = "blue"), check_overlap= TRUE, show.legend = FALSE) +  geom_text(data = gg.summary.s.n, aes(x = factor(Pred.Strat), y = .1, label = format(round(nearby, digits = 2)), color = "red"), check_overlap= TRUE, show.legend = FALSE) +
-     labs(caption = "Null survivors, one year\nred text: interactions\n black: time of death (yrs) \n blue text: nearby", size = 10) 
+     labs(caption = "Null survivors, five years\nred text: interactions\n black: time of death (yrs) \n blue text: nearby", size = 10) 
 
 survivors.n.p.final
 
 ```
 
 # Null vs Model
-Finally, we're interested in the average age of survival between the null and the spatial-temporal shifts
-```{r null vs model, eval=FALSE, fig.height=11, fig.width=10, include=FALSE}
+Finally, we're interested in the average age of survival between the null and the spatial-temporal shifts.
+
+```{r null vs model, echo=FALSE, fig.height=11, fig.width=10}
 
 tot_sims_and_null <- p_tot +  geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .1, label = paste0("s[shifts]: ", format(mean_years))), check_overlap= TRUE, parse = TRUE)  + geom_text(data = gg.summary.n, aes(x = factor(Pred.Strat), y = .15, label = paste0("s[null]: ", format(mean_years))), check_overlap= TRUE, color = "brown", parse = TRUE)  + 
-  geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .22, label = paste0("i: ", format(mean_i)), color = "blue"), check_overlap= TRUE, show.legend = FALSE) + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .27, label = paste0("nearby: ", format(nearby)), color = "red"), check_overlap= TRUE, show.legend = FALSE) + labs(caption = "All simulations, one year\nred text: interactions\n black/brown: length of survival (yrs) \n blue text: nearby", size = 10)
+  geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .22, label = paste0("i: ", format(mean_i)), color = "blue"), check_overlap= TRUE, show.legend = FALSE) + geom_text(data = gg.summary, aes(x = factor(Pred.Strat), y = .27, label = paste0("nearby: ", format(nearby)), color = "red"), check_overlap= TRUE, show.legend = FALSE) + labs(caption = "All simulations, five years \nred text: interactions\n black/brown: length of survival (yrs) \n blue text: nearby", size = 10)
 
 tot_sims_and_null
 
@@ -589,3 +590,15 @@ large predators small prey sit and wait.
 
 
 We were thinking that these types of incidents, where the null model had higher or similar survival rates, would indiciate that consumptive effects were dominant.
+
+## Null vs simulations for only survivors
+We can also look at only the survivors
+
+```{r null vs sim only survivors}
+
+
+
+
+tot_sims_and_null
+```
+
