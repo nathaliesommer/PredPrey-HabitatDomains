@@ -442,7 +442,32 @@ sur_plot
 
 
 ```
+## Looking at hunting strategy specifically
+Examining the hunting strategies side-by-side.
 
+```{r Plot facet wrap for hunting strategy, echo=FALSE, fig.width=10,fig.height=11}
+
+survivors_p_hunting <- ggplot(data = s, aes(x= variable, y=value, fill = Pred.Strat)) +
+  geom_boxplot() +
+  theme_bw(base_size = 16) +
+  scale_x_discrete(labels = c("Space", "Habitat", "Time")) +
+  scale_fill_viridis_d(option="E", alpha = 0.5) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  geom_hline(yintercept = 0.5, linetype="dashed", color = "grey30") +
+  xlab("Hunting Strategy") +
+  ylab("Prop. to avoid predators ") +
+  facet_grid(factor(Pred.Start.Con, levels=c("Small", "Large")) ~ factor(Prey.Start.Con,levels = c("Small", "Large")) )  # (a~b) a is columns, b is rows
+
+#When plotted, blue is the nearby incidents, red is the number of actual interactions, and black is the average number of years
+
+sur_plot_hunting<- survivors_p_hunting + geom_text(data = gg.summary.s, aes(x = factor(variable), y = .35, label = format(round(mean_i), digits = 2), color = "blue"), check_overlap= TRUE, show.legend = FALSE) +  geom_text(data = gg.summary.s, aes(x = factor(variable), y = .1, label = format(round(nearby, digits = 2)), color = "red"), check_overlap= TRUE, show.legend = FALSE) +
+     labs(caption = "Survivors, one year\nred text: interactions\n black: time of death (yrs) \n blue text: nearby", size = 10) 
+
+sur_plot_hunting
+
+
+```
+It appears that shift in habitat are most pronounced in active hunting strategies.
 
 # Null 
 
