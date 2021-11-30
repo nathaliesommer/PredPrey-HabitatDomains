@@ -1,6 +1,6 @@
 ;; DESCRIPTION:
 ; this is a predator-prey model with small & large habitat domains with three different hunting strategies.
-;We are looking at space shift (between habitat domains)
+; We are looking at space shift (between habitat domains)
 ; Time shift (do prey use different hours when predators are active
 ; and habitat shift
 
@@ -13,12 +13,9 @@
 
 ; large and small habitat domains (now denoted by top and bottom, instead of left and right)
 ; it only has 1 prey and 1 predator
-; it has the ability to enter a range of hunting success (from 0 to 1)
-; the prey could die (turns patch grey) or could just increase fear
+; Hunting success is 1 in 100
+; the prey could die or could just increase fear
 ; if prey dies, the simulation ends
-
-
-; when prey die, we don't get information about what it did before then (how many times on the black or white patch)
 
 ; Hunting strategies ;;
 ;Right now Sit-and-Pursue and Active will attempt to eat prey if within 1 cells (might want to change that)
