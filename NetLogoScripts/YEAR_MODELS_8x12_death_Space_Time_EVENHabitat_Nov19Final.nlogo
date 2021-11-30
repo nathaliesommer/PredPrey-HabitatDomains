@@ -1130,10 +1130,10 @@ NetLogo 6.2.1
       <value value="&quot;Large&quot;"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="Detection-prob-black">
-      <value value="0.2"/>
+      <value value="0.55"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="Detection-prob-white">
-      <value value="0.2"/>
+      <value value="0.55"/>
     </enumeratedValueSet>
   </experiment>
 </experiments>
