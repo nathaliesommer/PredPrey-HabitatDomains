@@ -420,7 +420,7 @@ s<- melt(s, id.vars= c("f1f2f3", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat
 
 gg.summary.s<- s %>% 
   group_by(Pred.Strat, Pred.Start.Con, Prey.Start.Con, variable) %>%
-  summarize(mean_years = round(mean(ticks)/365/24, 2), mean_i = mean(interactions), nearby = mean(nearby))
+  summarize(mean_years = round(mean(ticks)/365/24, 2), mean_i = mean(interactions), nearby = mean(nearby), scount = n())
 
 
 ```
@@ -441,8 +441,8 @@ survivors_p <- ggplot(data = s, aes(x= Pred.Strat, y=value, fill = variable)) +
 
 #When plotted, blue is the nearby incidents, red is the number of actual interactions, and black is the average number of years
 
-sur_plot<- survivors_p + geom_text(data = gg.summary.s, aes(x = factor(Pred.Strat), y = .35, label = format(round(mean_i), digits = 2), color = "blue"), check_overlap= TRUE, show.legend = FALSE) +  geom_text(data = gg.summary.s, aes(x = factor(Pred.Strat), y = .1, label = format(round(nearby, digits = 2)), color = "red"), check_overlap= TRUE, show.legend = FALSE) +
-     labs(caption = "Survivors, five years\nred text: interactions\n black: time of death (yrs) \n blue text: nearby", size = 10) 
+sur_plot<- survivors_p + geom_text(data = gg.summary.s, aes(x = factor(Pred.Strat), y = .35, label = format(round(mean_i), digits = 2), color = "blue"), check_overlap= TRUE, show.legend = FALSE) +  geom_text(data = gg.summary.s, aes(x = factor(Pred.Strat), y = .1, label = format(round(nearby, digits = 2)), color = "red"), check_overlap= TRUE, show.legend = FALSE) + geom_text(data = gg.summary.s, aes(x = factor(Pred.Strat), y = .2, label = format(scount)), check_overlap= TRUE, show.legend = FALSE) +
+     labs(caption = "Survivors, five years\nred text: interactions\n black: number of survivors \n blue text: nearby", size = 10) 
 sur_plot
 
 
