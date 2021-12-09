@@ -390,7 +390,7 @@ to hunt
   ]
 end
 
-
+;; Updating Time and Habitat
 to update-awareness-white ;Setting up a memory table for white patches
   let time-now hour    ; key for table
   let attacks-white table:get-or-default mapAware-white time-now 0
@@ -403,13 +403,14 @@ to update-awareness-black ; Setting up a memory table for black patches
   let attacks-black table:get-or-default mapAware-black time-now 0
   table:put mapAware-black time-now attacks-black + 1
 end
-
+;; Updating Time only
 to update-awareness-hour ; Setting up a memory table for all patches by the hour
   let time-now hour    ; key for table
   let attacks table:get-or-default mapAware time-now 0
   table:put mapAware time-now attacks + 1
 end
 
+;; Updating Space and Habitat
 to update-awareness-patch
   if [Checkerboard] of patch-here = 1 [
     let patch-name [patch-group] of patch-here
@@ -420,8 +421,8 @@ to update-awareness-patch
     let patch-name [patch-group] of patch-here
     ask patches with [(patch-group = patch-name) and (Checkerboard = 0)][
       set patch-interaction patch-interaction + 1] ]
-
 end
+
 
 to spatial-temporal-landscape
 ; setting up the LOF per hour
