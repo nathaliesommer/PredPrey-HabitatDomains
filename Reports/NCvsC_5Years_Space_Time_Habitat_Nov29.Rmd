@@ -347,7 +347,7 @@ mutate(Prey.Start.Con = as.factor(Prey.Start.Con)) %>%
 mutate(Pred.Start.Con <- as.factor(Pred.Start.Con)) %>%
 mutate(propHabitat = White.Table/(Black.Table + White.Table))  %>% #white spaces safer
 mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap))  %>% #white spaces safer
-mutate(f1f2f3 =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
+mutate(Strat.Pred.Prey =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
 mutate(SumTime = apply(data[,c(16:39)], 1, sum)) %>% # proportion of time spent in predator free hrs 12:00-23:00
 mutate(PredOverlap = apply(data[,c(16:27)], 1, sum)) %>%
 mutate(propPredFree = 1- PredOverlap/SumTime) %>% ## Predator free
@@ -355,9 +355,9 @@ mutate(interactions = apply(data[,c(40:63)], 1, sum)) %>%
 mutate(nearby = as.numeric(nearby))
 
 d<- data %>%
-  select(f1f2f3, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
+  select(Strat.Pred.Prey, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
   
-d<- melt(d, id.vars= c("f1f2f3", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
+d<- melt(d, id.vars= c("Strat.Pred.Prey", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
 
 gg.summary<- d %>% 
   group_by(Pred.Strat, Pred.Start.Con, Prey.Start.Con, variable) %>%
@@ -404,7 +404,7 @@ mutate(Prey.Start.Con = as.factor(Prey.Start.Con)) %>%
 mutate(Pred.Start.Con <- as.factor(Pred.Start.Con)) %>%
 mutate(propHabitat = White.Table/(Black.Table + White.Table))  %>% #white spaces safer
 mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap))  %>% #white spaces safer
-mutate(f1f2f3 =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
+mutate(Strat.Pred.Prey =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
 mutate(SumTime = apply(survivors[,c(16:39)], 1, sum)) %>% # proportion of time spent in predator free hrs 13:00-01:00
 mutate(PredOverlap = apply(survivors[,c(16:27)], 1, sum)) %>%
 mutate(propPredFree = 1- PredOverlap/SumTime) %>% ## Predator free
@@ -414,9 +414,9 @@ mutate(nearby = as.numeric(nearby))
 
 
 s <- survivors %>%
-  select(f1f2f3, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
+  select(Strat.Pred.Prey, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
   
-s<- melt(s, id.vars= c("f1f2f3", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
+s<- melt(s, id.vars= c("Strat.Pred.Prey", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
 
 gg.summary.s<- s %>% 
   group_by(Pred.Strat, Pred.Start.Con, Prey.Start.Con, variable) %>%
@@ -463,7 +463,7 @@ mutate(Prey.Start.Con = as.factor(Prey.Start.Con)) %>%
 mutate(Pred.Start.Con <- as.factor(Pred.Start.Con)) %>%
 mutate(propHabitat = White.Table/(Black.Table + White.Table))  %>% #white spaces safer
 mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap))  %>% #white spaces safer
-mutate(f1f2f3 =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
+mutate(Strat.Pred.Prey =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
 mutate(SumTime = apply(null[,c(16:39)], 1, sum)) %>% # proportion of time spent in predator free hrs 13:00-01:00
 mutate(PredOverlap = apply(null[,c(16:27)], 1, sum)) %>%
 mutate(propPredFree = 1- PredOverlap/SumTime) %>% ## Predator free
@@ -473,9 +473,9 @@ mutate(nearby = as.numeric(nearby))
 
 
 n<- null %>%
-  select(f1f2f3, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
+  select(Strat.Pred.Prey, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
   
-n<- melt(n, id.vars= c("f1f2f3", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
+n<- melt(n, id.vars= c("Strat.Pred.Prey", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
 
 gg.summary.n<- n %>% 
   group_by(Pred.Strat, Pred.Start.Con, Prey.Start.Con, variable) %>%
@@ -521,7 +521,7 @@ mutate(Prey.Start.Con = as.factor(Prey.Start.Con)) %>%
 mutate(Pred.Start.Con <- as.factor(Pred.Start.Con)) %>%
 mutate(propHabitat = White.Table/(Black.Table + White.Table))  %>% #white spaces safer
 mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap))  %>% #white spaces safer
-mutate(f1f2f3 =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
+mutate(Strat.Pred.Prey =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
 mutate(SumTime = apply(survivors.n[,c(16:39)], 1, sum)) %>% # proportion of time spent in predator free hrs 13:00-01:00
 mutate(PredOverlap = apply(survivors.n[,c(16:27)], 1, sum)) %>%
 mutate(propPredFree = 1- PredOverlap/SumTime) %>% ## Predator free
@@ -531,9 +531,9 @@ mutate(nearby = as.numeric(nearby))
 
 
 s.n <- survivors.n %>%
-  select(f1f2f3, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
+  select(Strat.Pred.Prey, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
   
-s.n <- melt(s.n, id.vars= c("f1f2f3", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
+s.n <- melt(s.n, id.vars= c("Strat.Pred.Prey", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
 
 gg.summary.s.n<- s.n %>% 
   group_by(Pred.Strat, Pred.Start.Con, Prey.Start.Con, variable) %>%
@@ -580,7 +580,28 @@ tot_sims_and_null
 ```
 
 
+```{r t-test five year null vs total}
 
+t.testResults_fiveyears = data.frame()
+uniquegroups<- unique(data$Strat.Pred.Prey)
+
+for (i in uniquegroups) {
+  the_subset<- data %>%
+    filter(Strat.Pred.Prey == i)
+  the_null_subset <- null %>%
+    filter(Strat.Pred.Prey == i)
+thetest<- t.test(the_subset$ticks, the_null_subset$ticks) 
+print(i)
+  print (thetest)
+  Table_prep<- tidy(thetest) %>%
+  mutate(category = paste0(i))
+  
+  t.testResults_fiveyears<- rbind(t.testResults_fiveyears, Table_prep)
+}
+thetest
+write.csv(t.testResults_fiveyears, "T-testResults_FiveYears_Dec20.csv")
+
+```
 
 
 This is interesting because there are instances where the null model has a higher survival rate than the model itself:
