@@ -348,7 +348,7 @@ mutate(Pred.Start.Con <- as.factor(Pred.Start.Con)) %>%
 mutate(propHabitat = White.Table/(Black.Table + White.Table))  %>% #white spaces safer
 mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap))  %>% #white spaces safer
 mutate(f1f2f3 =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
-mutate(SumTime = apply(data[,c(16:39)], 1, sum)) %>% # proportion of time spent in predator free hrs 13:00-01:00
+mutate(SumTime = apply(data[,c(16:39)], 1, sum)) %>% # proportion of time spent in predator free hrs 12:00-23:00
 mutate(PredOverlap = apply(data[,c(16:27)], 1, sum)) %>%
 mutate(propPredFree = 1- PredOverlap/SumTime) %>% ## Predator free
 mutate(interactions = apply(data[,c(40:63)], 1, sum)) %>%
