@@ -2,7 +2,38 @@
 # FER
 # Dec 2021
 
+ipak <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
 
+# Packages that I want
+packages <- c("remotes",
+              "tidyr",
+              "tidyverse",
+              "reshape2",
+              "ggridges",
+              "lme4",
+              "rstan",
+              "rstanarm",
+              "shinystan",
+              "bayesplot",
+              "loo",
+              "bayestestR",
+              "ggridges",
+              "tidybayes",
+              "modelr",
+              "shinystan",
+              "dplyr") #additional color palettes
+
+#Run the ipak loop
+ipak(packages)
+
+
+
+install.packages(c("lme4", "rstan", "rstanarm", "shinystan"))
 # load libraries
 library(lme4)
 library(rstan)
@@ -42,21 +73,21 @@ summary(binom_mod)
 plot(binom_mod)
 
 # calculate shifts ----
-# space shifts
+# habitat shifts
 oneyr$propW <- oneyr$White.Table/(oneyr$Black.Table + oneyr$White.Table)
 oneyr_null$propW <- oneyr_null$White.Table/(oneyr_null$Black.Table + oneyr_null$White.Table)
 fiveyr$propW <- fiveyr$White.Table/(fiveyr$Black.Table + fiveyr$White.Table)
 fiveyr_null$propW <- fiveyr_null$White.Table/(fiveyr_null$Black.Table + fiveyr_null$White.Table)
 
 # time shifts
-# proportion of time spent in predator free hrs 13:00-01:00
+# proportion of time spent in predator free hrs 12:00-00:00 (Predator hours are stagnant, with predator activity from 00h00 to 11h00.)
 # sum all time active
-oneyr$SumTime <- apply(oneyr[,c(15:38)], 1, sum)
-oneyr$PredOverlap <- apply(oneyr[,c(17:27)], 1, sum)
+oneyr$SumTime <- apply(oneyr[,c(16:39)], 1, sum)
+oneyr$PredOverlap <- apply(oneyr[,c(16:27)], 1, sum)
 oneyr$propPredOverlap <- oneyr$PredOverlap/oneyr$SumTime
 
-oneyr_null$SumTime <- apply(oneyr_null[,c(15:38)], 1, sum)
-oneyr_null$PredOverlap <- apply(oneyr_null[,c(17:27)], 1, sum)
+oneyr_null$SumTime <- apply(oneyr_null[,c(16:39)], 1, sum)
+oneyr_null$PredOverlap <- apply(oneyr_null[,c(16:27)], 1, sum)
 oneyr_null$propPredOverlap <- oneyr_null$PredOverlap/oneyr_null$SumTime
 
 fiveyr$SumTime <- apply(fiveyr[,c(15:38)], 1, sum)
