@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Stats models
 # FER
 # Dec 2021

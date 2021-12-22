@@ -60,6 +60,7 @@ packages <- c("remotes",
               "tidyverse",
               "reshape2",
               "ggridges",
+              "broom",
               "dplyr") #additional color palettes
 
 #Run the ipak loop
@@ -621,6 +622,71 @@ print(i)
 write.csv(t.testResults, "T-testResults_OneYear_Dec20.csv")
 
 ```
+
+
+```{r t-test one year null vs total}
+
+t.testResults = data.frame()
+uniquegroups<- unique(data$Strat.Pred.Prey)
+
+for (i in uniquegroups) {
+  the_subset<- data %>%
+    filter(Strat.Pred.Prey == i)
+  the_null_subset <- null %>%
+    filter(Strat.Pred.Prey == i)
+thetest<- t.test(the_subset$interactions, the_null_subset$interactions) 
+print(i)
+  print (thetest)
+  Table_prep<- tidy(thetest) %>%
+  mutate(category = paste0(i))
+  
+  t.testResults<- rbind(t.testResults, Table_prep)
+}
+
+write.csv(t.testResults, "T-testResults_interactions_OneYear_Dec22.csv")
+
+
+the_subset<- data %>%
+    filter(Strat.Pred.Prey == "Active.Large.Small")
+  the_null_subset <- data %>%
+    filter(Strat.Pred.Prey == "Active.Large.Large")
+Active<- t.test(the_subset$interactions, the_null_subset$interactions) 
+
+
+the_subset<- data %>%
+    filter(Strat.Pred.Prey == "Sit-and-Wait.Large.Small")
+  the_null_subset <- data %>%
+    filter(Strat.Pred.Prey == "Sit-and-Wait.Large.Large")
+Sit.and.Wait<-t.test(the_subset$interactions, the_null_subset$interactions) 
+
+
+
+the_subset<- data %>%
+    filter(Strat.Pred.Prey == "Sit-and-Pursue.Large.Small")
+  the_null_subset <- data %>%
+    filter(Strat.Pred.Prey == "Sit-and-Pursue.Large.Large")
+Sit.and.Pursue<-t.test(the_subset$interactions, the_null_subset$interactions) 
+
+Active
+Sit.and.Wait
+Sit.and.Pursue
+
+unknown<- data.frame()
+Table_prep<- tidy(Sit.and.Pursue) %>%
+  mutate(category = "Sit.and.Pursue")
+  
+
+unknown<- rbind(unknown, Table_prep)
+
+write.csv(unknown, "T-testResults_interactions_OneYear_Dec22.csv")
+  
+  
+uniquegroups
+
+```
+
+
+
 
 ```{r}
 install.packages("fmsb")
