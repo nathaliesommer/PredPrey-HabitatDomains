@@ -219,7 +219,7 @@ onemod <- stan_glm(shifts ~ 0 + Pred.Strat*Prey.Start.Con*Pred.Start.Con,
                        prior = t_prior,
                        cores = 2,
                        seed = 12345,
-                       iter = 4000,
+                       iter = 1000,
                        family = gaussian)
 
 round(posterior_interval(onemod, prob = 0.95), 3)
