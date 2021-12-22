@@ -1,5 +1,0 @@
-"Table 2. Closer examination between Large predator habitat domains and small and large prey habitat domains, across each hunting strategy",,,,,,,,,,
-estimate,estimate1,estimate2,statistic,p.value,parameter,conf.low,conf.high,method,alternative,category
-1.2,48.5,47.3,0.36,0.72,196.80,-5.42,7.82,Welch Two Sample t-test,two.sided,Active
--0.53,16.17,16.7,-0.57,0.57,196.93,-2.37,1.31,Welch Two Sample t-test,two.sided,Sit.and.Wait
--0.61,45.6,46.21,-0.19,0.85,188.10,-7.04,5.82,Welch Two Sample t-test,two.sided,Sit.and.Pursue
