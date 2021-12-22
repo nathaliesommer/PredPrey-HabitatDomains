@@ -125,7 +125,7 @@ shinystan::launch_shinystan(onenullmod)
 posterior <- as.matrix(onenullmod)
 
 # plot it
-plot_title <- ggtitle("One-year null model for space use posterior distributions",
+plot_title <- ggtitle("One-year null model for shifts posterior distributions",
                       "with medians and 95% intervals")
 oneyearnull_plot <- mcmc_areas(posterior,
                            pars = c("Pred.StratActive",
@@ -361,7 +361,7 @@ fiveyear_plot <- mcmc_areas(posterior,
 # Models by predator strategy (one-yr) ----
 # active predator time shifts
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
-active1timemod <- stan_glm(PredOverlap ~ 0 + Prey.Start.Con*Pred.Start.Con,
+active1timemod <- stan_glm(propPredFree ~ Prey.Start.Con*Pred.Start.Con,
                     data = active1,
                     prior = t_prior,
                     cores = 2,
@@ -375,7 +375,7 @@ summary(active1timemod, digits = 3)
 
 # get posterior summary
 describe_posterior(
-  fivemod,
+  active1timemod,
   effects = "all",
   component = "all",
   test = c("p_direction", "p_significance"),
@@ -383,40 +383,24 @@ describe_posterior(
 )
 
 # look at model fit in Shiny
-shinystan::launch_shinystan(fivemod)
+shinystan::launch_shinystan(active1timemod)
 
 # plot of posteriors
-posterior <- as.matrix(fivemod)
+posterior <- as.matrix(active1timemod)
 
 # plot it
-plot_title <- ggtitle("Five-year model posterior distributions",
-                      "with medians and 95% intervals")
-fiveyear_plot <- mcmc_areas(posterior,
-                            pars = c("Pred.StratActive",
-                                     "Pred.StratSit-and-Pursue",
-                                     "Pred.StratSit-and-Wait",
+plot_title <- ggtitle("One-year model time shifts",
+                      "active predators")
+active1time_plot <- mcmc_areas(posterior,
+                            pars = c("(Intercept)",
                                      "Prey.Start.ConSmall",
                                      "Pred.Start.ConSmall",
-                                     "Pred.StratSit-and-Pursue:Prey.Start.ConSmall",
-                                     "Pred.StratSit-and-Wait:Prey.Start.ConSmall",
-                                     "Pred.StratSit-and-Pursue:Pred.Start.ConSmall",
-                                     "Pred.StratSit-and-Wait:Pred.Start.ConSmall",
-                                     "Prey.Start.ConSmall:Pred.Start.ConSmall",
-                                     "Pred.StratSit-and-Pursue:Prey.Start.ConSmall:Pred.Start.ConSmall",
-                                     "Pred.StratSit-and-Wait:Prey.Start.ConSmall:Pred.Start.ConSmall"),
+                                     "Prey.Start.ConSmall:Pred.Start.ConSmall"), 
                             prob = 0.95) + 
-  scale_y_discrete(labels = c('Active predators',
-                              'Sit-and-Pursue predators',
-                              'Sit-and-Wait predators',
+  scale_y_discrete(labels = c('Baseline overlap',
                               'Prey small habitat',
                               'Predator small habitat',
-                              'Sit-and-Pursue x Prey small habitiat',
-                              'Sit-and-Wait x Prey small habitat',
-                              'Sit-and-Pursue x Predator small habitat',
-                              'Sit-and_Wait x Predator small habitat',
-                              'Predator small habitat x Prey small habitat',
-                              'Sit-and-Pursue x Prey small habitat x Predator small habitat',
-                              'Sit-and-Wait x Prey small habitat x Predator small habitat'
+                              'Predator small habitat x Prey small habitat'
   )) +
   plot_title +
   theme_bw(base_size = 16) +
