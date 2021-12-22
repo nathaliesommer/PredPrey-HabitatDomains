@@ -20,10 +20,10 @@ library(modelr)
 library(shinystan)
 
 # load data
-oneyr <- read_csv("Data/NCvsC_1year_TSH_Nov29.csv")
-fiveyr <- read_csv("Data/NCvsC_5year_TSH_Nov29.csv")
-oneyr_null <- read_csv("Data/NCvsC_Nullyear_TSH_Nov19.csv")
-fiveyr_null <- read_csv("Data/NCvsC_NULL_5year_TSH_Nov29.csv")
+oneyr <- read.csv("Data/NCvsC_1year_TSH_Nov29.csv")
+fiveyr <- read.csv("Data/NCvsC_5year_TSH_Nov29.csv")
+oneyr_null <- read.csv("Data/NCvsC_Nullyear_TSH_Nov19.csv")
+fiveyr_null <- read.csv("Data/NCvsC_NULL_5year_TSH_Nov29.csv")
 
 # convert to factors
 # hunting mode and starting conditions as factors
@@ -42,16 +42,6 @@ fiveyr$Pred.Start.Con <- as.factor(fiveyr$Pred.Start.Con)
 fiveyr_null$Pred.Strat <- as.factor(fiveyr_null$Pred.Strat)
 fiveyr_null$Prey.Start.Con <- as.factor(fiveyr_null$Prey.Start.Con)
 fiveyr_null$Pred.Start.Con <- as.factor(fiveyr_null$Pred.Start.Con)
-
-# separate predator strategies
-active1 <- subset(oneyr, Pred.Strat == "Active")
-sitwait1 <- subset(oneyr, Pred.Strat == "Sit-and-Wait")
-pursue1 <- subset(oneyr, Pred.Strat == "Sit-and-Pursue")
-
-active5 <- subset(fiveyr, Pred.Strat == "Active")
-sitwait5 <- subset(fiveyr, Pred.Strat == "Sit-and-Wait")
-pursue5 <- subset(fiveyr, Pred.Strat == "Sit-and-Pursue")
-
 
 
 
@@ -87,6 +77,18 @@ oneyr$shifts <- oneyr$propW/oneyr$propPredFree
 oneyr_null$shifts <- oneyr_null$propW/oneyr_null$propPredFree
 fiveyr$shifts <- fiveyr$propW/fiveyr$propPredFree
 fiveyr_null$shifts <- fiveyr_null$propW/fiveyr_null$propPredFree
+
+
+# separate predator strategies
+active1 <- subset(oneyr, Pred.Strat == "Active")
+sitwait1 <- subset(oneyr, Pred.Strat == "Sit-and-Wait")
+pursue1 <- subset(oneyr, Pred.Strat == "Sit-and-Pursue")
+
+active5 <- subset(fiveyr, Pred.Strat == "Active")
+sitwait5 <- subset(fiveyr, Pred.Strat == "Sit-and-Wait")
+pursue5 <- subset(fiveyr, Pred.Strat == "Sit-and-Pursue")
+
+
 
 
 # switch to Bayesian ----
@@ -892,14 +894,6 @@ oneyearnull_plot <- mcmc_areas(posterior,
                               'Sit-and_Wait x Predator small habitat',
                               'Sit-and-Pursue x Prey small habitat x Predator small habitat',
                               'Sit-and-Wait
-                                                                        'Marine', 'Tropical',
-                                                                        'Max length',
-                                                                        'Invasive',
-                                                                        'Benthic',
-                                                                        'Benthopelagic',
-                                                                        'Pelagic',
-                                                                        'Anadromous/Catadromous'))
-  
   plot_title +
   theme_bw(base_size = 16) +
   geom_vline(xintercept=0, linetype = "dashed", colour = "red")
