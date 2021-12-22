@@ -403,7 +403,7 @@ mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap))  %>% #white sp
 mutate(Strat.Pred.Prey =interaction(Pred.Strat, Pred.Start.Con, Prey.Start.Con)) %>%
 mutate(SumTime = apply(survivors[,c(16:39)], 1, sum)) %>% # proportion of time spent in predator free hrs 13:00-01:00
 mutate(PredOverlap = apply(survivors[,c(16:27)], 1, sum)) %>%
-mutate(propPredFree = 1- PredOverlap/SumTime) %>% ## Predator free
+mutate(propPredFree = 1 - PredOverlap/SumTime) %>% ## Predator free
 mutate(interactions = apply(survivors[,c(40:63)], 1, sum)) %>%
 mutate(nearby = as.numeric(nearby))
 
@@ -498,6 +498,10 @@ n<- null %>%
   select(Strat.Pred.Prey, Pred.Strat, Prey.Start.Con, Pred.Start.Con, propSafeSpace, propHabitat, propPredFree, interactions, ticks, nearby) 
   
 n<- melt(n, id.vars= c("Strat.Pred.Prey", "Prey.Start.Con", "Pred.Start.Con", "Pred.Strat", "interactions", "ticks", "nearby"))
+
+gg.summary.n_examine<- n %>%
+    group_by(Pred.Strat, Pred.Start.Con, Prey.Start.Con, variable) %>%
+  summarize(mean_value = mean(value))
 
 gg.summary.n<- n %>% 
   group_by(Pred.Strat, Pred.Start.Con, Prey.Start.Con, variable) %>%
