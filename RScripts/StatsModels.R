@@ -1,6 +1,6 @@
 # Stats models
 # FER
-# Dec 2021
+# Last updated: 22 Dec 2021
 
 
 # load libraries
@@ -55,7 +55,7 @@ pursue5 <- subset(fiveyr, Pred.Strat == "Sit-and-Pursue")
 
 
 # calculate shifts ----
-# space shifts
+# overlap with predator in space
 oneyr$propW <- oneyr$Domain.Prey/(oneyr$DomainOverlap + oneyr$Domain.Prey)
 oneyr_null$propW <- oneyr_null$Domain.Prey/(oneyr_null$DomainOverlap + oneyr_null$Domain.Prey)
 fiveyr$propW <- fiveyr$Domain.Prey/(fiveyr$DomainOverlap + fiveyr$Domain.Prey)
@@ -66,26 +66,26 @@ fiveyr_null$propW <- fiveyr_null$Domain.Prey/(fiveyr_null$DomainOverlap + fiveyr
 # sum all time active
 oneyr$SumTime <- apply(oneyr[,c(16:39)], 1, sum)
 oneyr$PredOverlap <- apply(oneyr[,c(16:27)], 1, sum)
-oneyr$propPredOverlap <- oneyr$PredOverlap/oneyr$SumTime
+oneyr$propPredFree <- 1 - oneyr$PredOverlap/oneyr$SumTime
 
 oneyr_null$SumTime <- apply(oneyr_null[,c(16:39)], 1, sum)
 oneyr_null$PredOverlap <- apply(oneyr_null[,c(16:27)], 1, sum)
-oneyr_null$propPredOverlap <- oneyr_null$PredOverlap/oneyr_null$SumTime
+oneyr_null$propPredFree <- 1 - oneyr_null$PredOverlap/oneyr_null$SumTime
 
 fiveyr$SumTime <- apply(fiveyr[,c(16:39)], 1, sum)
 fiveyr$PredOverlap <- apply(fiveyr[,c(16:27)], 1, sum)
-fiveyr$propPredOverlap <- fiveyr$PredOverlap/fiveyr$SumTime
+fiveyr$propPredFree <- 1 - fiveyr$PredOverlap/fiveyr$SumTime
 
 fiveyr_null$SumTime <- apply(fiveyr_null[,c(16:39)], 1, sum)
 fiveyr_null$PredOverlap <- apply(fiveyr_null[,c(16:27)], 1, sum)
-fiveyr_null$propPredOverlap <- fiveyr_null$PredOverlap/fiveyr_null$SumTime
+fiveyr_null$propPredFree <- 1 - fiveyr_null$PredOverlap/fiveyr_null$SumTime
 
 ## the proportions of proportions
 # let's go!
-oneyr$shifts <- oneyr$propW/oneyr$propPredOverlap
-oneyr_null$shifts <- oneyr_null$propW/oneyr_null$propPredOverlap
-fiveyr$shifts <- fiveyr$propW/fiveyr$propPredOverlap
-fiveyr_null$shifts <- fiveyr_null$propW/fiveyr_null$propPredOverlap
+oneyr$shifts <- oneyr$propW/oneyr$propPredFree
+oneyr_null$shifts <- oneyr_null$propW/oneyr_null$propPredFree
+fiveyr$shifts <- fiveyr$propW/fiveyr$propPredFree
+fiveyr_null$shifts <- fiveyr_null$propW/fiveyr_null$propPredFree
 
 
 # switch to Bayesian ----
@@ -99,7 +99,7 @@ onenullmod <- stan_glm(shifts ~ 0 + Pred.Strat*Prey.Start.Con*Pred.Start.Con,
                      prior = t_prior,
                      cores = 2,
                      seed = 12345,
-                     iter = 4000,
+                     iter = 2000,
                      family = gaussian)
 
 round(posterior_interval(onenullmod, prob = 0.95), 3)
@@ -122,7 +122,7 @@ shinystan::launch_shinystan(onenullmod)
 posterior <- as.matrix(onenullmod)
 
 # plot it
-plot_title <- ggtitle("One-year null model posterior distributions",
+plot_title <- ggtitle("One-year null model for space use posterior distributions",
                       "with medians and 95% intervals")
 oneyearnull_plot <- mcmc_areas(posterior,
                            pars = c("Pred.StratActive",
@@ -147,16 +147,10 @@ oneyearnull_plot <- mcmc_areas(posterior,
                               'Sit-and-Wait x Prey small habitat',
                               'Sit-and-Pursue x Predator small habitat',
                               'Sit-and_Wait x Predator small habitat',
+                              'Predator small habitat x Prey small habitat',
                               'Sit-and-Pursue x Prey small habitat x Predator small habitat',
-                              'Sit-and-Wait
-                                                                        'Marine', 'Tropical',
-                                                                        'Max length',
-                                                                        'Invasive',
-                                                                        'Benthic',
-                                                                        'Benthopelagic',
-                                                                        'Pelagic',
-                                                                        'Anadromous/Catadromous'))
-  
+                              'Sit-and-Wait x Prey small habitat x Predator small habitat'
+                                                                 )) +
   plot_title +
   theme_bw(base_size = 16) +
   geom_vline(xintercept=0, linetype = "dashed", colour = "red")
@@ -207,6 +201,19 @@ fiveyearnull_plot <- mcmc_areas(posterior,
                                         "Pred.StratSit-and-Pursue:Prey.Start.ConSmall:Pred.Start.ConSmall",
                                         "Pred.StratSit-and-Wait:Prey.Start.ConSmall:Pred.Start.ConSmall"),
                                prob = 0.95) + 
+  scale_y_discrete(labels = c('Active predators',
+                              'Sit-and-Pursue predators',
+                              'Sit-and-Wait predators',
+                              'Prey small habitat',
+                              'Predator small habitat',
+                              'Sit-and-Pursue x Prey small habitiat',
+                              'Sit-and-Wait x Prey small habitat',
+                              'Sit-and-Pursue x Predator small habitat',
+                              'Sit-and_Wait x Predator small habitat',
+                              'Predator small habitat x Prey small habitat',
+                              'Sit-and-Pursue x Prey small habitat x Predator small habitat',
+                              'Sit-and-Wait x Prey small habitat x Predator small habitat'
+  )) +
   plot_title +
   theme_bw(base_size = 16) +
   geom_vline(xintercept=0, linetype = "dashed", colour = "red")
@@ -260,6 +267,19 @@ oneyear_plot <- mcmc_areas(posterior,
                                         "Pred.StratSit-and-Pursue:Prey.Start.ConSmall:Pred.Start.ConSmall",
                                         "Pred.StratSit-and-Wait:Prey.Start.ConSmall:Pred.Start.ConSmall"),
                                prob = 0.95) + 
+  scale_y_discrete(labels = c('Active predators',
+                              'Sit-and-Pursue predators',
+                              'Sit-and-Wait predators',
+                              'Prey small habitat',
+                              'Predator small habitat',
+                              'Sit-and-Pursue x Prey small habitiat',
+                              'Sit-and-Wait x Prey small habitat',
+                              'Sit-and-Pursue x Predator small habitat',
+                              'Sit-and_Wait x Predator small habitat',
+                              'Predator small habitat x Prey small habitat',
+                              'Sit-and-Pursue x Prey small habitat x Predator small habitat',
+                              'Sit-and-Wait x Prey small habitat x Predator small habitat'
+  )) +
   plot_title +
   theme_bw(base_size = 16) +
   geom_vline(xintercept=0, linetype = "dashed", colour = "red")
@@ -314,8 +334,87 @@ fiveyear_plot <- mcmc_areas(posterior,
                                          "Pred.StratSit-and-Pursue:Prey.Start.ConSmall:Pred.Start.ConSmall",
                                          "Pred.StratSit-and-Wait:Prey.Start.ConSmall:Pred.Start.ConSmall"),
                                 prob = 0.95) + 
+  scale_y_discrete(labels = c('Active predators',
+                              'Sit-and-Pursue predators',
+                              'Sit-and-Wait predators',
+                              'Prey small habitat',
+                              'Predator small habitat',
+                              'Sit-and-Pursue x Prey small habitiat',
+                              'Sit-and-Wait x Prey small habitat',
+                              'Sit-and-Pursue x Predator small habitat',
+                              'Sit-and_Wait x Predator small habitat',
+                              'Predator small habitat x Prey small habitat',
+                              'Sit-and-Pursue x Prey small habitat x Predator small habitat',
+                              'Sit-and-Wait x Prey small habitat x Predator small habitat'
+  )) +
   plot_title +
   theme_bw(base_size = 16) +
   geom_vline(xintercept=0, linetype = "dashed", colour = "red")
 
 
+
+
+
+# Models by predator strategy (one-yr) ----
+# active predator time shifts
+t_prior <- student_t(df = 7, location = 0, scale = 2.5)
+active1timemod <- stan_glm(PredOverlap ~ 0 + Prey.Start.Con*Pred.Start.Con,
+                    data = active1,
+                    prior = t_prior,
+                    cores = 2,
+                    seed = 12345,
+                    iter = 4000,
+                    family = gaussian)
+
+round(posterior_interval(active1timemod, prob = 0.95), 3)
+loo(active1timemod) # fit is good
+summary(active1timemod, digits = 3)
+
+# get posterior summary
+describe_posterior(
+  fivemod,
+  effects = "all",
+  component = "all",
+  test = c("p_direction", "p_significance"),
+  centrality = "all"
+)
+
+# look at model fit in Shiny
+shinystan::launch_shinystan(fivemod)
+
+# plot of posteriors
+posterior <- as.matrix(fivemod)
+
+# plot it
+plot_title <- ggtitle("Five-year model posterior distributions",
+                      "with medians and 95% intervals")
+fiveyear_plot <- mcmc_areas(posterior,
+                            pars = c("Pred.StratActive",
+                                     "Pred.StratSit-and-Pursue",
+                                     "Pred.StratSit-and-Wait",
+                                     "Prey.Start.ConSmall",
+                                     "Pred.Start.ConSmall",
+                                     "Pred.StratSit-and-Pursue:Prey.Start.ConSmall",
+                                     "Pred.StratSit-and-Wait:Prey.Start.ConSmall",
+                                     "Pred.StratSit-and-Pursue:Pred.Start.ConSmall",
+                                     "Pred.StratSit-and-Wait:Pred.Start.ConSmall",
+                                     "Prey.Start.ConSmall:Pred.Start.ConSmall",
+                                     "Pred.StratSit-and-Pursue:Prey.Start.ConSmall:Pred.Start.ConSmall",
+                                     "Pred.StratSit-and-Wait:Prey.Start.ConSmall:Pred.Start.ConSmall"),
+                            prob = 0.95) + 
+  scale_y_discrete(labels = c('Active predators',
+                              'Sit-and-Pursue predators',
+                              'Sit-and-Wait predators',
+                              'Prey small habitat',
+                              'Predator small habitat',
+                              'Sit-and-Pursue x Prey small habitiat',
+                              'Sit-and-Wait x Prey small habitat',
+                              'Sit-and-Pursue x Predator small habitat',
+                              'Sit-and_Wait x Predator small habitat',
+                              'Predator small habitat x Prey small habitat',
+                              'Sit-and-Pursue x Prey small habitat x Predator small habitat',
+                              'Sit-and-Wait x Prey small habitat x Predator small habitat'
+  )) +
+  plot_title +
+  theme_bw(base_size = 16) +
+  geom_vline(xintercept=0, linetype = "dashed", colour = "red")
