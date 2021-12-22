@@ -359,7 +359,7 @@ fiveyear_plot <- mcmc_areas(posterior,
 
 
 # Models by predator strategy (one-yr) ----
-# active predator time shifts
+# active predator time shifts ----
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
 active1timemod <- stan_glm(propPredFree ~ Prey.Start.Con*Pred.Start.Con,
                     data = active1,
@@ -405,6 +405,56 @@ active1time_plot <- mcmc_areas(posterior,
   plot_title +
   theme_bw(base_size = 16) +
   geom_vline(xintercept=0, linetype = "dashed", colour = "red")
+
+
+# sit-and-pursue predator time shifts ----
+t_prior <- student_t(df = 7, location = 0, scale = 2.5)
+pursue1timemod <- stan_glm(propPredFree ~ Prey.Start.Con*Pred.Start.Con,
+                           data = pursue1,
+                           prior = t_prior,
+                           cores = 2,
+                           seed = 12345,
+                           iter = 4000,
+                           family = gaussian)
+
+round(posterior_interval(pursue1timemod, prob = 0.95), 3)
+loo(pursue1timemod) # fit is good
+summary(pursue1timemod, digits = 3)
+
+# get posterior summary
+describe_posterior(
+  pursue1timemod,
+  effects = "all",
+  component = "all",
+  test = c("p_direction", "p_significance"),
+  centrality = "all"
+)
+
+# look at model fit in Shiny
+shinystan::launch_shinystan(pursue1timemod)
+
+# plot of posteriors
+posterior <- as.matrix(pursue1timemod)
+
+# plot it
+plot_title <- ggtitle("One-year model time shifts",
+                      "sit-and-pursue predators")
+pursue1time_plot <- mcmc_areas(posterior,
+                               pars = c("(Intercept)",
+                                        "Prey.Start.ConSmall",
+                                        "Pred.Start.ConSmall",
+                                        "Prey.Start.ConSmall:Pred.Start.ConSmall"), 
+                               prob = 0.95) + 
+  scale_y_discrete(labels = c('Baseline overlap',
+                              'Prey small habitat',
+                              'Predator small habitat',
+                              'Predator small habitat x Prey small habitat'
+  )) +
+  plot_title +
+  theme_bw(base_size = 16) +
+  geom_vline(xintercept=0, linetype = "dashed", colour = "red")
+
+# old code and Kaggie edits? Need to resolve below ----
 =======
 
 # Stats models
