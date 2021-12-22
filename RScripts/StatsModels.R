@@ -13,7 +13,6 @@ library(viridis)
 library(loo)
 library(lme4)
 library(bayestestR)
-library(ggridges)
 library(tidybayes)
 library(dplyr)
 library(modelr)
@@ -24,47 +23,61 @@ oneyr <- read_csv("Data/NCvsC_1year_TSH_Nov29.csv")
 fiveyr <- read_csv("Data/NCvsC_5year_TSH_Nov29.csv")
 oneyr_null <- read_csv("Data/NCvsC_Nullyear_TSH_Nov19.csv")
 fiveyr_null <- read_csv("Data/NCvsC_NULL_5year_TSH_Nov29.csv")
-# use df data from NCvsC_5years_Space_Time_Habitat
+
+# convert to factors
+# hunting mode and starting conditions as factors
+oneyr$Pred.Strat <- as.factor(oneyr$Pred.Strat)
+oneyr$Prey.Start.Con <- as.factor(oneyr$Prey.Start.Con)
+oneyr$Pred.Start.Con <- as.factor(oneyr$Pred.Start.Con)
+
+oneyr_null$Pred.Strat <- as.factor(oneyr_null$Pred.Strat)
+oneyr_null$Prey.Start.Con <- as.factor(oneyr_null$Prey.Start.Con)
+oneyr_null$Pred.Start.Con <- as.factor(oneyr_null$Pred.Start.Con)
+
+fiveyr$Pred.Strat <- as.factor(fiveyr$Pred.Strat)
+fiveyr$Prey.Start.Con <- as.factor(fiveyr$Prey.Start.Con)
+fiveyr$Pred.Start.Con <- as.factor(fiveyr$Pred.Start.Con)
+
+fiveyr_null$Pred.Strat <- as.factor(fiveyr_null$Pred.Strat)
+fiveyr_null$Prey.Start.Con <- as.factor(fiveyr_null$Prey.Start.Con)
+fiveyr_null$Pred.Start.Con <- as.factor(fiveyr_null$Pred.Start.Con)
 
 # separate predator strategies
-active <- subset(data, Pred.Strat == "Active")
+active1 <- subset(oneyr, Pred.Strat == "Active")
+sitwait1 <- subset(oneyr, Pred.Strat == "Sit-and-Wait")
+pursue1 <- subset(oneyr, Pred.Strat == "Sit-and-Pursue")
 
-# hunting mode and starting conditions as factors
-data$Pred.Strat <- as.factor(data$Pred.Strat)
-data$Prey.Start.Con <- as.factor(data$Prey.Start.Con)
-data$Pred.Start.Con <- as.factor(data$Pred.Start.Con)
-str(data)
+active5 <- subset(fiveyr, Pred.Strat == "Active")
+sitwait5 <- subset(fiveyr, Pred.Strat == "Sit-and-Wait")
+pursue5 <- subset(fiveyr, Pred.Strat == "Sit-and-Pursue")
 
-# binomial model for black vs. white in frequentist first for fun ----
-binom_mod <- glm(cbind(Black.Table, White.Table) ~ Pred.Strat + Pred.Start.Con*Prey.Start.Con, 
-                 family = binomial("logit"), data = oneyr)
-summary(binom_mod)
-plot(binom_mod)
+
+
 
 # calculate shifts ----
 # space shifts
-oneyr$propW <- oneyr$White.Table/(oneyr$Black.Table + oneyr$White.Table)
-oneyr_null$propW <- oneyr_null$White.Table/(oneyr_null$Black.Table + oneyr_null$White.Table)
-fiveyr$propW <- fiveyr$White.Table/(fiveyr$Black.Table + fiveyr$White.Table)
-fiveyr_null$propW <- fiveyr_null$White.Table/(fiveyr_null$Black.Table + fiveyr_null$White.Table)
+oneyr$propW <- oneyr$Domain.Prey/(oneyr$DomainOverlap + oneyr$Domain.Prey)
+oneyr_null$propW <- oneyr_null$Domain.Prey/(oneyr_null$DomainOverlap + oneyr_null$Domain.Prey)
+fiveyr$propW <- fiveyr$Domain.Prey/(fiveyr$DomainOverlap + fiveyr$Domain.Prey)
+fiveyr_null$propW <- fiveyr_null$Domain.Prey/(fiveyr_null$DomainOverlap + fiveyr_null$Domain.Prey)
 
 # time shifts
-# proportion of time spent in predator free hrs 13:00-01:00
+# proportion of time spent in predator free hrs 0-11
 # sum all time active
-oneyr$SumTime <- apply(oneyr[,c(15:38)], 1, sum)
-oneyr$PredOverlap <- apply(oneyr[,c(17:27)], 1, sum)
+oneyr$SumTime <- apply(oneyr[,c(16:39)], 1, sum)
+oneyr$PredOverlap <- apply(oneyr[,c(16:27)], 1, sum)
 oneyr$propPredOverlap <- oneyr$PredOverlap/oneyr$SumTime
 
-oneyr_null$SumTime <- apply(oneyr_null[,c(15:38)], 1, sum)
-oneyr_null$PredOverlap <- apply(oneyr_null[,c(17:27)], 1, sum)
+oneyr_null$SumTime <- apply(oneyr_null[,c(16:39)], 1, sum)
+oneyr_null$PredOverlap <- apply(oneyr_null[,c(16:27)], 1, sum)
 oneyr_null$propPredOverlap <- oneyr_null$PredOverlap/oneyr_null$SumTime
 
-fiveyr$SumTime <- apply(fiveyr[,c(15:38)], 1, sum)
-fiveyr$PredOverlap <- apply(fiveyr[,c(17:27)], 1, sum)
+fiveyr$SumTime <- apply(fiveyr[,c(16:39)], 1, sum)
+fiveyr$PredOverlap <- apply(fiveyr[,c(16:27)], 1, sum)
 fiveyr$propPredOverlap <- fiveyr$PredOverlap/fiveyr$SumTime
 
-fiveyr_null$SumTime <- apply(fiveyr_null[,c(15:38)], 1, sum)
-fiveyr_null$PredOverlap <- apply(fiveyr_null[,c(17:27)], 1, sum)
+fiveyr_null$SumTime <- apply(fiveyr_null[,c(16:39)], 1, sum)
+fiveyr_null$PredOverlap <- apply(fiveyr_null[,c(16:27)], 1, sum)
 fiveyr_null$propPredOverlap <- fiveyr_null$PredOverlap/fiveyr_null$SumTime
 
 ## the proportions of proportions
@@ -77,6 +90,7 @@ fiveyr_null$shifts <- fiveyr_null$propW/fiveyr_null$propPredOverlap
 
 # switch to Bayesian ----
 # models to look at proportional shifts in space:time use
+
 
 # One year null model ----
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
@@ -123,7 +137,26 @@ oneyearnull_plot <- mcmc_areas(posterior,
                                     "Prey.Start.ConSmall:Pred.Start.ConSmall",
                                     "Pred.StratSit-and-Pursue:Prey.Start.ConSmall:Pred.Start.ConSmall",
                                     "Pred.StratSit-and-Wait:Prey.Start.ConSmall:Pred.Start.ConSmall"),
-                           prob = 0.95) + 
+                           prob = 0.95) +   
+  scale_y_discrete(labels = c('Active predators',
+                              'Sit-and-Pursue predators',
+                              'Sit-and-Wait predators',
+                              'Prey small habitat',
+                              'Predator small habitat',
+                              'Sit-and-Pursue x Prey small habitiat',
+                              'Sit-and-Wait x Prey small habitat',
+                              'Sit-and-Pursue x Predator small habitat',
+                              'Sit-and_Wait x Predator small habitat',
+                              'Sit-and-Pursue x Prey small habitat x Predator small habitat',
+                              'Sit-and-Wait
+                                                                        'Marine', 'Tropical',
+                                                                        'Max length',
+                                                                        'Invasive',
+                                                                        'Benthic',
+                                                                        'Benthopelagic',
+                                                                        'Pelagic',
+                                                                        'Anadromous/Catadromous'))
+  
   plot_title +
   theme_bw(base_size = 16) +
   geom_vline(xintercept=0, linetype = "dashed", colour = "red")
