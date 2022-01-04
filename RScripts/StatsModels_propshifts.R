@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-
-# Stats models
+# Stats models for proportional shifts
 # FER
 # Last update Jan 2022
 
