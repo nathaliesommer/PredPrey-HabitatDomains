@@ -2,7 +2,7 @@
 
 # Stats models
 # FER
-# Dec 2021
+# Last update Jan 2022
 
 ipak <- function(pkg){
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
@@ -28,30 +28,13 @@ packages <- c("remotes",
               "tidybayes",
               "modelr",
               "shinystan",
-              "dplyr") #additional color palettes
+              "dplyr")
 
 #Run the ipak loop
 ipak(packages)
 
 
 
-install.packages(c("lme4", "rstan", "rstanarm", "shinystan"))
-# load libraries
-library(lme4)
-library(rstan)
-library(rstanarm)
-library(ggplot2)
-library(bayesplot)
-library(viridis)
-library(loo)
-library(lme4)
-library(bayestestR)
-library(ggridges)
-library(tidybayes)
-library(dplyr)
-library(modelr)
-library(shinystan)
-getwd()
 # load data
 oneyr <- read_csv("Data/NCvsC_1year_TSH_Nov29.csv")
 fiveyr <- read_csv("Data/NCvsC_5year_TSH_Nov29.csv")
