@@ -51,7 +51,7 @@ library(tidybayes)
 library(dplyr)
 library(modelr)
 library(shinystan)
-
+getwd()
 # load data
 oneyr <- read_csv("Data/NCvsC_1year_TSH_Nov29.csv")
 fiveyr <- read_csv("Data/NCvsC_5year_TSH_Nov29.csv")
@@ -61,13 +61,13 @@ fiveyr_null <- read_csv("Data/NCvsC_NULL_5year_TSH_Nov29.csv")
 # use df data from NCvsC_5years_Space_Time_Habitat
 
 # calculate shifts ----
-# habitat shifts
+# habitat shifts - White.Table has lower detectability
 oneyr$propW <- oneyr$White.Table/(oneyr$Black.Table + oneyr$White.Table)
 oneyr_null$propW <- oneyr_null$White.Table/(oneyr_null$Black.Table + oneyr_null$White.Table)
 fiveyr$propW <- fiveyr$White.Table/(fiveyr$Black.Table + fiveyr$White.Table)
 fiveyr_null$propW <- fiveyr_null$White.Table/(fiveyr_null$Black.Table + fiveyr_null$White.Table)
 
-#Space
+#Space - Domain.Prey is where only prey are found (no predators)
 oneyr$propSafe <- oneyr$Domain.Prey/(oneyr$DomainOverlap + oneyr$Domain.Prey)
 oneyr_null$propSafe <- oneyr_null$Domain.Prey/(oneyr_null$DomainOverlap + oneyr_null$Domain.Prey)
 fiveyr$propSafe <- fiveyr$Domain.Prey/(fiveyr$DomainOverlap+ fiveyr$Domain.Prey)
@@ -76,12 +76,17 @@ fiveyr_null$propSafe <- fiveyr_null$Domain.Prey/(fiveyr_null$DomainOverlap + fiv
 
 # time shifts
 # proportion of time spent in predator free hrs 12:00-00:00 (Predator hours are stagnant, with predator activity from 00h00 to 11h00.)
-# sum all time active
+# sum all time active # Here we want when predators are safe
 oneyr$SumTime <- apply(oneyr[,c(16:39)], 1, sum)
 oneyr$PredOverlap <- apply(oneyr[,c(16:27)], 1, sum)
 oneyr$propPredOverlap <- oneyr$PredOverlap/oneyr$SumTime
+oneyr$PredFree <- apply(oneyr[,c(28:39)], 1, sum)
+oneyr$propPredFree <- oneyr$PredFree/oneyr$SumTime
+
 
 oneyr_null$SumTime <- apply(oneyr_null[,c(16:39)], 1, sum)
+oneyr_null$PredFree <- apply(oneyr_null[,c(28:39)], 1, sum)
+oneyr_null$propPredFree <- oneyr_null$PredFree/oneyr_null$SumTime
 oneyr_null$PredFree <- apply(oneyr_null[,c(28:39)], 1, sum)
 oneyr_null$propPredFree <- oneyr_null$PredFree/oneyr_null$SumTime
 
@@ -96,7 +101,7 @@ fiveyr_null$propPredOverlap <- fiveyr_null$PredOverlap/fiveyr_null$SumTime
 
 ## the proportions of proportions
 # let's go!
-oneyr$HabitatTimeshifts <- oneyr$propW/oneyr$propPredOverlap
+oneyr$HabitatTimeshifts <- oneyr$propW/oneyr$propPredFree # KO 01/04: this was PredOverlap not Pred free
 
 oneyr_null$SpaceTimeshifts <- oneyr_null$propSafe/oneyr_null$propPredFree
 
@@ -314,6 +319,10 @@ fiveyear_plot <- mcmc_areas(posterior,
   theme_bw(base_size = 16) +
   geom_vline(xintercept=0, linetype = "dashed", colour = "red")
 
+
+
+
+################################################ What is below?
 =======
 <<<<<<< HEAD
 # Stats models
@@ -819,7 +828,7 @@ pursue1time_plot <- mcmc_areas(posterior,
   theme_bw(base_size = 16) +
   geom_vline(xintercept=0, linetype = "dashed", colour = "red")
 
-# old code and Kaggie edits? Need to resolve below ----
+# old code and Kaggie edits? Need to resolve below ---- ######## There are a few HEADS here!
 =======
 
 # Stats models
