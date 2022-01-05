@@ -144,6 +144,7 @@ all.data%>%
 
 
 #all plots together====
+quartz()
 allplots<-grid.arrange(Attack.SA.plot, Sit_And_Wait.SA.plot, Sit_And_Pursue.SA.plot, ncol=2, nrow=2) 
 
 quartz()

@@ -78,7 +78,7 @@ Sit_And_Wait.SA.plot<-ggplot(Sit_And_Wait.SA, aes(x=mustar, y=sigma)) +
 
 
 #=====Sit And Pursue======
-Sit_And_Pursue.SA <- read.csv("Sit-And-Pursue-SA2-LOF.csv")%>%
+Sit_And_Pursue.SA <- read.csv("Sit-And-Persue-SA2-LOF.csv")%>%
   mutate_if(is.logical, as.character)%>%
   group_by(parameter, index)%>%
   summarize(value = mean(value))%>%
@@ -109,12 +109,12 @@ Sit_And_Pursue.SA.plot<-ggplot(Sit_And_Pursue.SA, aes(x=mustar, y=sigma)) +
 
 
 #facet wrap====
-Attack.SA$model<-"Attack"
+Active.SA$model<-"Active"
 Sit_And_Pursue.SA$model<-"Sit and Persue"
 Sit_And_Wait.SA$model<-"Sit and Wait"
 
 
-all.data<-rbind(Attack.SA, Sit_And_Pursue.SA, Sit_And_Wait.SA )  
+all.data<-rbind(Active.SA, Sit_And_Pursue.SA, Sit_And_Wait.SA )  
 
 quartz()
 all.data%>%
@@ -144,7 +144,8 @@ all.data%>%
 
 
 #all plots together====
-allplots<-grid.arrange(Attack.SA.plot, Sit_And_Wait.SA.plot, Sit_And_Pursue.SA.plot, ncol=2, nrow=2) 
+quartz()
+allplots<-grid.arrange(Active.SA.plot, Sit_And_Wait.SA.plot, Sit_And_Pursue.SA.plot, ncol=2, nrow=2) 
 
 quartz()
 allplots
