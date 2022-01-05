@@ -162,7 +162,7 @@ oneyearnull_plot <- mcmc_areas(posterior,
                                     "Prey.Start.ConSmall:Pred.Start.ConSmall",
                                     "Pred.StratSit-and-Pursue:Prey.Start.ConSmall:Pred.Start.ConSmall",
                                     "Pred.StratSit-and-Wait:Prey.Start.ConSmall:Pred.Start.ConSmall"),
-                           prob = 0.95) +   
+                           prob = 0.95)    +
   scale_y_discrete(labels = c('Active predators',
                               'Sit-and-Pursue predators',
                               'Sit-and-Wait predators',
@@ -179,6 +179,7 @@ oneyearnull_plot <- mcmc_areas(posterior,
   plot_title +
   theme_bw(base_size = 16) +
   geom_vline(xintercept=0, linetype = "dashed", colour = "red")
+
 
 # Five-year null model ----
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
