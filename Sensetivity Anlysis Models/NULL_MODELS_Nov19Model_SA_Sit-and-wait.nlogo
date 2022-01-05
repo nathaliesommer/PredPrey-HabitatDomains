@@ -1,31 +1,5 @@
 ;; DESCRIPTION:
-; this is a predator-prey model with small & large habitat domains with three different hunting strategies.
-; We are looking at space shift (between habitat domains)
-; Time shift (do prey use different hours when predators are active
-; and habitat shift
-
-; Prey are active for only 12 hours, so they could shift to avoid predators completely
-
-;; PREDATORS ARE ACTIVE FROM 0-11
-
-; this version has:
-; Prey remember the time and place of each attempted attack and avoids them spatio-temporally
-
-; large and small habitat domains (now denoted by top and bottom, instead of left and right)
-; it only has 1 prey and 1 predator
-; Hunting success is 1 in 100
-; the prey could die or could just increase fear
-; if prey dies, the simulation ends
-
-; Hunting strategies ;;
-;Right now Sit-and-Pursue and Active will attempt to eat prey if within 1 cells (might want to change that)
-;;;; Sit-and-Pursue
-;;;;;;; At the beginning of each new day, move to a random location in habitat domain and hang out all day. If prey move within 1 patch, it interacts with it
-;;;; Active
-;;;;;;; if active, will move in it's habitat domain 1 cell every tick, but will attempt to hunt a prey within radius of 1.
-;;;; Sit and Wait
-;;s;;;;; At the beginning of each new day, move to a random location in habitat domain and hang out all day. If prey move onto its patch, it interacts with it
-
+; SA model for NULL sit and wait
 
 
 
@@ -52,6 +26,8 @@ patches-own [
   LOF ; an hourly, habitat-specific updated fear of patch.
   mapAware-black ; remembering where it was hunted and when (linked to the table extension)
   mapAware-white ; remembering where it was hunted and when (linked to the table extension)
+  patchGroupB ; remembering what patch group prey were hunted in (linked to the table extension)
+  patchGroupW; remembering what patch group prey were hunted in (linked to the table extension)
   patch-group ; new
  patch-interaction; patch-specific value
 
@@ -108,6 +84,7 @@ to setup
       table:put mapAware-white 22 0
       table:put mapAware-white 23 0
 
+
     ]
     if Checkerboard = 0 [ set Detection-prob Detection-prob-black
       set mapAware-black table:make ;;;  Setting memory table for all black patches and all white patches (could just be mapAware)
@@ -135,6 +112,7 @@ to setup
       table:put mapAware-black 21 0
       table:put mapAware-black 22 0
       table:put mapAware-black 23 0
+
     ]
 
   ]
@@ -337,60 +315,47 @@ end
 
 to predators-move
   ask predators [
-    if Predator-Strategy = "Active" [ ;; if active, will move in it's habitat domain 1 cell every tick, but will pursue a prey within radius of 1
-      let possible-patches one-of neighbors in-radius 2 with [predator-patch? = true] ;; changing from 1 to 2 "let possible-patches one-of neighbors in-radius 2 with [predator-patch? = true] ;; changing from 1 to 2"
-      move-to possible-patches
-    ]
 
-    if Predator-Strategy = "Sit-and-Pursue" [;; At the beginning of each new day, move to a random location in habitat domain and hang out all day. If prey within a radius, they will pursue
-      if hour = 0
-      [move-to one-of patches with [predator-patch? = true]]
-    ]
-
-    if Predator-Strategy = "Sit-and-Wait" [ ;; At the beginning of each new day, move to a random location in habitat domain and hang out all day. If prey move to its patch, it interacts with it
       if hour = 0
       [ move-to one-of patches with [predator-patch? = true]]
     ]
-  ]
+
 end
 
 
 to detect
   ask predators [
-    ifelse Predator-Strategy = "Sit-and-Wait"
-    [if any? preys-here [
+
+    if any? preys-here [
       ask preys-here [set nearby nearby + 1]
       let detection [Detection-prob] of patch-here
       if random-float 1.0 <= detection [
         hunt]]  ]
 
-    [let potential-prey preys with [not hidden?] in-radius 1 ; other fish-model is 1.5 to look up
-      if any? potential-prey [
-        ask potential-prey [set nearby nearby + 1 ] ;; should there be a closed bracket here? "]" ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; CHANGED THIS
-          let detection [Detection-prob] of patch-here ;
-          if random-float 1.0 <= detection [
-            hunt]]
-  ]]
 end
 
 
 to hunt
-  ; a predator procedure for eating prey ;;;NO ONE IS BEING EATEN BUT NEEDED TO SET THE FEAR-VALUE
        ifelse  random 100 >= 99 [
     ask preys [set dead? TRUE ] ]
- [ ask preys [set fear-value fear-value + 1]
+ [ask preys [set fear-value fear-value + 1
+    set pcolor red]
         update-awareness-hour
         update-awareness-patch
-    set pcolor red
         if [Checkerboard] of patch-here = 1
-        [ask patches with [Checkerboard = 1] [update-awareness-white] ]
+    [ask patches with [Checkerboard = 1] [update-awareness-white]
+      let patch-name [patch-group] of patch-here
+      ask patches with [(patch-group = patch-name) and (Checkerboard = 1)] [update-white-patch-group] ]
 
         if  [Checkerboard] of patch-here = 0
-        [ask patches with [Checkerboard = 0 ] [update-awareness-black]]
+        [ask patches with [Checkerboard = 0] [update-awareness-black]
+    let patch-name [patch-group] of patch-here
+      ask patches with [(patch-group = patch-name) and (Checkerboard = 0)] [update-black-patch-group]
+    ]
   ]
 end
 
-;; Updating Time and Habitat
+
 to update-awareness-white ;Setting up a memory table for white patches
   let time-now hour    ; key for table
   let attacks-white table:get-or-default mapAware-white time-now 0
@@ -403,26 +368,28 @@ to update-awareness-black ; Setting up a memory table for black patches
   let attacks-black table:get-or-default mapAware-black time-now 0
   table:put mapAware-black time-now attacks-black + 1
 end
-;; Updating Time only
+
+to update-white-patch-group
+  set patchGroupW patchGroupW + 1
+end
+
+to update-black-patch-group
+set patchGroupB patchGroupB + 1
+end
+
+
 to update-awareness-hour ; Setting up a memory table for all patches by the hour
   let time-now hour    ; key for table
   let attacks table:get-or-default mapAware time-now 0
   table:put mapAware time-now attacks + 1
 end
 
-;; Updating Space and Habitat
 to update-awareness-patch
-  if [Checkerboard] of patch-here = 1 [
     let patch-name [patch-group] of patch-here
-    ask patches with [(patch-group = patch-name) and (Checkerboard = 1)][
-      set patch-interaction patch-interaction + 1] ]
+    ask patches with [(patch-group = patch-name)][
+      set patch-interaction patch-interaction + 1]
 
-    if [Checkerboard] of patch-here = 0 [
-    let patch-name [patch-group] of patch-here
-    ask patches with [(patch-group = patch-name) and (Checkerboard = 0)][
-      set patch-interaction patch-interaction + 1] ]
 end
-
 
 to spatial-temporal-landscape
 ; setting up the LOF per hour
@@ -431,6 +398,7 @@ to spatial-temporal-landscape
     ifelse table:has-key? mapAware-white time-next
     [set LOF table:get mapAware-white time-next]
     [set LOF 0]
+     set LOF 0; set to 0
   ]
 
   ask patches with [(Checkerboard = 0) and (prey-patch? = TRUE)] [
@@ -438,9 +406,11 @@ to spatial-temporal-landscape
     ifelse table:has-key? mapAware-black time-next
     [ set LOF table:get mapAware-black time-next ]
     [ set LOF 0 ]
+
+    set LOF 0 ; set to 0
   ]
-ask patches [
-    set LOF LOF + patch-interaction]  ;;;;;;;; HERE IS WHERE WE NEED TO ADD PATCH-SPECIFIC VALUES ;;;;;;;;;
+;ask patches [
+;    set LOF LOF + patch-interaction]  ;;;;;;;; HERE IS WHERE WE NEED TO ADD PATCH-SPECIFIC VALUES ;;;;;;;;;
 
 
 ; finding hours to avoid
@@ -459,7 +429,7 @@ ask patches [
         let attack-now-b item 1 black-attacks
         let the-hour item 0 black-attacks
         let lowest-v min (list attack-now-w attack-now-b) ; for each hour, selecting the lower value between the black and white patches
-        set mylist lput (list the-hour lowest-v) mylist ; taking that lower value, and putting it into a list to use
+        set mylist lput (list the-hour 0) mylist ; Turn this to 0 for the null
 
       ]
 
@@ -664,16 +634,6 @@ Prey-Starting-Condition
 "Large" "Small"
 0
 
-CHOOSER
-12
-133
-155
-178
-Predator-Strategy
-Predator-Strategy
-"Active" "Sit-and-Wait" "Sit-and-Pursue"
-0
-
 INPUTBOX
 98
 225
@@ -725,6 +685,34 @@ attack-hours
 17
 1
 11
+
+MONITOR
+642
+129
+699
+174
+hours
+hour
+17
+1
+11
+
+BUTTON
+21
+419
+84
+452
+NIL
+NIL
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1068,7 +1056,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.2.1
+NetLogo 6.1.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
