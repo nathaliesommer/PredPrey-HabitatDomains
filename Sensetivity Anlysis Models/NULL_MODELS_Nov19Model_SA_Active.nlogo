@@ -162,28 +162,12 @@ to setup
   ask patches [ set prey-patch? false
   set predator-patch? false ]
 
-  if Prey-Starting-Condition = "Small" [
     ask patches [
-      ifelse pycor > 5  [set prey-patch? true ]
+      ifelse pycor > 6  [set prey-patch? true
+    set predator-patch? true]
       [set pcolor grey]
     ]
-  ]
 
-  if Prey-Starting-Condition = "Large" [
-    ask patches [
-      set prey-patch? true]
-  ]
-
-
-  if Predator-Starting-Condition = "Small" [
-    ask patches [
-      if pycor > 5 [set predator-patch? true ]]
-  ]
-
-  if Predator-Starting-Condition = "Large" [
-    ask patches [
-      set predator-patch? True ]
-  ]
 
   ask patches with [ prey-patch? = false ] [ set LOF 999]
 
@@ -290,7 +274,7 @@ spatial-temporal-landscape
   keeping-track-of-space
 
   ask predators [
-    ifelse hour <= 11;; sleeping predators / predator not on the landscape ;; ONLY PART OF CODE CHANGED FOR NO PREDATORS
+    ifelse hour <= Hours-Pred-Active-Until;; sleeping predators / predator not on the landscape ;; ONLY PART OF CODE CHANGED FOR NO PREDATORS
     [ show-turtle
       predators-move
    detect]
@@ -306,7 +290,7 @@ end
 ;;;  Submodels
 to prey-move ;;; Need to think about new ways to move - move on patches based on fear value of patch, if there are a number of equal patch types, randomly chose one.
   ask preys [
-  let p min-one-of neighbors in-radius 2 [LOF] ; i feel like they shouldn't be able to move 2 patches, especially if their whole habitat domain is 11x5 - to avoid being eaten by same pred over and over
+  let p min-one-of neighbors in-radius Dist-Move [LOF] ; i feel like they shouldn't be able to move 2 patches, especially if their whole habitat domain is 11x5 - to avoid being eaten by same pred over and over
       move-to p
   ]
 end
@@ -315,7 +299,7 @@ end
 to predators-move
   ask predators [
 
-      let possible-patches one-of neighbors in-radius 2 with [predator-patch? = true] ;; changing from 1 to 2 "let possible-patches one-of neighbors in-radius 2 with [predator-patch? = true] ;; changing from 1 to 2"
+      let possible-patches one-of neighbors in-radius Dist-Move with [predator-patch? = true] ;; changing from 1 to 2 "let possible-patches one-of neighbors in-radius 2 with [predator-patch? = true] ;; changing from 1 to 2"
       move-to possible-patches
     ]
 
@@ -615,42 +599,11 @@ NIL
 NIL
 1
 
-CHOOSER
-10
-23
-211
-68
-Predator-Starting-Condition
-Predator-Starting-Condition
-"Small" "Large"
-1
-
-CHOOSER
-12
-77
-212
-122
-Prey-Starting-Condition
-Prey-Starting-Condition
-"Large" "Small"
-0
-
-INPUTBOX
-98
-225
-184
-285
-hunting-starts
-0.0
-1
-0
-Number
-
 SLIDER
-12
-305
-210
-338
+2
+26
+200
+59
 Detection-prob-black
 Detection-prob-black
 0
@@ -662,10 +615,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-10
-347
-213
-380
+0
+68
+203
+101
 Detection-prob-white
 Detection-prob-white
 0
@@ -676,44 +629,35 @@ Detection-prob-white
 NIL
 HORIZONTAL
 
-MONITOR
-817
-77
-1256
-122
-NIL
-attack-hours
-17
+SLIDER
+0
+153
+206
+186
+Hours-Pred-Active-Until
+Hours-Pred-Active-Until
+10
+14
+10.0
+2
 1
-11
+NIL
+HORIZONTAL
 
-MONITOR
-642
-129
-699
-174
-hours
-hour
-17
+SLIDER
+15
+110
+187
+143
+Dist-Move
+Dist-Move
 1
-11
-
-BUTTON
-21
-419
-84
-452
-NIL
-NIL
-NIL
+3
+1.0
 1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
 1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?

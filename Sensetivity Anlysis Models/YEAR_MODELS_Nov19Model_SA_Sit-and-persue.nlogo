@@ -158,28 +158,11 @@ to setup
   ask patches [ set prey-patch? false
   set predator-patch? false ]
 
-  if Prey-Starting-Condition = "Small" [
-    ask patches [
-      ifelse pycor > 5  [set prey-patch? true ]
+     ask patches [
+      ifelse pycor > 6  [set prey-patch? true
+      set predator-patch? true ]
       [set pcolor grey]
     ]
-  ]
-
-  if Prey-Starting-Condition = "Large" [
-    ask patches [
-      set prey-patch? true]
-  ]
-
-
-  if Predator-Starting-Condition = "Small" [
-    ask patches [
-      if pycor > 5 [set predator-patch? true ]]
-  ]
-
-  if Predator-Starting-Condition = "Large" [
-    ask patches [
-      set predator-patch? True ]
-  ]
 
   ask patches with [ prey-patch? = false ] [ set LOF 999]
 
@@ -286,7 +269,7 @@ spatial-temporal-landscape
   keeping-track-of-space
 
   ask predators [
-    ifelse hour <= 11;; sleeping predators / predator not on the landscape ;; ONLY PART OF CODE CHANGED FOR NO PREDATORS
+    ifelse hour <= Hours-Pred-Active-Until;; sleeping predators / predator not on the landscape ;; ONLY PART OF CODE CHANGED FOR NO PREDATORS
     [ show-turtle
       predators-move
    detect]
@@ -302,7 +285,7 @@ end
 ;;;  Submodels
 to prey-move ;;; Need to think about new ways to move - move on patches based on fear value of patch, if there are a number of equal patch types, randomly chose one.
   ask preys [
-  let p min-one-of neighbors in-radius 2 [LOF] ; i feel like they shouldn't be able to move 2 patches, especially if their whole habitat domain is 11x5 - to avoid being eaten by same pred over and over
+  let p min-one-of neighbors in-radius Dist-Move [LOF] ; i feel like they shouldn't be able to move 2 patches, especially if their whole habitat domain is 11x5 - to avoid being eaten by same pred over and over
       move-to p
   ]
 end
@@ -602,37 +585,6 @@ NIL
 NIL
 1
 
-CHOOSER
-10
-23
-211
-68
-Predator-Starting-Condition
-Predator-Starting-Condition
-"Small" "Large"
-1
-
-CHOOSER
-12
-77
-212
-122
-Prey-Starting-Condition
-Prey-Starting-Condition
-"Large" "Small"
-0
-
-INPUTBOX
-98
-225
-184
-285
-hunting-starts
-0.0
-1
-0
-Number
-
 SLIDER
 12
 305
@@ -663,16 +615,35 @@ Detection-prob-white
 NIL
 HORIZONTAL
 
-MONITOR
-817
-77
-1256
-122
-NIL
-attack-hours
-17
+SLIDER
+49
+392
+221
+425
+Dist-Move
+Dist-Move
 1
-11
+3
+1.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+86
+186
+292
+219
+Hours-Pred-Active-Until
+Hours-Pred-Active-Until
+10
+14
+12.0
+2
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?

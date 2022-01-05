@@ -11,7 +11,7 @@ library(ggrepel)
 library(gridExtra)
 library(ggrepel)
 
-setwd("~/Dropbox (Yale_FES)/NetLogoWorkingGroup/Collaborative_NetLogo_paper/Data/Sensitivity Analysis")
+setwd("~/Dropbox (Yale_FES)/NetLogoWorkingGroup/Collaborative_NetLogo_paper/Archive_Data/Sensitivity Analysis")
 
 
 #=====Attack======
