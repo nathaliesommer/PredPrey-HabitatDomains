@@ -1,6 +1,6 @@
 # Stats models for proportional shifts
 # FER
-# Last update Jan 2022
+# Last update 6 Jan 2022
 
 ipak <- function(pkg){
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
