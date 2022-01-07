@@ -1,6 +1,6 @@
 # Stats models for binomial survival models
 # FER
-# Last update 6 Jan 2022
+# Last update 7 Jan 2022
 
 # function to install and load packages
 ipak <- function(pkg){
@@ -76,11 +76,21 @@ pursue5 <- subset(fiveyr, Pred.Strat == "Sit-and-Pursue")
 oneyr_null$dead <- 8760 - oneyr_null$ticks
 active1$dead <- 8760 - active1$ticks
 
+## having trouble with model fits. What I've tried to far
+# 1) analyzing separately by predator strategy
+# 2) having model choose and adjust own priors
+# 3) adding in individual as random effect (made model super slow AND bad)
+
+## I wonder if it is because survival is too high at one yr? Next steps
+# 1) try 5 yr data
+# 2) try other model (survival ~ time.shift + space.shift)
+
+
 # Active predator one-year model ----
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
-active1mod <- stan_glm(cbind(ticks, dead) ~ Prey.Start.Con + Pred.Start.Con,
+active1mod <- stan_glmer(cbind(ticks, dead) ~ Prey.Start.Con + Pred.Start.Con + (1|run.Number),
                        data = active1,
-                       prior = t_prior,
+                       #prior = t_prior,
                        cores = 2,
                        seed = 12345,
                        iter = 2000,
