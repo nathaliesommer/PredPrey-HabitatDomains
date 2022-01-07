@@ -78,16 +78,16 @@ oneyr_null$dead <- 8760 - oneyr_null$ticks
 
 # One year null model ----
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
-onenullmod <- stan_glm(cbind(ticks, dead) ~ Pred.Strat*Prey.Start.Con*Pred.Start.Con,
+onenullmod <- stan_glm(cbind(ticks, dead) ~ Pred.Strat + Prey.Start.Con*Pred.Start.Con,
                        data = oneyr_null,
                        prior = t_prior,
                        cores = 2,
                        seed = 12345,
                        iter = 2000,
-                       family = binomial)
+                       family = binomial(link = "logit"))
 
 round(posterior_interval(onenullmod, prob = 0.95), 3)
-loo(onenullmod) # fit is good
+loo(onenullmod) # fits are all bad, whether interaction included or not. Hmm.
 summary(onenullmod, digits = 3)
 
 # get posterior summary
