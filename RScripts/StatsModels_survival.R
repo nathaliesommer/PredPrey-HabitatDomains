@@ -74,21 +74,21 @@ pursue5 <- subset(fiveyr, Pred.Strat == "Sit-and-Pursue")
 # models to look at survival (ticks)
 # one yr = 8760 ticks, so create column for number of ticks not survived
 oneyr_null$dead <- 8760 - oneyr_null$ticks
+active1$dead <- 8760 - active1$ticks
 
-
-# One year null model ----
+# Active predator one-year model ----
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
-onenullmod <- stan_glm(cbind(ticks, dead) ~ Pred.Strat + Prey.Start.Con*Pred.Start.Con,
-                       data = oneyr_null,
+active1mod <- stan_glm(cbind(ticks, dead) ~ Prey.Start.Con + Pred.Start.Con,
+                       data = active1,
                        prior = t_prior,
                        cores = 2,
                        seed = 12345,
                        iter = 2000,
                        family = binomial(link = "logit"))
 
-round(posterior_interval(onenullmod, prob = 0.95), 3)
-loo(onenullmod) # fits are all bad, whether interaction included or not. Hmm.
-summary(onenullmod, digits = 3)
+round(posterior_interval(active1mod, prob = 0.95), 3)
+loo(active1mod) # fits are all bad, whether interaction included or not. Many bad points. Hmm.
+summary(active1mod, digits = 3)
 
 # get posterior summary
 describe_posterior(
@@ -100,7 +100,7 @@ describe_posterior(
 )
 
 # look at model fit in Shiny
-shinystan::launch_shinystan(onenullmod)
+shinystan::launch_shinystan(active1mod)
 
 # plot of posteriors
 posterior <- as.matrix(onenullmod)
