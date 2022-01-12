@@ -75,6 +75,7 @@ pursue5 <- subset(fiveyr, Pred.Strat == "Sit-and-Pursue")
 # one yr = 8760 ticks, so create column for number of ticks not survived
 oneyr_null$dead <- 8760 - oneyr_null$ticks
 active1$dead <- 8760 - active1$ticks
+active5$dead <- 8760 - active5$ticks
 
 ## having trouble with model fits. What I've tried to far
 # 1) analyzing separately by predator strategy
@@ -88,8 +89,8 @@ active1$dead <- 8760 - active1$ticks
 
 # Active predator one-year model ----
 t_prior <- student_t(df = 7, location = 0, scale = 2.5)
-active1mod <- stan_glmer(cbind(ticks, dead) ~ Prey.Start.Con + Pred.Start.Con + (1|run.Number),
-                       data = active1,
+active5mod <- stan_glm(cbind(ticks, dead) ~ Prey.Start.Con + Pred.Start.Con,
+                       data = active5,
                        #prior = t_prior,
                        cores = 2,
                        seed = 12345,
