@@ -101,6 +101,10 @@ FiveYearNullandTrue <- FiveYearNullandTrue  %>%
     mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
     subset(Pred.Prey_Domain == "Large.Small")
   
+  active5.Large.Large <-  subset(FiveYearNullandTrue, Pred.Strat == "Active") %>%
+    mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
+    subset(Pred.Prey_Domain == "Large.Large")
+  
 SW5.Large.Small <-  subset(FiveYearNullandTrue, Pred.Strat == "Sit-and-Wait") %>%
     mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
     subset(Pred.Prey_Domain == "Large.Small")
@@ -153,7 +157,7 @@ cox.zph(MaleMod)
 
 #3 need status to be 1 or 0 
 
-FiveYearNullandTrue_surv <-   active5.Small.Small %>%
+FiveYearNullandTrue_surv <-   active5.Large.Large %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
@@ -166,8 +170,11 @@ plot(fit0, xlab="Survival Time in Hours",
 
 # Compare the survival distributions of null and true
 survobj<- with(FiveYearNullandTrue_surv, Surv(year,status))
-fit1.5.A.S.S <- survfit(survobj~ModelType, data=FiveYearNullandTrue_surv)
+
 ggsurvplot(fit1.5.A.S.S, conf.int = TRUE, ggtheme = theme_minimal())
+
+
+fit1.5.A.S.S <- survfit(survobj~ModelType, data=FiveYearNullandTrue_surv)
 
 
 
@@ -181,14 +188,40 @@ legend("topright", title="Model Type", c("Null", "NCE"),
 # test for difference between male and female 
 # survival curves (logrank test) 
 survdiff(survobj~ModelType, data=FiveYearNullandTrue_surv) 
+## Active.Large.Large is statistically different
+
+?survdiff
+# Not different 
 
 # predict male survival from age and medical scores 
-MaleMod <- coxph(survobj~ propHabitat + propSafeSpace + propPredFree,
-                 data=FiveYearNullandTrue_surv)
+FiveYearNullandTrue_surv2<- FiveYearNullandTrue_surv %>%
+  subset(ModelType == 1) %>%
+  mutate(yearprop = year/5)
 
+A5.Large.Large.glm<- glm(year ~ propHabitat + propSafeSpace + propPredFree, family = poisson, data = FiveYearNullandTrue_surv2)
+summary(A5.Large.Large.glm)
+A5.Large.Large.glm$coefficients
+exp(A5.Large.Large.glm$coefficients[2])
+exp(A5.Large.Large.glm$coefficients[4])
+
+?family
+
+?glm
+survobj2<- with(FiveYearNullandTrue_surv2, Surv(year, status))
+?with
+?Surv
+?coxph
+OnlyNCE<- coxph(survobj2 ~ propHabitat + propSafeSpace + propPredFree,
+                 data=FiveYearNullandTrue_surv2)
+
+Null.NCE<- coxph(survobj ~ propHabitat + propSafeSpace + propPredFree,
+                data=FiveYearNullandTrue_surv)
 # display results 
-MaleMod
+OnlyNCE
+Null.NCE
 
+plot(survfit(OnlyNCE))
+plot(survfit(Null.NCE))
 
 # evaluate the proportional hazards assumption 
 cox.zph(MaleMod)
@@ -291,10 +324,10 @@ Predator.Prey<- unique(FiveYearNullandTrue.SP_surv$Pred.Prey_Domain)
 
 splots<-list()
 for (i in Predator.Prey) {
-  subset<- FiveYearNullandTrue.SP_surv %>%
+  subset1<- FiveYearNullandTrue.SP_surv %>%
     subset(Pred.Prey_Domain == i)
   survobj<- with(subset1, Surv(year,status))
-  ThePlot<- survfit(survobj~ModelType, data=subset)
+  ThePlot<- survfit(survobj~ModelType, data=subset1)
   splots[[i]]<-ggsurvplot(ThePlot, conf.int = TRUE, legend.labs=c("Model = Null", "Model = NCE"), ggtheme = theme_minimal()) +
     ggtitle(paste0(i, " (Predator.Prey)"))
   #assign(paste("ThePlot", i, sep = ""), plot)
