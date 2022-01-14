@@ -29,6 +29,9 @@ packages <- c("remotes",
               "tidybayes",
               "modelr",
               "shinystan",
+              "survival", ## The survivor package!!
+              "survminer", ## for plotting in ggplot
+              "gridExtra",
               "dplyr")
 
 #Run the ipak loop
@@ -39,178 +42,80 @@ ipak(packages)
 # load data ----
 oneyr <- read_csv("Data/NCvsC_1year_TSH_Nov29.csv") %>%
   mutate(ModelType = 1)
-fiveyr <- read_csv("Data/NCvsC_5year_TSH_Nov29.csv")
+
 oneyr_null <- read_csv("Data/NCvsC_Nullyear_TSH_Nov19.csv") %>%
   mutate(ModelType = 0)
 
-fiveyr_null <- read_csv("Data/NCvsC_NULL_5year_TSH_Nov29.csv")
-# use df data from NCvsC_5years_Space_Time_Habitat
+fiveyr <- read_csv("Data/NCvsC_5year_TSH_Nov29.csv")%>%
+  mutate(ModelType = 1)
 
-oneYearNullandTrue <- rbind(oneyr, oneyr_null)
-
-oneYearNullandTrue <- oneYearNullandTrue  %>%
-  mutate(propHabitat = White.Table/(Black.Table + White.Table)) %>%
-  mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap)) %>%
-  mutate(propPredFree = rowSums(.[28:39])/rowSums(.[16:39]))
-  
-testing<- glm(ModelType ~ ticks + propHabitat + propSafeSpace + propPredFree + Pred.Prey_Domain, family = binomial, data = oneYearNullandTrue)
-summary(testing)
-
-# separate predator strategies
-active1 <- subset(oneYearNullandTrue, Pred.Strat == "Active") %>%
-  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) 
-  select( Pred.Prey_Domain, propW, propPredFree, propSafeSpace, ticks)
-
-active1.Small.Small <- subset(oneYearNullandTrue, Pred.Strat == "Active") %>%
-  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
-  subset(Pred.Prey_Domain == "Small.Small")
-  
-  testing<- glm(ModelType ~ ticks + propHabitat + propSafeSpace + propPredFree, family = binomial, data = active1.Small.Small)
-  summary(testing)
+fiveyr_null <- read_csv("Data/NCvsC_NULL_5year_TSH_Nov29.csv")  %>%
+  mutate(ModelType = 0)
 
 
-###### Now for 5 years
+
+###### Just looking at 5 years for now
   
   # load data ----
 
-  fiveyr <- read_csv("Data/NCvsC_5year_TSH_Nov29.csv")%>%
-    mutate(ModelType = 1)
-
-  fiveyr_null <- read_csv("Data/NCvsC_NULL_5year_TSH_Nov29.csv")  %>%
-    mutate(ModelType = 0)
 
 FiveYearNullandTrue <- rbind(fiveyr, fiveyr_null)
   
 FiveYearNullandTrue <- FiveYearNullandTrue  %>%
     mutate(propHabitat = White.Table/(Black.Table + White.Table)) %>%
     mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap)) %>%
-    mutate(propPredFree = rowSums(.[28:39])/rowSums(.[16:39]))
+    mutate(propPredFree = rowSums(.[28:39])/rowSums(.[16:39]))%>%
+  mutate(interactions = rowSums(.[41:63])) %>%
+  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) 
   
-  testing<- glm(ModelType ~ ticks + propHabitat + propSafeSpace + propPredFree + Pred.Prey_Domain, family = binomial, data = oneYearNullandTrue)
-  summary(testing)
-  
-  # separate predator strategies
-  active5 <- subset(FiveYearNullandTrue, Pred.Strat == "Active") %>%
-    mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) 
-  
-  active5.Small.Small <- subset(FiveYearNullandTrue, Pred.Strat == "Active") %>%
-    mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
-    subset(Pred.Prey_Domain == "Small.Small")
-  
-  active5.Large.Small <-  subset(FiveYearNullandTrue, Pred.Strat == "Active") %>%
-    mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
-    subset(Pred.Prey_Domain == "Large.Small")
-  
+  ### Need to look at each predator hunting type, and each habitat domain size combination separtely, so first separate Active.Large.Large
+
   active5.Large.Large <-  subset(FiveYearNullandTrue, Pred.Strat == "Active") %>%
     mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
     subset(Pred.Prey_Domain == "Large.Large")
-  
-SW5.Large.Small <-  subset(FiveYearNullandTrue, Pred.Strat == "Sit-and-Wait") %>%
-    mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
-    subset(Pred.Prey_Domain == "Large.Small")
-  
-  testing5<- glm(ModelType ~ ticks + propHabitat + propSafeSpace + propPredFree, family = binomial, data = active5.Small.Small)
-  summary(testing5)
-  
-  active5.Large.Small.glm<- glm(ModelType ~ ticks + propHabitat + propSafeSpace + propPredFree, family = binomial, data = active5.Large.Small)
-  summary(active5.Large.Small.glm)
-  
-  SWe5.Large.Small.glm<- glm(ModelType ~ ticks + propHabitat + propSafeSpace + propPredFree, family = binomial, data = SW5.Large.Small)
-  summary(SWe5.Large.Small.glm)
-  
 
-####### 
-  library(survival)
-help(lung)  
-View(lung)
-
-survobj<- with(lung, Surv(time,status))
-fit0 <- survfit(survobj~1, data=lung)
-summary(fit0)
-plot(fit0, xlab="Survival Time in Days", 
-     ylab="% Surviving", yscale=100,
-     main="Survival Distribution (Overall)") 
-
-# Compare the survival distributions of men and women 
-fit1 <- survfit(survobj~sex,data=lung)
-
-# plot the survival distributions by sex 
-plot(fit1, xlab="Survival Time in Days", 
-     ylab="% Surviving", yscale=100, col=c("red","blue"),
-     main="Survival Distributions by Gender") 
-legend("topright", title="Gender", c("Male", "Female"),
-       fill=c("red", "blue"))
-
-# test for difference between male and female 
-# survival curves (logrank test) 
-survdiff(survobj~sex, data=lung) 
-
-# predict male survival from age and medical scores 
-MaleMod <- coxph(survobj~age+ph.ecog+ph.karno+pat.karno,
-                 data=lung, subset=sex==1)
-
-# display results 
-MaleMod
-
-# evaluate the proportional hazards assumption 
-cox.zph(MaleMod)
-
-#3 need status to be 1 or 0 
-
+#######################SURIVAL PACKAGE
+## prepping the data for the 'survivor' package - need a column called status which is binary
+  #to determine if the 'event' (dying) occurred or not
 FiveYearNullandTrue_surv <-   active5.Large.Large %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
-survobj<- with(FiveYearNullandTrue_surv, Surv(year,status))
+#create the survival obejct:
+survobj<- with(FiveYearNullandTrue_surv, Surv(year, status))
+
+# Looking at the data (both null and NCE model together)
 fit0 <- survfit(survobj~1, data=FiveYearNullandTrue_surv)
 summary(fit0)
 plot(fit0, xlab="Survival Time in Hours", 
      ylab="% Surviving", yscale=100,
      main="Survival Distribution (Overall)") 
 
-# Compare the survival distributions of null and true
-survobj<- with(FiveYearNullandTrue_surv, Surv(year,status))
-
-ggsurvplot(fit1.5.A.S.S, conf.int = TRUE, ggtheme = theme_minimal())
-
+######## Compare the survival distributions of null and true (what we really want)
+survobj<- with(FiveYearNullandTrue_surv, Surv(year,status)) # same as above
 
 fit1.5.A.S.S <- survfit(survobj~ModelType, data=FiveYearNullandTrue_surv)
+ggsurvplot(fit1.5.A.S.S, conf.int = TRUE, ggtheme = theme_minimal())
 
-
-
-# plot the survival distributions by sex 
+# plot the survival distributions by Null vs NCE model (just a different way to plot the above) 
 plot(fit1.5.A.S.S, xlab="Survival Time in Years", 
      ylab="% Surviving", yscale=100, col=c("red","blue"),
      main="Survival Distributions Null vs NCE \nfor Active Hunting Strategy \nfor Small Pred, Small Prey")
 legend("topright", title="Model Type", c("Null", "NCE"),
        fill=c("red", "blue"))
 
-# test for difference between male and female 
+# test for difference between Null and NCE
 # survival curves (logrank test) 
 survdiff(survobj~ModelType, data=FiveYearNullandTrue_surv) 
 ## Active.Large.Large is statistically different
 
-?survdiff
-# Not different 
-
-# predict male survival from age and medical scores 
+## Now, we want to look at only the NCE model
 FiveYearNullandTrue_surv2<- FiveYearNullandTrue_surv %>%
   subset(ModelType == 1) %>%
   mutate(yearprop = year/5)
 
-A5.Large.Large.glm<- glm(year ~ propHabitat + propSafeSpace + propPredFree, family = poisson, data = FiveYearNullandTrue_surv2)
-summary(A5.Large.Large.glm)
-A5.Large.Large.glm$coefficients
-exp(A5.Large.Large.glm$coefficients[2])
-exp(A5.Large.Large.glm$coefficients[4])
-
-?family
-
-?glm
 survobj2<- with(FiveYearNullandTrue_surv2, Surv(year, status))
-?with
-?Surv
-?coxph
+
 OnlyNCE<- coxph(survobj2 ~ propHabitat + propSafeSpace + propPredFree,
                  data=FiveYearNullandTrue_surv2)
 
@@ -223,10 +128,21 @@ Null.NCE
 plot(survfit(OnlyNCE))
 plot(survfit(Null.NCE))
 
-# evaluate the proportional hazards assumption 
-cox.zph(MaleMod)
+mean(FiveYearNullandTrue_surv2$year) # dies around 2 years anyways, so this plot isn't great
 
-#################### All others
+# evaluate the proportional hazards assumption 
+cox.zph(MaleMod) ## this is something I think we need to explore more but I'm not sure
+
+#### Playing with a glm (might not be helpful)
+
+A5.Large.Large.glm<- glm(year ~ propHabitat + propSafeSpace + propPredFree, family = poisson, data = FiveYearNullandTrue_surv2)
+summary(A5.Large.Large.glm)
+A5.Large.Large.glm$coefficients
+exp(A5.Large.Large.glm$coefficients[2])
+exp(A5.Large.Large.glm$coefficients[4])
+
+
+#################### Prepping separate huntings and looking at surivial plots across all of the data
 
 ## Active 
 FiveYearNullandTrue.Active <- FiveYearNullandTrue %>%
@@ -253,33 +169,6 @@ for (i in Predator.Prey) {
 }
 ActivePlots<- arrange_ggsurvplots(splots, print = TRUE,
                     ncol = 2, nrow = 2, title = "Survival Distributions Null (red) vs NCE (blue) for Active Hunting Strategy")
-
-## not used
-
-par(mfrow=c(2,2))
-
-for (i in Predator.Prey) {
-  subset<- FiveYearNullandTrue.Active_surv %>%
-    subset(Pred.Prey_Domain == i)
-  survobj <- with(subset, Surv(year, status))
-  # Compare the survival distributions of men and women 
-  fit1<- survfit(survobj~ModelType, data=subset)
-  
-  # plot the survival distributions by sex 
-  plot(fit1, xlab="Survival Time in Years", 
-       ylab="% Surviving", yscale=100, col=c("red","blue"),
-       main= paste0( i, " (Predator.Prey)"))
-  #legend("topright", title="Model Type", c("Null", "NCE"),
-  #       fill=c("red", "blue"))
-  mtext("Survival Distributions Null (red) vs NCE (blue) for Active Hunting Strategy", side = 3, line = -1, outer = TRUE)
-}
-
-
-library(gridExtra)
-library(ggplot2)
-
-
-
 
 ## Sit-and-Wait
 
@@ -337,26 +226,11 @@ SPPlots<- arrange_ggsurvplots(splots, print = TRUE,
 
 
 
-### Test this out later
-install.packages(c("survival", "survminer"))
 
-library("survival")
-library("survminer")
-
-
-survobj<- with(FiveYearNullandTrue.Active_surv, Surv(year,status))
-fit0 <- survfit(survobj~1, data=FiveYearNullandTrue.Active_surv )
-summary(fit0)
-plot(fit0, xlab="Survival Time in Hours", 
-     ylab="% Surviving", yscale=100,
-     main="Survival Distribution (Overall)") 
-
-# Compare the survival distributions of men and women 
-fit1.5.A.S.S <- survfit(survobj~ModelType, data=FiveYearNullandTrue.Active_surv )
-
-
-
-
+######## Other data prep ############
+## 1. Freya's work
+## 2. PCAs
+## 3. 3D scatter plots!
 # convert to factors ----
 # hunting mode and starting conditions as factors
 oneyr$Pred.Strat <- as.factor(oneyr$Pred.Strat)
@@ -420,7 +294,7 @@ fiveyr_null$shifts <- fiveyr_null$propSafeSpace/fiveyr_null$propPredFree
 # separate predator strategies
 active1 <- subset(oneyr, Pred.Strat == "Active") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
-  select( Pred.Prey_Domain, propW, propPredFree, propSafeSpace, ticks)
+ dplyr::select(Pred.Prey_Domain, propW, propPredFree, propSafeSpace, ticks)
 #
 active1_null <- subset(oneyr_null, Pred.Strat == "Active") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
@@ -435,6 +309,8 @@ sitwait5 <- subset(fiveyr, Pred.Strat == "Sit-and-Wait")
 pursue5 <- subset(fiveyr, Pred.Strat == "Sit-and-Pursue")
 
 ####### Principal component analysis ####### 
+?prcomp
+library(stats)
 results<-prcomp(active1, scale = TRUE) 
 #reverse signs
 results$rotation<- -1*results$rotation
@@ -462,7 +338,7 @@ rgl::plot3d(x = active1$propW, y = active1$propPredFree, z = active1$propSafeSpa
 legend3d("topright", legend = levels(active1$Pred.Prey_Domain), col = rainbow(4), pch = 19)
 
 
-rgl::plot3d(x = active1_null $propW, y = active1_null $propPredFree, z = active1_null $propSafeSpace, col = as.integer(active1_null $Pred.Prey_Domain)) 
+rgl::plot3d(x = active1_null$propW, y = active1_null $propPredFree, z = active1_null $propSafeSpace, col = as.integer(active1_null $Pred.Prey_Domain)) 
 legend3d("topright", legend = levels(active1_null $Pred.Prey_Domain), col = rainbow(4), pch = 19)
 
 
