@@ -7,8 +7,11 @@
 - Kristy Ferraro
 
 ## Current figures
-# Figure 1: Active predators
+# Active survival
 ![Figure 1](Output_Figures/ActivePredSurv.png)
 
-# Figure 2: Sit-and-wait predators
+# Sit-and-wait survival
 ![Figure 2](Output_Figures/SWPredSurv.png)
+
+# Sit-and-pursue survival
+![Figure 3](Output_Figures/SPPredSurv.png)
