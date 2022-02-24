@@ -117,12 +117,6 @@ ggsurvplot(
   ggtheme = theme_bw()      # Change ggplot2 theme
 )
 
-# plot the survival distributions by Null vs NCE model (just a different way to plot the above) 
-plot(fit1.5.A.S.S, xlab="Survival Time in Years", 
-     ylab="% Surviving", yscale=100, col=c("red","blue"),
-     main="Survival Distributions Null vs NCE \nfor Active Hunting Strategy \nfor Small Pred, Small Prey")
-legend("topright", title="Model Type", c("Null", "NCE"),
-       fill=c("red", "blue"))
 
 # test for difference between Null and NCE
 # survival curves (logrank test) 
@@ -148,18 +142,14 @@ Null.NCE
 plot(survfit(OnlyNCE))
 plot(survfit(Null.NCE))
 
-mean(FiveYearNullandTrue_surv2$year) # dies around 2 years anyways, so this plot isn't great
+median(FiveYearNullandTrue_surv2$year) # dies around 2 years anyways, so this plot isn't great
+
+summary(survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue_surv2),
+        times = 1) # get estimate of surviving 1 yr
 
 # evaluate the proportional hazards assumption 
 cox.zph(MaleMod) ## this is something I think we need to explore more but I'm not sure
 
-#### Playing with a glm (might not be helpful)
-
-A5.Large.Large.glm<- glm(year ~ propHabitat + propSafeSpace + propPredFree, family = poisson, data = FiveYearNullandTrue_surv2)
-summary(A5.Large.Large.glm)
-A5.Large.Large.glm$coefficients
-exp(A5.Large.Large.glm$coefficients[2])
-exp(A5.Large.Large.glm$coefficients[4])
 
 
 #################### Prepping separate huntings and looking at surivial plots across all of the data
@@ -212,6 +202,8 @@ ggsave(ActivePlots, filename = "Output_Figures/ActivePredSurv.png", dpi = 300)
 
 ## Sit-and-Wait ----
 
+
+
 FiveYearNullandTrue.SW <- FiveYearNullandTrue %>%
   subset(Pred.Strat == "Sit-and-Wait") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
@@ -220,6 +212,24 @@ FiveYearNullandTrue.SW <- FiveYearNullandTrue %>%
 FiveYearNullandTrue.SW_surv <- FiveYearNullandTrue.SW %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
+
+## use facet within the survminer package
+# trying to use this method for facet https://rpkgs.datanovia.com/survminer/reference/ggsurvplot_facet.html
+# convert to factor
+FiveYearNullandTrue.SW_surv$Prey.Start.Con <- as.factor(FiveYearNullandTrue.SW_surv$Prey.Start.Con)
+FiveYearNullandTrue.SW_surv$Pred.Start.Con <- as.factor(FiveYearNullandTrue.SW_surv$Pred.Start.Con)
+
+## blerg. It's not working. FER will troubleshoot later.
+# fit <- survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.SW_surv )
+# SWplot <- ggsurvplot_facet(
+#   fit,
+#   FiveYearNullandTrue.SW_surv,
+#   facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
+#   palette = "jco",
+#   pval = TRUE
+# )
+
+# Kaggie's method that works well
 
 Predator.Prey<- unique(FiveYearNullandTrue.SW_surv$Pred.Prey_Domain)
 
@@ -380,25 +390,6 @@ active5 <- subset(fiveyr, Pred.Strat == "Active")
 sitwait5 <- subset(fiveyr, Pred.Strat == "Sit-and-Wait")
 pursue5 <- subset(fiveyr, Pred.Strat == "Sit-and-Pursue")
 
-####### Principal component analysis ####### 
-?prcomp
-library(stats)
-results<-prcomp(active1, scale = TRUE) 
-#reverse signs
-results$rotation<- -1*results$rotation
-
-results$rotation
-
-biplot(results, scale = 0)
-
-PCA_active_SS <- active1 %>%
-  subset(Pred.Prey_Domain == "Small.Small") %>%
-  select(ticks, propW, propPredFree, propSafeSpace)
-row.names(PCA_active_SS)<- PCA_active_SS$ticks
-
-PCA_active_SS <- PCA_active_SS[,-1]
-
-results<-prcomp(PCA_active_SS, scale = TRUE) 
 
 
 ####### 3d scatter plot ####### 
