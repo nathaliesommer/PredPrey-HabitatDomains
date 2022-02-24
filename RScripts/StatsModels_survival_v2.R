@@ -253,13 +253,14 @@ SWPlots <- arrange_ggsurvplots(
 
 ggsave(SWPlots, filename = "Output_Figures/SWPredSurv.png", dpi = 300)
 
-## Sit-and-Pursue
 
+
+
+## Sit-and-Pursue
 
 FiveYearNullandTrue.SP <- FiveYearNullandTrue %>%
   subset(Pred.Strat == "Sit-and-Pursue") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
-
 
 FiveYearNullandTrue.SP_surv <- FiveYearNullandTrue.SP %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
@@ -267,20 +268,35 @@ FiveYearNullandTrue.SP_surv <- FiveYearNullandTrue.SP %>%
 
 Predator.Prey<- unique(FiveYearNullandTrue.SP_surv$Pred.Prey_Domain)
 
-splots<-list()
+splots <- list()
 for (i in Predator.Prey) {
-  subset1<- FiveYearNullandTrue.SP_surv %>%
+  subset1 <- FiveYearNullandTrue.SP_surv %>%
     subset(Pred.Prey_Domain == i)
-  survobj<- with(subset1, Surv(year,status))
-  ThePlot<- survfit(survobj~ModelType, data=subset1)
-  splots[[i]]<-ggsurvplot(ThePlot, conf.int = TRUE, legend.labs=c("Model = Null", "Model = NCE"), ggtheme = theme_minimal()) +
+  survobj <- with(subset1, Surv(year, status))
+  ThePlot <- survfit(survobj ~ ModelType, data = subset1)
+  splots[[i]] <-
+    ggsurvplot(
+      ThePlot,
+      conf.int = TRUE, # add 95% confidence intervals
+      size = 1,        # change line size
+      palette = c("#E7B800", "#2E9FDF"), # custom color palettes
+      pval = TRUE, # add p-value
+      #surv.median.line = TRUE, # add median survival
+      legend.labs = c("Null", "NCE"),
+      ggtheme = theme_bw()
+    ) + 
     ggtitle(paste0(i, " (Predator.Prey)"))
   #assign(paste("ThePlot", i, sep = ""), plot)
 }
-SPPlots<- arrange_ggsurvplots(splots, print = TRUE,
-                              ncol = 2, nrow = 2, title = "Survival Distributions Null (red) vs NCE (blue) for Sit-and-Pursue Hunting Strategy")
+SPPlots <- arrange_ggsurvplots(
+  splots,
+  print = TRUE,
+  ncol = 2,
+  nrow = 2,
+  title = "Survival Distributions Null (red) vs NCE (blue) for Sit-and-Pursue Hunting Strategy"
+)
 
-
+ggsave(SPPlots, filename = "Output_Figures/SPPredSurv.png", dpi = 300)
 
 
 ######## Other data prep ############
