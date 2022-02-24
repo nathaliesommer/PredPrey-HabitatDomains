@@ -209,9 +209,8 @@ ActivePlots <- arrange_ggsurvplots(
 )
 
 ggsave(ActivePlots, filename = "Output_Figures/ActivePredSurv.png", dpi = 300)
-ggsave(MeHgfinal, filename = "figures/MeHg_boxplot.png", dpi = 300)
 
-## Sit-and-Wait
+## Sit-and-Wait ----
 
 FiveYearNullandTrue.SW <- FiveYearNullandTrue %>%
   subset(Pred.Strat == "Sit-and-Wait") %>%
@@ -226,17 +225,33 @@ Predator.Prey<- unique(FiveYearNullandTrue.SW_surv$Pred.Prey_Domain)
 
 splots<- list()
 for (i in Predator.Prey) {
-  subset1<- FiveYearNullandTrue.SW_surv %>%
+  subset1 <- FiveYearNullandTrue.SW_surv %>%
     subset(Pred.Prey_Domain == i)
-  survobj<- with(subset1, Surv(year,status))
-  ThePlot<- survfit(survobj~ModelType, data=subset1)
-  splots[[i]]<-ggsurvplot(ThePlot, conf.int = TRUE, legend.labs=c("Model = Null", "Model = NCE"), ggtheme = theme_minimal()) +
+  survobj <- with(subset1, Surv(year, status))
+  ThePlot <- survfit(survobj ~ ModelType, data = subset1)
+  splots[[i]] <-
+    ggsurvplot(
+      ThePlot,
+      conf.int = TRUE, # add 95% confidence intervals
+      size = 1,        # change line size
+      palette = c("#E7B800", "#2E9FDF"), # custom color palettes
+      pval = TRUE, # add p-value
+      #surv.median.line = TRUE, # add median survival
+      legend.labs = c("Null", "NCE"),
+      ggtheme = theme_bw()
+    ) + 
     ggtitle(paste0(i, " (Predator.Prey)"))
   #assign(paste("ThePlot", i, sep = ""), plot)
 }
-SWPlots<- arrange_ggsurvplots(splots, print = TRUE,
-                              ncol = 2, nrow = 2, title = "Survival Distributions Null (red) vs NCE (blue) for Sit-and-Wait Hunting Strategy")
+SWPlots <- arrange_ggsurvplots(
+  splots,
+  print = TRUE,
+  ncol = 2,
+  nrow = 2,
+  title = "Survival Distributions for Sit-and-Wait Hunting Strategy"
+)
 
+ggsave(SWPlots, filename = "Output_Figures/SWPredSurv.png", dpi = 300)
 
 ## Sit-and-Pursue
 
