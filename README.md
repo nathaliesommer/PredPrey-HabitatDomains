@@ -15,3 +15,6 @@
 
 # Sit-and-pursue survival
 ![Figure 3](Output_Figures/SPPredSurv.png)
+
+# All survival compared
+![Figure 4](Output_Figures/AllSurvival.png)
