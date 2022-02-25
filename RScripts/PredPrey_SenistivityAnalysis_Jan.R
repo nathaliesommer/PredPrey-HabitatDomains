@@ -12,12 +12,10 @@ library(ggrepel)
 library(gridExtra)
 library(ggrepel)
 
-setwd("~/Users/kristymbarnes/Google Drive/Documents⁩⁩/Yale/Projects⁩/PredPreyHabitatDomains/⁨PredPreyHabitatDomain⁩/Sensetivity Anlysis Models")
-
-
+setwd("~/My Drive/Scholarship/Yale/Projects/PredPreyHabitatDomains/PredPreyHabitatDomain/Sensitivity Analysis Models")
 
 #=====Attack======
-Attack.SA <- read.csv("Attack-SA2-LOF.csv")%>%
+Attack.SA <- read.csv("Active-SA2-LOF.csv")%>%
   mutate_if(is.logical, as.character)%>%
   group_by(parameter, index)%>%
   summarize(value = mean(value))%>%
@@ -80,7 +78,7 @@ Sit_And_Wait.SA.plot<-ggplot(Sit_And_Wait.SA, aes(x=mustar, y=sigma)) +
 
 
 #=====Sit And Pursue======
-Sit_And_Pursue.SA <- read.csv("Sit-And-Pursue-SA2-LOF.csv")%>%
+Sit_And_Pursue.SA <- read.csv("Sit-And-Persue-SA2-LOF.csv")%>%
   mutate_if(is.logical, as.character)%>%
   group_by(parameter, index)%>%
   summarize(value = mean(value))%>%
