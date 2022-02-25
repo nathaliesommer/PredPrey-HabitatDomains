@@ -18,3 +18,8 @@
 
 # All survival compared
 ![Figure 4](Output_Figures/AllSurvival.png)
+
+# A hazard table
+![Table 1](Output_Figures/
+
+Explanation here (https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html#Estimating_survival_curves_with_the_Kaplan-Meier_method)
