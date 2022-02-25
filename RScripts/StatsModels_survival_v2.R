@@ -131,8 +131,19 @@ ggsurvplot(
 # test for difference between Null and NCE
 # survival curves (logrank test) 
 Allmod <- survdiff(Surv(year, status) ~ ModelType + Pred.Strat, data=FiveYearNullandTrue2)
-Allmod %>%
-  
+
+# look for differences based on shifts
+FiveYearTrue <-
+  FiveYearNullandTrue2 %>%
+  subset(ModelType == 1)
+
+FiveYearNCE <- coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+                     data = FiveYearTrue)
+
+haz.table <- FiveYearNCE %>% 
+  gtsummary::tbl_regression(exp = TRUE) 
+
+ggsave(haz.table, "FiveYrNCEHazardTable.png", height = 2, width = 4)
 
 ## Active.Large.Large is statistically different
 
@@ -163,9 +174,9 @@ median(FiveYearNullandTrue_surv2$year) # dies around 2 years anyways, so this pl
 summary(survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue_surv2),
         times = 1) # get estimate of surviving 1 yr
 
-# evaluate the proportional hazards assumption 
-cox.zph(MaleMod) ## this is something I think we need to explore more but I'm not sure
-
+# # evaluate the proportional hazards assumption 
+# cox.zph(MaleMod) ## this is something I think we need to explore more but I'm not sure
+# 
 
 
 #################### Prepping separate huntings and looking at surivial plots across all of the data
