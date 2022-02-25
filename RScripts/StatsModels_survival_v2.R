@@ -33,7 +33,8 @@ packages <- c("remotes",
               "survival", ## The survivor package!!
               "survminer", ## for plotting in ggplot
               "gridExtra",
-              "dplyr")
+              "dplyr",
+              "gtsummary")
 
 #Run the ipak loop
 ipak(packages)
@@ -67,7 +68,16 @@ FiveYearNullandTrue <- FiveYearNullandTrue  %>%
   mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap)) %>%
   mutate(propPredFree = rowSums(.[28:39])/rowSums(.[16:39]))%>%
   mutate(interactions = rowSums(.[41:63])) %>%
-  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) 
+  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
+
+# make a dataframe with all 5 year data
+FiveYearNullandTrue2 <- FiveYearNullandTrue %>%
+  mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
+  mutate(year = ticks/365/24)
+
+FiveYearNullandTrue2$Pred.Strat <- as.factor(FiveYearNullandTrue2$Pred.Strat)
+FiveYearNullandTrue2$Pred.Start.Con <- as.factor(FiveYearNullandTrue2$Pred.Start.Con)
+FiveYearNullandTrue2$Prey.Start.Con <- as.factor(FiveYearNullandTrue2$Prey.Start.Con)
 
 ### Need to look at each predator hunting type, and each habitat domain size combination separtely, so first separate Active.Large.Large
 
@@ -93,9 +103,9 @@ plot(fit0, xlab="Survival Time in Years",
      main="Survival Distribution (Overall)") 
 
 ######## Compare the survival distributions of null and true (what we really want)
-survobj<- with(FiveYearNullandTrue_surv, Surv(year,status)) # same as above
+survobj<- with(FiveYearNullandTrue, Surv(year,status)) # same as above
 
-fit1.5.A.S.S <- survfit(survobj~ModelType, data=FiveYearNullandTrue_surv)
+fit1.5.A.S.S <- survfit(survobj~ModelType, data=FiveYearNullandTrue)
 
 
 # Plot of 5 year null vs. modeled survival
@@ -120,7 +130,10 @@ ggsurvplot(
 
 # test for difference between Null and NCE
 # survival curves (logrank test) 
-survdiff(survobj~ModelType, data=FiveYearNullandTrue_surv) 
+Allmod <- survdiff(Surv(year, status) ~ ModelType + Pred.Strat, data=FiveYearNullandTrue2)
+Allmod %>%
+  
+
 ## Active.Large.Large is statistically different
 
 ## Now, we want to look at only the NCE model
@@ -131,7 +144,10 @@ FiveYearNullandTrue_surv2<- FiveYearNullandTrue_surv %>%
 survobj2<- with(FiveYearNullandTrue_surv2, Surv(year, status))
 
 OnlyNCE<- coxph(survobj2 ~ propHabitat + propSafeSpace + propPredFree,
-                data=FiveYearNullandTrue_surv2)
+                data=FiveYearNullandTrue_surv2) 
+
+OnlyNCE %>% 
+  gtsummary::tbl_regression(exp = TRUE) 
 
 Null.NCE<- coxph(survobj ~ propHabitat + propSafeSpace + propPredFree,
                  data=FiveYearNullandTrue_surv)
@@ -220,14 +236,28 @@ FiveYearNullandTrue.SW_surv$Prey.Start.Con <- as.factor(FiveYearNullandTrue.SW_s
 FiveYearNullandTrue.SW_surv$Pred.Start.Con <- as.factor(FiveYearNullandTrue.SW_surv$Pred.Start.Con)
 
 ## blerg. It's not working. FER will troubleshoot later.
-# fit <- survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.SW_surv )
-# SWplot <- ggsurvplot_facet(
-#   fit,
-#   FiveYearNullandTrue.SW_surv,
-#   facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
-#   palette = "jco",
-#   pval = TRUE
-# )
+fit <- survfit(Surv(year, status) ~ ModelType + Pred.Strat, data = FiveYearNullandTrue2 )
+SWplot <- survminer::ggsurvplot_facet(
+  panel.labs = list(Prey.Start.Con = c("Large", "Small"), 
+                    Pred.Start.Con = c("Large", "Small")),
+  fit,
+  legend.position = "right",
+  FiveYearNullandTrue2,
+  facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
+  #palette = "jco",
+  palette = c("#cccccc", "#969696", "#636363", "#bae4b3", "#74c476", "#31a354"),
+  legend.labs = c("Null Active", 
+                  "Null Sit-and-Pursue", 
+                  "Null Sit-and-Wait",
+                  "NCE Active", 
+                  "NCE Sit-and-Pursue",
+                  "NCE Sit-and-Wait"),
+  pval = TRUE,
+  conf.int = TRUE
+)
+print(SWplot)
+
+ggsave(SWplot, filename = "Output_Figures/AllSurvival.png", dpi = 300, width = 8, height = 6)
 
 # Kaggie's method that works well
 
