@@ -7,16 +7,16 @@
 - Kristy Ferraro
 
 ## Current figures (they're ugly. I'll make them pretty once we decide!)
-### Active survival
+# Active survival
 ![Figure 1](Output_Figures/ActivePredSurv.png)
 
-### Sit-and-wait survival
+# Sit-and-wait survival
 ![Figure 2](Output_Figures/SWPredSurv.png)
 
-### Sit-and-pursue survival
+# Sit-and-pursue survival
 ![Figure 3](Output_Figures/SPPredSurv.png)
 
-### All survival compared
+# All survival compared
 ![Figure 4](Output_Figures/AllSurvival.png)
 
 ## Five year NCE data hazard tables
