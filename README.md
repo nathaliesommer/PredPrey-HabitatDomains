@@ -19,8 +19,7 @@
 # All survival compared
 ![Figure 4](Output_Figures/AllSurvival.png)
 
-# Five year NCE data hazard table
-![Table 1](Output_Figures/FiveYrNCEHazardTable.png)
+# Five year NCE data hazard tables
 
 [Explanation of hazard ratio table](<https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html#Estimating_survival_curves_with_the_Kaplan-Meier_method>)
 
@@ -32,4 +31,10 @@ If you have a regression parameter β (from column estimate in our coxph) then H
 A HR < 1 indicates reduced hazard of death whereas a HR > 1 indicates an increased hazard of death.
 So a HR = 0.59 implies that around 0.6 times as many females are dying as males, at any given time.
 
-*This is all rather new to me, but I think this implies that all significantly reduce mortality. In order from best to worst ways to increase survival 1) shift time, 2) use predator free area, and 3) shift space.*
+## Model 1:
+
+*mod <- coxph(Surv(year, status) ~propHabitat + propPredFree + propSafeSpace* Note: this model does NOT account for predator strategy. So this is general for all predator strategies.
+
+![Table 1](Output_Figures/FiveYrNCEHazardTable.png)
+
+This is all rather new to me, but I think this implies that all significantly reduce mortality. In order from best to worst ways to increase survival 1) shift time, 2) use predator free area, and 3) shift space. 
