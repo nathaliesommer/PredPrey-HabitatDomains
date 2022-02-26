@@ -89,6 +89,9 @@ coxph(formula = Surv(year, status) ~ propHabitat + propPredFree +
 |propPredFree | -2.317e+01 | 8.654e-11 | 1.507e+00 |-15.38 |<2e-16 |
 |propSafeSpace |-3.765e+00 | 2.318e-02 | 2.698e-01 |-13.96 |<2e-16|
 
+Likelihood ratio test=777.4  on 3 df, p=< 2.2e-16
+n= 400, number of events= 309 
+
 Time shift HR = 0.0000000008 >> Habitat shift HR = 0.0008 >> Space shift HR = 0.02. These are all very small numbers, but this seems to imply that time shifts are by far the best way to avoid mortality in an environment with an active predator. Habitat shift are worst for survival, probably because it's not possible in most scenarios.
 
 ### Model 6: Prey behavior changes - Sit-and-Pursue Predators
@@ -104,7 +107,6 @@ coxph(formula = Surv(year, status) ~ propHabitat + propPredFree +
 |propPredFree | -2.233e+01 | 2.010e-10  |1.375e+00 |-16.24| <2e-16|
 |propSafeSpace |-3.433e+00 | 3.229e-02 | 2.677e-01 |-12.82| <2e-16|
 
-
 Likelihood ratio test=735.5  on 3 df, p=< 2.2e-16
 n= 400, number of events= 292
 
@@ -112,10 +114,27 @@ n= 400, number of events= 292
 
 Time shift is still much better than a habitat shift in reducing mortality, but both are helpful. Same pattern as Active Predators, which is comforting because this pattern is reoccuring.
 
+### Model 7: Prey behavior changes - Sit-and-Wait Predators
 
+> SWFiveYearNCE
+Call:
+coxph(formula = Surv(year, status) ~ propHabitat + propPredFree + 
+    propSafeSpace, data = SW5)
+
+|            |        coef | exp(coef) |  se(coef)   |    z   |     p|
+|:-----------|:------------|:----------|:------------|:-------|:-----|
+|propHabitat |  -4.668e+00 | 9.391e-03 | 1.002e+00 | -4.656| 3.22e-06|
+|propPredFree | -1.770e+01 | 2.053e-08 | 1.144e+00 |-15.471 | < 2e-16|
+|propSafeSpace |-3.795e+00 | 2.248e-02 | 3.191e-01 |-11.894 | < 2e-16|
+
+Likelihood ratio test=413.3  on 3 df, p=< 2.2e-16
+n= 400, number of events= 220
+
+![Table 7](Output_Figures/FiveNCEHazard_SW.png)
+
+For prey around sit-and-wait predators, we see some differences! For one the hazard ratios are not nearly as small, suggesting less risk to prey overall. Time shifts still reduce mortality most, but for this one habitat shifts are better than space shifts. 
 
 # Next steps
 - [ ] Do we compare end points? We could compare Time 1 yr vs. Time 5 yr for example by setting tstart and tstop. Is there a benefit to eliminating burnin period (our age old debate)
-- [ ] Explore hazard tables for each predator strategy separately (FER should do before meeting on Monday)
 - [ ] Compare one-yr vs. five-yr data?
 - [ ] Is "safe space" even something we want to include in models?
