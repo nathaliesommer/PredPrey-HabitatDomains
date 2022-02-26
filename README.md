@@ -28,10 +28,15 @@ The HR is interpreted as the instantaneous rate of occurrence of the event of in
 
 If you have a regression parameter β (from column estimate in our coxph) then HR = exp(β).
 
-A HR < 1 indicates reduced hazard of death whereas a HR > 1 indicates an increased hazard of death.
+A **HR < 1 indicates reduced hazard of death** whereas a **HR > 1 indicates an increased hazard of death**.
 So a HR = 0.59 implies that around 0.6 times as many females are dying as males, at any given time.
 
-### Model 1: Excluding predator strategy
+**For reference:
+- propHabitat = proportion of time spent on white vs. black spaces = **space shift**
+- propPredFree = proportion of time spent in hrs where predators are not active = **time shift**
+- propSafeSpace = proportional habitat shift to areas where predators are excluded (so only in Prey.Start.Con = Large and Pred.Start.Con = Small) = **habitat shift**
+
+### Model 1: Prey behavioral changes and hazard ratio
 
 *mod1 <- coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace* 
 Note: this model does NOT account for predator strategy. So this is general for all predator strategies. But I think we use this because it assesses how survival changes based on prey behavior. Which allows us to directly compare.
@@ -40,7 +45,7 @@ Note: this model does NOT account for predator strategy. So this is general for 
 
 So if we group all predators together, prey can significantly reduce mortality with behavior. In order from best to worst ways to increase probability of survival 1) shift time, 2) use predator free area, and 3) shift space. 
 
-### Model 2: Comparing predator strategy and hazard
+### Model 2: Comparing predator strategy and hazard ratios
 *mod2 <- coxph(Surv(year, status) ~ Pred.Strat*
 
 ![Table 2](Output_Figures/FiveYrNCEHazardTable_PredStrat.png)
@@ -69,9 +74,48 @@ This is cool.
 - Prey starting condition doesn't seem to matter much
 - Huge hazard increase when both predator and prey are in small starting domain! Almost 3x more prey are dying in that than other starting conditions.
 
+### Model 5: Prey behavior changes - Active Predators
+
+![Table 5](Output_Figures/FiveNCEHazard_Active.png)
+
+> ActiveFiveYearNCE
+Call:
+coxph(formula = Surv(year, status) ~ propHabitat + propPredFree + 
+    propSafeSpace, data = Active5)
+
+|             |       coef | exp(coef)  | se(coef)   |   z    | p |
+|:------------|:-----------|:-----------|:-----------|:-------|:---|
+|propHabitat |  -7.072e+00 | 8.490e-04 | 6.365e-01 |-11.11 |<2e-16 |
+|propPredFree | -2.317e+01 | 8.654e-11 | 1.507e+00 |-15.38 |<2e-16 |
+|propSafeSpace |-3.765e+00 | 2.318e-02 | 2.698e-01 |-13.96 |<2e-16|
+
+Time shift HR = 0.0000000008 >> Habitat shift HR = 0.0008 >> Space shift HR = 0.02. These are all very small numbers, but this seems to imply that time shifts are by far the best way to avoid mortality in an environment with an active predator. Habitat shift are worst for survival, probably because it's not possible in most scenarios.
+
+### Model 6: Prey behavior changes - Sit-and-Pursue Predators
+
+>Sit-and-PursueFiveYearNCE
+Call:
+coxph(formula = Surv(year, status) ~ propHabitat + propPredFree + 
+    propSafeSpace, data = SP5)
+
+|            |  coef      | exp(coef) |  se(coef)   |   z   |   p |
+|:-----------|:-----------|:----------|:------------|:------|:----|
+|propHabitat |  -6.129e+00 | 2.179e-03 | 5.405e-01 |-11.34| <2e-16|
+|propPredFree | -2.233e+01 | 2.010e-10  |1.375e+00 |-16.24| <2e-16|
+|propSafeSpace |-3.433e+00 | 3.229e-02 | 2.677e-01 |-12.82| <2e-16|
+
+
+Likelihood ratio test=735.5  on 3 df, p=< 2.2e-16
+n= 400, number of events= 292
+
+![Table 6](Output_Figures/FiveNCEHazard_SP.png)
+
+Time shift is still much better than a habitat shift in reducing mortality, but both are helpful. Same pattern as Active Predators, which is comforting because this pattern is reoccuring.
+
+
 
 # Next steps
 - [ ] Do we compare end points? We could compare Time 1 yr vs. Time 5 yr for example by setting tstart and tstop. Is there a benefit to eliminating burnin period (our age old debate)
 - [ ] Explore hazard tables for each predator strategy separately (FER should do before meeting on Monday)
-- [ ] Is there any use to looking starting conditions of predator and prey?
 - [ ] Compare one-yr vs. five-yr data?
+- [ ] Is "safe space" even something we want to include in models?
