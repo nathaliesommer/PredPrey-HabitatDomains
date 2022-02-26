@@ -151,9 +151,16 @@ FiveYearNCE <- coxph(Surv(year, status) ~ 1 + Pred.Strat,
 haz.table <- FiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
-# predator strategy only
+# kitchen sink
 FiveYearNCE <-
   coxph(Surv(year, status) ~ Pred.Strat + propHabitat + propPredFree + propSafeSpace,
+        data = FiveYearTrue)
+haz.table <- FiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+
+# kitchen sink of starting conditions
+FiveYearNCE <-
+  coxph(Surv(year, status) ~ Pred.Strat + Pred.Start.Con*Prey.Start.Con,
         data = FiveYearTrue)
 haz.table <- FiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
