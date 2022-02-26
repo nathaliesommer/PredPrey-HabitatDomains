@@ -89,11 +89,30 @@ coxph(formula = Surv(year, status) ~ propHabitat + propPredFree +
 |propPredFree | -2.317e+01 | 8.654e-11 | 1.507e+00 |-15.38 |<2e-16 |
 |propSafeSpace |-3.765e+00 | 2.318e-02 | 2.698e-01 |-13.96 |<2e-16|
 
-Time shift HR = 0.0000000008 >> Habitat shift HR = 0.0008 >> Space shift HR = 0.02. These are all very small numbers, but this seems to imply that time shifts are by far the best way to avoid mortality in an environment with an active predator. Need more digits, but it's pretty much 50/50 whether they reduce mortality more with time or space shifts (habitat shift is worse for survival, probably because it's not possible in most scenarios).
+Time shift HR = 0.0000000008 >> Habitat shift HR = 0.0008 >> Space shift HR = 0.02. These are all very small numbers, but this seems to imply that time shifts are by far the best way to avoid mortality in an environment with an active predator. Habitat shift are worst for survival, probably because it's not possible in most scenarios.
 
 ### Model 6: Prey behavior changes - Sit-and-Pursue Predators
 
+>Sit-and-PursueFiveYearNCE
+Call:
+coxph(formula = Surv(year, status) ~ propHabitat + propPredFree + 
+    propSafeSpace, data = SP5)
+
+|            |  coef      | exp(coef) |  se(coef)   |   z   |   p |
+|:-----------|:-----------|:----------|:------------|:------|:----|
+|propHabitat |  -6.129e+00 | 2.179e-03 | 5.405e-01 |-11.34| <2e-16|
+|propPredFree | -2.233e+01 | 2.010e-10  |1.375e+00 |-16.24| <2e-16|
+|propSafeSpace |-3.433e+00 | 3.229e-02 | 2.677e-01 |-12.82| <2e-16|
+
+
+Likelihood ratio test=735.5  on 3 df, p=< 2.2e-16
+n= 400, number of events= 292
+
 ![Table 6](Output_Figures/FiveNCEHazard_SP.png)
+
+Time shift is still much better than a habitat shift in reducing mortality, but both are helpful. Same pattern as Active Predators, which is comforting because this pattern is reoccuring.
+
+
 
 # Next steps
 - [ ] Do we compare end points? We could compare Time 1 yr vs. Time 5 yr for example by setting tstart and tstop. Is there a benefit to eliminating burnin period (our age old debate)
