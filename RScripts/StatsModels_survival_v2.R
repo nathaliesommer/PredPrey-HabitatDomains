@@ -193,6 +193,17 @@ haz.table <- SPFiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 # Table saved as FiveNCEHazard_SP.png
 
+# Sit-and-Wait predators
+SW5 <- FiveYearTrue %>%
+  subset(Pred.Strat == "Sit-and-Wait")
+
+SWFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = SW5)
+haz.table <- SWFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+# Table saved as FiveNCEHazard_SW.png
+
 ## Active.Large.Large is statistically different
 
 ## Now, we want to look at only the NCE model
