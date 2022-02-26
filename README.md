@@ -132,7 +132,7 @@ n= 400, number of events= 220
 
 ![Table 7](Output_Figures/FiveNCEHazard_SW.png)
 
-For prey around sit-and-wait predators, we see some differences! For one the hazard ratios are not nearly as small, suggesting less risk to prey overall. Time shifts still reduce mortality most, but for this one habitat shifts are better than space shifts. 
+For prey around sit-and-wait predators, we see some the same patterns, but the hazard ratios are not nearly as small, suggesting less risk to prey overall. Time shifts still reduce mortality most, followed by space shifts, and then habitat shifts.
 
 # Next steps
 - [ ] Do we compare end points? We could compare Time 1 yr vs. Time 5 yr for example by setting tstart and tstop. Is there a benefit to eliminating burnin period (our age old debate)
