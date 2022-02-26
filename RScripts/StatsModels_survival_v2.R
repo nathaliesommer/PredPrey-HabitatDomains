@@ -137,7 +137,10 @@ FiveYearTrue <-
   FiveYearNullandTrue2 %>%
   subset(ModelType == 1)
 
-# exclude predator strategy
+
+## Make Hazard Ratio tables ----
+# prey behavioral changes
+# FER thinks we should use this one
 FiveYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = FiveYearTrue)
@@ -146,7 +149,7 @@ haz.table <- FiveYearNCE %>%
 
 
 # predator strategy only
-FiveYearNCE <- coxph(Surv(year, status) ~ 1 + Pred.Strat,
+FiveYearNCE <- coxph(Surv(year, status) ~ Pred.Strat,
                      data = FiveYearTrue)
 haz.table <- FiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
@@ -159,6 +162,7 @@ haz.table <- FiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 # kitchen sink of starting conditions
+# FER thinks we should use this one
 FiveYearNCE <-
   coxph(Surv(year, status) ~ Pred.Strat + Pred.Start.Con*Prey.Start.Con,
         data = FiveYearTrue)
@@ -166,7 +170,16 @@ haz.table <- FiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
+## Look at hazard ratio of behavioral changes by predator strategey
 
+Active5 <- FiveYearTrue %>%
+  subset(Pred.Strat == "Active")
+
+ActiveFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = Active5)
+haz.table <- ActiveFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
 
 
 ## Active.Large.Large is statistically different
