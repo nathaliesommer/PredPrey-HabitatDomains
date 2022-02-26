@@ -137,13 +137,26 @@ FiveYearTrue <-
   FiveYearNullandTrue2 %>%
   subset(ModelType == 1)
 
-FiveYearNCE <- coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+# exclude predator strategy
+FiveYearNCE <- coxph(Surv(year, status) ~propHabitat + propPredFree + propSafeSpace,
                      data = FiveYearTrue)
 
 haz.table <- FiveYearNCE %>% 
   gtsummary::tbl_regression(exp = TRUE) 
 
 ggsave(haz.table, "FiveYrNCEHazardTable.png", height = 2, width = 4)
+
+# predator strategy only
+FiveYearNCE <- coxph(Surv(year, status) ~ 1 + Pred.Strat,
+                     data = FiveYearTrue)
+
+haz.table <- FiveYearNCE %>% 
+  gtsummary::tbl_regression(exp = TRUE) 
+
+ggsave(haz.table, "FiveYrNCEHazardTable_PredStrat.png", height = 2, width = 4)
+
+
+
 
 ## Active.Large.Large is statistically different
 
