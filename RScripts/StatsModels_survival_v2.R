@@ -172,6 +172,7 @@ haz.table <- FiveYearNCE %>%
 
 ## Look at hazard ratio of behavioral changes by predator strategey
 
+# Active predators
 Active5 <- FiveYearTrue %>%
   subset(Pred.Strat == "Active")
 
@@ -181,6 +182,16 @@ ActiveFiveYearNCE <-
 haz.table <- ActiveFiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
+# Sit-and-Pursue predators
+SP5 <- FiveYearTrue %>%
+  subset(Pred.Strat == "Sit-and-Pursue")
+
+SPFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = SP5)
+haz.table <- SPFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+# Table saved as FiveNCEHazard_SP.png
 
 ## Active.Large.Large is statistically different
 
