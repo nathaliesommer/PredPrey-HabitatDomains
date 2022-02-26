@@ -56,12 +56,22 @@ I can't figure out how to have predator strategy be a random effect in these mod
 
 Oddly, in the kitchen sink model there is a difference in survival of Active vs. Sit-and-Pursue. Sit-and-Pursue HR = 0.58, so 0.58 prey are dying in Sit-and-Pursue compared to Active prey. Sit-and-Wait HR = 0.10! But I'm not sure if I trust this model because now space shifts and time shifts have lower hazard than habitat shifts. Maybe because habitat shifts can only happen in 1/4 of the scenarios? 
 
+## Model 4: Kitchen sink of starting conditions
+*mod <- coxph(Surv(year, status) ~ Pred.Strat + Pred.Start.Con * Prey.Start.Con*
+
+![Table 4](Output_Figures/FiveYrNCEHazardTable_KitchSink2.png)
+
+**FER opinion: I think this is the one we should use**
+This is cool. 
+
+- Predator strategy mirrors what we've known a while (Risk in Active = Sit-and-Puruse > Sit-and-Wait)
+- Prey are significantly less likely to die when predators constrained to a small domain
+- Prey starting condition doesn't seem to matter much
+- Huge hazard increase when both predator and prey are in small starting domain! Almost 3x more prey are dying in that than other starting conditions.
+
 
 # Next steps
-- [ ] Include pred strategy in hazard models as random variable?
 - [ ] Do we compare end points? We could compare Time 1 yr vs. Time 5 yr for example by setting tstart and tstop. Is there a benefit to eliminating burnin period (our age old debate)
 - [ ] Explore hazard tables for each predator strategy separately (FER should do before meeting on Monday)
 - [ ] Is there any use to looking starting conditions of predator and prey?
 - [ ] Compare one-yr vs. five-yr data?
-
-
