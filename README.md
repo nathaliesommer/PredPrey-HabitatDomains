@@ -46,3 +46,21 @@ So if we group all predators together, prey can significantly reduce mortality w
 ![Table 2](Output_Figures/FiveYrNCEHazardTable_PredStrat.png)
 
 I hate how it sets the first strategy to the intercept, but it works okay here because we can see that Active and Sit-and-Pursue have no difference in hazard/survival probability to prey. But! This is cool because we can quantitatively say HR = 0.46 means that half as many prey are dying in the Sit-and-Wait simulations compared to active predator simulations. 
+
+## Model 3: Kitchen sink model, because why not?
+*mod <- coxph(Surv(year, status) ~ Pred.Strat + propHabitat + propPredFree + propSafeSpace*
+
+![Table 3](Output_Figures/FiveYrNCEHazardTable_KitchSink.png)
+
+I can't figure out how to have predator strategy be a random effect in these models. And I think this isn't a great idea because strategy affects shifts, but statisticians just run all of the things and see what falls out. 
+
+Oddly, in the kitchen sink model there is a difference in survival of Active vs. Sit-and-Pursue. Sit-and-Pursue HR = 0.58, so 0.58 prey are dying in Sit-and-Pursue compared to Active prey. Sit-and-Wait HR = 0.10! But I'm not sure if I trust this model because now space shifts and time shifts have lower hazard than habitat shifts. Maybe because habitat shifts can only happen in 1/4 of the scenarios? 
+
+
+# Next steps
+- [ ] Include pred strategy in hazard models as random variable?
+- [ ] Do we compare end points? We could compare Time 1 yr vs. Time 5 yr for example by setting tstart and tstop. Is there a benefit to eliminating burnin period (our age old debate)
+- [ ] Explore hazard tables for each predator strategy separately (FER should do before meeting on Monday)
+- [ ] Is there any use to looking starting conditions of predator and prey?
+
+
