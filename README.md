@@ -62,5 +62,6 @@ Oddly, in the kitchen sink model there is a difference in survival of Active vs.
 - [ ] Do we compare end points? We could compare Time 1 yr vs. Time 5 yr for example by setting tstart and tstop. Is there a benefit to eliminating burnin period (our age old debate)
 - [ ] Explore hazard tables for each predator strategy separately (FER should do before meeting on Monday)
 - [ ] Is there any use to looking starting conditions of predator and prey?
+- [ ] Compare one-yr vs. five-yr data?
 
 
