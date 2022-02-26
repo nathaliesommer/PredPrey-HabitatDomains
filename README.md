@@ -31,11 +31,18 @@ If you have a regression parameter β (from column estimate in our coxph) then H
 A HR < 1 indicates reduced hazard of death whereas a HR > 1 indicates an increased hazard of death.
 So a HR = 0.59 implies that around 0.6 times as many females are dying as males, at any given time.
 
-## Model 1:
+## Model 1: Excluding predator strategy
 
-*mod <- coxph(Surv(year, status) ~propHabitat + propPredFree + propSafeSpace* 
+*mod1 <- coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace* 
 Note: this model does NOT account for predator strategy. So this is general for all predator strategies.
 
 ![Table 1](Output_Figures/FiveYrNCEHazardTable.png)
 
 So if we group all predators together, prey can significantly reduce mortality with behavior. In order from best to worst ways to increase probability of survival 1) shift time, 2) use predator free area, and 3) shift space. 
+
+## Model 2: Comparing predator strategy and hazard
+*mod2 <- coxph(Surv(year, status) ~ Pred.Strat*
+
+![Table 2](Output_Figures/FiveYrNCEHazardTable_PredStrat.png)
+
+I hate how it sets the first strategy to the intercept, but it works okay here because we can see that Active and Sit-and-Pursue have no difference in hazard/survival probability to prey. But! This is cool because we can quantitatively say HR = 0.46 means that half as many prey are dying in the Sit-and-Wait simulations compared to active predator simulations. 
