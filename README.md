@@ -34,7 +34,7 @@ So a HR = 0.59 implies that around 0.6 times as many females are dying as males,
 ## Model 1: Excluding predator strategy
 
 *mod1 <- coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace* 
-Note: this model does NOT account for predator strategy. So this is general for all predator strategies.
+Note: this model does NOT account for predator strategy. So this is general for all predator strategies. But I think we use this because it assesses how survival changes based on prey behavior. Which allows us to directly compare.
 
 ![Table 1](Output_Figures/FiveYrNCEHazardTable.png)
 
