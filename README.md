@@ -137,4 +137,6 @@ For prey around sit-and-wait predators, we see some the same patterns, but the h
 # Next steps
 - [ ] Do we compare end points? We could compare Time 1 yr vs. Time 5 yr for example by setting tstart and tstop. Is there a benefit to eliminating burnin period (our age old debate)
 - [ ] Compare one-yr vs. five-yr data?
-- [ ] Is "safe space" even something we want to include in models?
+- [ ] Is "safe space" even something we want to include in models? Yes
+- [ ] To add: individual hazard tables for each pred x starting domain combination
+- [ ] Figure out a summary figure -- maybe a) median survival time in NCE vs. null colored by P-value, b) hazard ratio for combinations.
