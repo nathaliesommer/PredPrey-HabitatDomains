@@ -154,12 +154,6 @@ FiveYearNCE <- coxph(Surv(year, status) ~ Pred.Strat,
 haz.table <- FiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
-# kitchen sink
-FiveYearNCE <-
-  coxph(Surv(year, status) ~ Pred.Strat + propHabitat + propPredFree + propSafeSpace,
-        data = FiveYearTrue)
-haz.table <- FiveYearNCE %>%
-  gtsummary::tbl_regression(exp = TRUE) 
 
 # kitchen sink of starting conditions
 # FER thinks we should use this one
@@ -170,41 +164,159 @@ haz.table <- FiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
-## Look at hazard ratio of behavioral changes by predator strategey
+## Look at hazard ratio of behavioral changes by predator strategy
 
-# Active predators
+## Active predators
 Active5 <- FiveYearTrue %>%
   subset(Pred.Strat == "Active")
 
+# Small/Small
+Active5SS <- Active5 %>%
+  subset(Pred.Prey_Domain == "Small.Small")
 ActiveFiveYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
-        data = Active5)
+        data = Active5SS)
 haz.table <- ActiveFiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
-# Sit-and-Pursue predators
+# Small/Large
+Active5SL <- Active5 %>%
+  subset(Pred.Prey_Domain == "Small.Large")
+ActiveFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = Active5SL)
+haz.table <- ActiveFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+
+# Large/Small
+Active5LS <- Active5 %>%
+  subset(Pred.Prey_Domain == "Large.Small")
+ActiveFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = Active5LS)
+haz.table <- ActiveFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+
+
+# Large/Large
+Active5LL <- Active5 %>%
+  subset(Pred.Prey_Domain == "Large.Large")
+ActiveFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = Active5LL)
+haz.table <- ActiveFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+
+
+
+## Sit-and-Pursue predators
 SP5 <- FiveYearTrue %>%
   subset(Pred.Strat == "Sit-and-Pursue")
 
+# Small/Small
+SP5SS <- SP5 %>%
+  subset(Pred.Prey_Domain == "Small.Small")
 SPFiveYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
-        data = SP5)
+        data = SP5SS)
 haz.table <- SPFiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
-# Table saved as FiveNCEHazard_SP.png
 
-# Sit-and-Wait predators
+# Small/Large
+SP5SL <- SP5 %>%
+  subset(Pred.Prey_Domain == "Small.Large")
+SPFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = SP5SL)
+haz.table <- SPFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+
+# Large/Small
+SP5LS <- SP5 %>%
+  subset(Pred.Prey_Domain == "Large.Small")
+SPFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = SP5LS)
+haz.table <- SPFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+
+# Large/Large
+SP5LL <- SP5 %>%
+  subset(Pred.Prey_Domain == "Large.Large")
+SPFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = SP5LL)
+haz.table <- SPFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+
+
+## Sit-and-Wait predators
 SW5 <- FiveYearTrue %>%
   subset(Pred.Strat == "Sit-and-Wait")
 
+# Small/Small
+SW5SS <- SW5 %>%
+  subset(Pred.Prey_Domain == "Small.Small")
 SWFiveYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
-        data = SW5)
+        data = SW5SS)
 haz.table <- SWFiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
-# Table saved as FiveNCEHazard_SW.png
 
-## Active.Large.Large is statistically different
+# Small/Large
+SW5SL <- SW5 %>%
+  subset(Pred.Prey_Domain == "Small.Large")
+SWFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = SW5SL)
+haz.table <- SWFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+
+# Large/Small
+SW5LS <- SW5 %>%
+  subset(Pred.Prey_Domain == "Large.Small")
+SWFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = SP5LS)
+haz.table <- SWFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+
+# Large/Large
+SW5LL <- SW5 %>%
+  subset(Pred.Prey_Domain == "Large.Large")
+SWFiveYearNCE <-
+  coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
+        data = SW5LL)
+haz.table <- SWFiveYearNCE %>%
+  gtsummary::tbl_regression(exp = TRUE) 
+
+
+## Plot the data
+# made a summary file
+HR_summ <- read.csv("Data/HazardRatioSummary_Feb2022.csv", header = TRUE, fileEncoding="UTF-8-BOM")
+
+# HR_plot <- ggplot(HR_summ, aes(x = Pred.Prey_Domain, y = HR.Habitat, fill = Pred.Strat)) +
+#   geom_point(pch = 21, size = 4) +
+#   theme_bw(base_size = 14) +
+#   scale_fill_viridis_d()
+# 
+# HR_plot2 <- ggplot(HR_summ, aes(x = Pred.Prey_Domain, y = HR.PredFree, fill = Pred.Strat)) +
+#   geom_point(pch = 21, size = 4) +
+#   theme_bw(base_size = 14) +
+#   scale_fill_viridis_d()
+# 
+# HR_plot3 <- ggplot(HR_summ, aes(x = Pred.Prey_Domain, y = (HR.Habitat/HR.PredFree), fill = Pred.Strat)) +
+#   geom_point(pch = 21, size = 4) +
+#   theme_bw(base_size = 14) +
+#   scale_fill_viridis_d() +
+#   abline(h = 1) +
+#   scale_y_log10() +
+#   ylim(0, 10000000000000)
+
+
+
+
+
 
 ## Now, we want to look at only the NCE model
 FiveYearNullandTrue_surv2<- FiveYearNullandTrue_surv %>%
