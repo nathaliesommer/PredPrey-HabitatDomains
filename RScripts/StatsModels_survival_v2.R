@@ -345,20 +345,6 @@ HR_plot <- ggplot(HR_summ,
 
 ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", width = 8, height = 5)
 
-# HR_plot2 <- ggplot(HR_summ, aes(x = Pred.Prey_Domain, y = HR.PredFree, fill = Pred.Strat)) +
-#   geom_point(pch = 21, size = 4) +
-#   theme_bw(base_size = 14) +
-#   scale_fill_viridis_d()
-# 
-# HR_plot3 <- ggplot(HR_summ, aes(x = Pred.Prey_Domain, y = (HR.Habitat/HR.PredFree), fill = Pred.Strat)) +
-#   geom_point(pch = 21, size = 4) +
-#   theme_bw(base_size = 14) +
-#   scale_fill_viridis_d() +
-#   abline(h = 1) +
-#   scale_y_log10() +
-#   ylim(0, 10000000000000)
-
-
 
 
 
@@ -423,7 +409,7 @@ for (i in Predator.Prey) {
       size = 1,        # change line size
       palette = c("#E7B800", "#2E9FDF"), # custom color palettes
       pval = TRUE, # add p-value
-      #surv.median.line = TRUE, # add median survival
+      surv.median.line = "hv", # add median survival
       legend.labs = c("Null", "NCE"),
       ggtheme = theme_bw()
     ) +
@@ -441,7 +427,7 @@ ActivePlots <- arrange_ggsurvplots(
   title = "Survival Distributions for Active Hunting Strategy"
 )
 
-ggsave(ActivePlots, filename = "Output_Figures/ActivePredSurv.png", dpi = 300)
+ggsave(ActivePlots, filename = "Output_Figures/ActivePredSurv.png", dpi = 300, width = 9, height = 7)
 
 ## Sit-and-Wait ----
 
@@ -503,7 +489,7 @@ for (i in Predator.Prey) {
       size = 1,        # change line size
       palette = c("#E7B800", "#2E9FDF"), # custom color palettes
       pval = TRUE, # add p-value
-      #surv.median.line = TRUE, # add median survival
+      surv.median.line = "hv", # add median survival
       legend.labs = c("Null", "NCE"),
       ggtheme = theme_bw()
     ) + 
@@ -518,7 +504,7 @@ SWPlots <- arrange_ggsurvplots(
   title = "Survival Distributions for Sit-and-Wait Hunting Strategy"
 )
 
-ggsave(SWPlots, filename = "Output_Figures/SWPredSurv.png", dpi = 300)
+ggsave(SWPlots, filename = "Output_Figures/SWPredSurv.png", dpi = 300, width = 9, height = 7)
 
 
 
@@ -548,7 +534,7 @@ for (i in Predator.Prey) {
       size = 1,        # change line size
       palette = c("#E7B800", "#2E9FDF"), # custom color palettes
       pval = TRUE, # add p-value
-      #surv.median.line = TRUE, # add median survival
+      surv.median.line = "hv", # add median survival
       legend.labs = c("Null", "NCE"),
       ggtheme = theme_bw()
     ) + 
@@ -560,10 +546,10 @@ SPPlots <- arrange_ggsurvplots(
   print = TRUE,
   ncol = 2,
   nrow = 2,
-  title = "Survival Distributions Null (red) vs NCE (blue) for Sit-and-Pursue Hunting Strategy"
+  title = "Survival Distributions for Sit-and-Pursue Hunting Strategy"
 )
 
-ggsave(SPPlots, filename = "Output_Figures/SPPredSurv.png", dpi = 300)
+ggsave(SPPlots, filename = "Output_Figures/SPPredSurv.png", dpi = 300, width = 9, height = 7)
 
 
 ######## Other data prep ############
