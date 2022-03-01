@@ -34,7 +34,8 @@ packages <- c("remotes",
               "survminer", ## for plotting in ggplot
               "gridExtra",
               "dplyr",
-              "gtsummary")
+              "gtsummary",
+              "scales")
 
 #Run the ipak loop
 ipak(packages)
@@ -295,11 +296,37 @@ haz.table <- SWFiveYearNCE %>%
 # made a summary file
 HR_summ <- read.csv("Data/HazardRatioSummary_Feb2022.csv", header = TRUE, fileEncoding="UTF-8-BOM")
 
-# HR_plot <- ggplot(HR_summ, aes(x = Pred.Prey_Domain, y = HR.Habitat, fill = Pred.Strat)) +
-#   geom_point(pch = 21, size = 4) +
-#   theme_bw(base_size = 14) +
-#   scale_fill_viridis_d()
-# 
+# I know there is a better way to do this, but I can't remember it. Ha.
+HR_summ$Pred.Strat <- as.factor(HR_summ$Pred.Strat)
+HR_summ$Pred.Start.Con <- as.factor(HR_summ$Pred.Start.Con)
+HR_summ$Prey.Start.Con <- as.factor(HR_summ$Prey.Start.Con)
+HR_summ$HR.Type <- as.factor(HR_summ$HR.Type)
+
+# rename for facet grid
+predstart_names <- c('Small' = "Pred Small",
+                    'Large' = "Pred Large")
+preystart_names <- c('Small' = "Prey Small",
+                     'Large' = "Prey Large")
+
+HR_summ2 <- HR_summ %>% 
+  mutate(Pred.Start.Con2  = factor(Pred.Start.Con,  labels = predstart_names),
+         Prey.Start.Con2 = factor(Prey.Start.Con, labels = rev(preystart_names), levels = rev(attr(preystart_names, "names")))
+  )
+
+
+HR_plot <- ggplot(HR_summ, aes(x = HR.Type, y = HazardRatio, fill = Pred.Strat)) +
+  geom_jitter(width = 0.1, pch = 21, size = 4, alpha = 0.7) +
+  theme_bw(base_size = 14) +
+  scale_fill_viridis_d() +
+  ylab("Hazard Ratio") +
+  xlab("Behavior Shift") +
+  scale_y_continuous(trans = log10_trans(),
+                     breaks = trans_breaks("log10", function(x) 10^x),
+                     labels = trans_format("log10", math_format(10^.x))) +
+  facet_grid(Pred.Start.Con ~ Prey.Start.Con, scales = "free")
+
+ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", width = 8, height = 5)
+
 # HR_plot2 <- ggplot(HR_summ, aes(x = Pred.Prey_Domain, y = HR.PredFree, fill = Pred.Strat)) +
 #   geom_point(pch = 21, size = 4) +
 #   theme_bw(base_size = 14) +
