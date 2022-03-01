@@ -320,14 +320,13 @@ HR_plot <- ggplot(HR_summ,
                     x = HR.Type,
                     y = HazardRatio,
                     fill = Pred.Strat,
-                    color = Pred.Strat,
                     group = Pred.Strat
                   )) +
-  geom_errorbar(aes(ymin=Lower95CI, ymax=Upper95CI, color = Pred.Strat), width=.2) +
+  geom_errorbar(aes(ymin=Lower95CI, ymax=Upper95CI, color = Pred.Strat), width=.2, position = "dodge") +
   geom_point(
     pch = 21,
     size = 4,
-    alpha = 0.7,
+    position = position_dodge(width = 0.2)
   ) +
   theme_bw(base_size = 14) +
   scale_fill_viridis_d(begin = 0.2, end = 0.8) +
