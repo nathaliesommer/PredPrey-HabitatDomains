@@ -322,15 +322,17 @@ HR_plot <- ggplot(HR_summ,
                     fill = Pred.Strat,
                     group = Pred.Strat
                   )) +
-  geom_errorbar(aes(ymin=Lower95CI, ymax=Upper95CI, color = Pred.Strat), width=.2, position = "dodge") +
-  geom_point(
-    pch = 21,
-    size = 4,
-    position = position_dodge(width = 0.2)
+  geom_errorbar(
+    aes(ymin = Lower95CI, ymax = Upper95CI, color = Pred.Strat),
+    width = 0.3,
+    position = "dodge"
   ) +
+  geom_point(pch = 21,
+             size = 4,
+             position = position_dodge(width = 0.3)) +
   theme_bw(base_size = 14) +
   scale_fill_viridis_d(begin = 0.2, end = 0.8) +
-  scale_color_viridis_d(begin = 0.2, end = 0.8) + 
+  scale_color_viridis_d(begin = 0.2, end = 0.8) +
   ylab("Hazard Ratio") +
   xlab("Behavior Shift") +
   scale_y_continuous(
