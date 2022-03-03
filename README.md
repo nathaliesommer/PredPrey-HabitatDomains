@@ -45,21 +45,6 @@ Note: this model does NOT account for predator strategy. So this is general for 
 
 So if we group all predators together, prey can significantly reduce mortality with behavior. In order from best to worst ways to increase probability of survival 1) shift time, 2) use predator free area, and 3) shift space. 
 
-### Model 2: Comparing predator strategy and hazard ratios
-*mod2 <- coxph(Surv(year, status) ~ Pred.Strat*
-
-![Table 2](Output_Figures/FiveYrNCEHazardTable_PredStrat.png)
-
-I hate how it sets the first strategy to the intercept, but it works okay here because we can see that Active and Sit-and-Pursue have no difference in hazard/survival probability to prey. But! This is cool because we can quantitatively say HR = 0.46 means that half as many prey are dying in the Sit-and-Wait simulations compared to active predator simulations. 
-
-### Model 3: Kitchen sink model, because why not?
-*mod <- coxph(Surv(year, status) ~ Pred.Strat + propHabitat + propPredFree + propSafeSpace*
-
-![Table 3](Output_Figures/FiveYrNCEHazardTable_KitchSink.png)
-
-I can't figure out how to have predator strategy be a random effect in these models. And I think this isn't a great idea because strategy affects shifts, but statisticians just run all of the things and see what falls out. 
-
-Oddly, in the kitchen sink model there is a difference in survival of Active vs. Sit-and-Pursue. Sit-and-Pursue HR = 0.58, so 0.58 prey are dying in Sit-and-Pursue compared to Active prey. Sit-and-Wait HR = 0.10! But I'm not sure if I trust this model because now space shifts and time shifts have lower hazard than habitat shifts. Maybe because habitat shifts can only happen in 1/4 of the scenarios? 
 
 ### Model 4: Kitchen sink of starting conditions
 *mod <- coxph(Surv(year, status) ~ Pred.Strat + Pred.Start.Con * Prey.Start.Con*
@@ -140,5 +125,5 @@ For prey around sit-and-wait predators, we see some the same patterns, but the h
 Do something like this?
 
 # Next steps
-- [ ] To add: individual hazard tables for each pred x starting domain combination
+- [x] To add: individual hazard tables for each pred x starting domain combination
 - [ ] Figure out a summary figure -- maybe a) median survival time in NCE vs. null colored by P-value, b) hazard ratio for combinations.
