@@ -533,27 +533,27 @@ FiveYearNullandTrue.A_surv <- FiveYearNullandTrue.A %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
-## Try facet plot
+## Facet plot for active predators
 fitA <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.A_surv)
 ActiveMulti <- ggsurvplot_facet(fitA, 
                                 FiveYearNullandTrue.A_surv, 
                                 conf.int = TRUE,
-                                facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
+                                facet.by = c("Prey.Start.Con", "Pred.Start.Con"),
                                 palette = c("#1F968BFF", "#73D055FF"),
                                 surv.median.line = "v", # add median survival
                                 pval = TRUE,
                                 pval.coord = c(3.5, 0.8),
                                 ggtheme = theme_bw(base_size = 12),
                                 short.panel.labs = TRUE,
-                                panel.labs = list(Prey.Start.Con = c("Prey Large Domain", "Prey Small Domain"),
-                                                  Pred.Start.Con = c("Predator Large Domain", "Predator Small Domain")),
+                                panel.labs = list(Prey.Start.Con = c("Prey large domain", "Prey small domain"),
+                                                  Pred.Start.Con = c("Predator large domain", "Predator small domain")),
                                 legend.labs = c("Consumptive", "Non-consumptive"),
                                 size = 1,
-                                title = "Active Predators")
+                                title = "Active Predator Survival Curves")
 
-ggsave(ActiveMulti, "Output_Figures/ActivePredSurv.png", dpi = 300, height = 7, width = 9)
+ggsave("Output_Figures/ActivePredSurv.png", dpi = 300, height = 6, width = 7)
 
-# SW small/small
+# A small/small
 A_SS <- FiveYearNullandTrue.A_surv %>%
   subset(Pred.Prey_Domain == "Small.Small")
 # Get regression median and p-value of Null vs. NCE
@@ -652,6 +652,26 @@ FiveYearNullandTrue.SW_surv <- FiveYearNullandTrue.SW %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
+# SW facet plot
+fitSW <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.SW_surv)
+SWMulti <- ggsurvplot_facet(fitSW, 
+                                FiveYearNullandTrue.SW_surv, 
+                                conf.int = TRUE,
+                                facet.by = c("Prey.Start.Con", "Pred.Start.Con"),
+                                palette = c("#1F968BFF", "#73D055FF"),
+                                surv.median.line = "v", # add median survival
+                                pval = TRUE,
+                                pval.coord = c(0.1, 0.2),
+                                ggtheme = theme_bw(base_size = 12),
+                                short.panel.labs = TRUE,
+                                panel.labs = list(Prey.Start.Con = c("Prey large domain", "Prey small domain"),
+                                                  Pred.Start.Con = c("Predator large domain", "Predator small domain")),
+                                legend.labs = c("Consumptive", "Non-consumptive"),
+                                size = 1,
+                                title = "Sit-and-Wait Predator Survival Curves")
+
+ggsave("Output_Figures/SWPredSurv.png", dpi = 300, height = 6, width = 7)
+
 # SW small/small
 SW_SS <- FiveYearNullandTrue.SW_surv %>%
   subset(Pred.Prey_Domain == "Small.Small")
@@ -689,6 +709,27 @@ FiveYearNullandTrue.SP <- FiveYearNullandTrue %>%
 FiveYearNullandTrue.SP_surv <- FiveYearNullandTrue.SP %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
+
+# SP facet plot
+
+fitSP <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.SP_surv)
+SPMulti <- ggsurvplot_facet(fitSP, 
+                            FiveYearNullandTrue.SP_surv, 
+                            conf.int = TRUE,
+                            facet.by = c("Prey.Start.Con", "Pred.Start.Con"),
+                            palette = c("#1F968BFF", "#73D055FF"),
+                            surv.median.line = "v", # add median survival
+                            pval = TRUE,
+                            pval.coord = c(3.5, 0.8),
+                            ggtheme = theme_bw(base_size = 12),
+                            short.panel.labs = TRUE,
+                            panel.labs = list(Prey.Start.Con = c("Prey large domain", "Prey small domain"),
+                                              Pred.Start.Con = c("Predator large domain", "Predator small domain")),
+                            legend.labs = c("Consumptive", "Non-consumptive"),
+                            size = 1,
+                            title = "Sit-and-Pursue Predator Survival Curves")
+
+ggsave("Output_Figures/SPPredSurv.png", dpi = 300, height = 6, width = 7)
 
 # SP small/small
 SP_SS <- FiveYearNullandTrue.SP_surv %>%
