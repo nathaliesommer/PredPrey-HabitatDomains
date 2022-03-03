@@ -539,12 +539,36 @@ A_SS <- FiveYearNullandTrue.A_surv %>%
 ASSmod <- survfit(Surv(year, status) ~ ModelType, data = A_SS)
 ASSmod
 
+ASSplot <- 
+  ggsurvplot(
+    ASSmod,
+    conf.int = TRUE, # add 95% confidence intervals
+    size = 1,        # change line size
+    palette = c("#1F968BFF", "#73D055FF"), # custom color palettes
+    pval = TRUE, # add p-value
+    surv.median.line = "hv", # add median survival
+    legend.labs = c("Consumptive", "Non-consumptive"),
+    ggtheme = theme_bw(base_size = 12)
+  )
+
 # A small/large
 A_SL <- FiveYearNullandTrue.A_surv %>%
   subset(Pred.Prey_Domain == "Small.Large")
 # Get regression median and p-value of Null vs. NCE
 ASLmod <- survfit(Surv(year, status) ~ ModelType, data = A_SL)
 ASLmod
+
+ASLplot <- 
+  ggsurvplot(
+    ASLmod,
+    conf.int = TRUE, # add 95% confidence intervals
+    size = 1,        # change line size
+    palette = c("#1F968BFF", "#73D055FF"), # custom color palettes
+    pval = TRUE, # add p-value
+    surv.median.line = "hv", # add median survival
+    legend.labs = c("Consumptive", "Non-consumptive"),
+    ggtheme = theme_bw(base_size = 12)
+  )
 
 # A large/small
 A_LS <- FiveYearNullandTrue.A_surv %>%
@@ -553,12 +577,55 @@ A_LS <- FiveYearNullandTrue.A_surv %>%
 ALSmod <- survfit(Surv(year, status) ~ ModelType, data = A_LS)
 ALSmod
 
+ALSplot <- 
+  ggsurvplot(
+    ALSmod,
+    conf.int = TRUE, # add 95% confidence intervals
+    size = 1,        # change line size
+    palette = c("#1F968BFF", "#73D055FF"), # custom color palettes
+    pval = TRUE, # add p-value
+    surv.median.line = "hv", # add median survival
+    legend.labs = c("Consumptive", "Non-consumptive"),
+    ggtheme = theme_bw(base_size = 12)
+  )
+
 # A large/large
 A_LL <- FiveYearNullandTrue.A_surv %>%
   subset(Pred.Prey_Domain == "Large.Large")
 # Get regression median and p-value of Null vs. NCE
 ALLmod <- survfit(Surv(year, status) ~ ModelType, data = A_LL)
 ALLmod
+
+ALLplot <- 
+  ggsurvplot(
+    ALLmod,
+    conf.int = TRUE, # add 95% confidence intervals
+    size = 1,        # change line size
+    palette = c("#1F968BFF", "#73D055FF"), # custom color palettes
+    pval = TRUE, # add p-value
+    surv.median.line = "hv", # add median survival
+    legend.labs = c("Consumptive", "Non-consumptive"),
+    ggtheme = theme_bw(base_size = 12)
+  )
+
+## multipanel
+# this isn't working. Need to try ggsurvplot_facet
+splots <- list(ASSplot, ASLplot, ALSplot, ALLplot)
+
+all_active <- 
+  arrange_ggsurvplots(
+  splots,
+  nrow = 2, ncol = 2,
+  title = "Active predators",
+  labels = "auto")
+
+
+
+ggsave(allgrowth,
+       dpi = 600,
+       filename = "growth_figure_v5.pdf",
+       height = 9,
+       width = 6)
 
 ## Sit-and-wait survival models
 
