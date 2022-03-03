@@ -647,6 +647,7 @@ survival_plot <- ggplot(NCEvCE,
                     fill = p.value,
                     group = Pred.Strat
                   )) +
+  geom_line(aes(group = Pred.Strat)) +
   # geom_errorbar(
   #   aes(ymin = LCL95, ymax = UCL95, color = Model),
   #   width = 0.3,
