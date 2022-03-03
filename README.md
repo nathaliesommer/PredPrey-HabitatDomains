@@ -59,71 +59,14 @@ This is cool.
 - Prey starting condition doesn't seem to matter much
 - Huge hazard increase when both predator and prey are in small starting domain! Almost 3x more prey are dying in that than other starting conditions.
 
-### Model 5: Prey behavior changes - Active Predators
+### The hazard ratios of each predator strategy/predator domain/prey domain combination
 
-![Table 5](Output_Figures/FiveNCEHazard_Active.png)
-
-> ActiveFiveYearNCE
-Call:
-coxph(formula = Surv(year, status) ~ propHabitat + propPredFree + 
-    propSafeSpace, data = Active5)
-
-|             |       coef | exp(coef)  | se(coef)   |   z    | p |
-|:------------|:-----------|:-----------|:-----------|:-------|:---|
-|propHabitat |  -7.072e+00 | 8.490e-04 | 6.365e-01 |-11.11 |<2e-16 |
-|propPredFree | -2.317e+01 | 8.654e-11 | 1.507e+00 |-15.38 |<2e-16 |
-|propSafeSpace |-3.765e+00 | 2.318e-02 | 2.698e-01 |-13.96 |<2e-16|
-
-Likelihood ratio test=777.4  on 3 df, p=< 2.2e-16
-n= 400, number of events= 309 
-
-Time shift HR = 0.0000000008 >> Habitat shift HR = 0.0008 >> Space shift HR = 0.02. These are all very small numbers, but this seems to imply that time shifts are by far the best way to avoid mortality in an environment with an active predator. Habitat shift are worst for survival, probably because it's not possible in most scenarios.
-
-### Model 6: Prey behavior changes - Sit-and-Pursue Predators
-
->Sit-and-PursueFiveYearNCE
-Call:
-coxph(formula = Surv(year, status) ~ propHabitat + propPredFree + 
-    propSafeSpace, data = SP5)
-
-|            |  coef      | exp(coef) |  se(coef)   |   z   |   p |
-|:-----------|:-----------|:----------|:------------|:------|:----|
-|propHabitat |  -6.129e+00 | 2.179e-03 | 5.405e-01 |-11.34| <2e-16|
-|propPredFree | -2.233e+01 | 2.010e-10  |1.375e+00 |-16.24| <2e-16|
-|propSafeSpace |-3.433e+00 | 3.229e-02 | 2.677e-01 |-12.82| <2e-16|
-
-Likelihood ratio test=735.5  on 3 df, p=< 2.2e-16
-n= 400, number of events= 292
-
-![Table 6](Output_Figures/FiveNCEHazard_SP.png)
-
-Time shift is still much better than a habitat shift in reducing mortality, but both are helpful. Same pattern as Active Predators, which is comforting because this pattern is reoccuring.
-
-### Model 7: Prey behavior changes - Sit-and-Wait Predators
-
-> SWFiveYearNCE
-Call:
-coxph(formula = Surv(year, status) ~ propHabitat + propPredFree + 
-    propSafeSpace, data = SW5)
-
-|            |        coef | exp(coef) |  se(coef)   |    z   |     p|
-|:-----------|:------------|:----------|:------------|:-------|:-----|
-|propHabitat |  -4.668e+00 | 9.391e-03 | 1.002e+00 | -4.656| 3.22e-06|
-|propPredFree | -1.770e+01 | 2.053e-08 | 1.144e+00 |-15.471 | < 2e-16|
-|propSafeSpace |-3.795e+00 | 2.248e-02 | 3.191e-01 |-11.894 | < 2e-16|
-
-Likelihood ratio test=413.3  on 3 df, p=< 2.2e-16
-n= 400, number of events= 220
-
-![Table 7](Output_Figures/FiveNCEHazard_SW.png)
-
-For prey around sit-and-wait predators, we see some the same patterns, but the hazard ratios are not nearly as small, suggesting less risk to prey overall. Time shifts still reduce mortality most, followed by space shifts, and then habitat shifts.
+All hazard ratio data for each combination are summarized in [HazardRatioSummary_Feb2022.csv](Data/HazardRatioSummary_Feb2022.png)
 
 # Potential summary figure
 ![HRFigure](Output_Figures/HazardRatiosPlot.png)
 
-Do something like this?
+Hazard ratio summary figure. HR = 1 (no benefit or detriment) is dotted. I think we should do something like this.
 
 # Next steps
-- [x] To add: individual hazard tables for each pred x starting domain combination
-- [ ] Figure out a summary figure -- maybe a) median survival time in NCE vs. null colored by P-value, b) hazard ratio for combinations.
+- [ ] Figure out how the heck to specify which order panels facet in and the labels on facet_grid
