@@ -549,7 +549,13 @@ ActiveMulti <- ggsurvplot_facet(fitA,
                                                   Pred.Start.Con = c("Predator large domain", "Predator small domain")),
                                 legend.labs = c("Consumptive", "Non-consumptive"),
                                 size = 1,
-                                title = "Active Predator Survival Curves")
+                                title = "Active Predator Survival Curves") +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
 
 ggsave("Output_Figures/ActivePredSurv.png", dpi = 300, height = 6, width = 7)
 
@@ -668,7 +674,13 @@ SWMulti <- ggsurvplot_facet(fitSW,
                                                   Pred.Start.Con = c("Predator large domain", "Predator small domain")),
                                 legend.labs = c("Consumptive", "Non-consumptive"),
                                 size = 1,
-                                title = "Sit-and-Wait Predator Survival Curves")
+                                title = "Sit-and-Wait Predator Survival Curves") +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
 
 ggsave("Output_Figures/SWPredSurv.png", dpi = 300, height = 6, width = 7)
 
@@ -727,7 +739,13 @@ SPMulti <- ggsurvplot_facet(fitSP,
                                               Pred.Start.Con = c("Predator large domain", "Predator small domain")),
                             legend.labs = c("Consumptive", "Non-consumptive"),
                             size = 1,
-                            title = "Sit-and-Pursue Predator Survival Curves")
+                            title = "Sit-and-Pursue Predator Survival Curves") +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
 
 ggsave("Output_Figures/SPPredSurv.png", dpi = 300, height = 6, width = 7)
 
