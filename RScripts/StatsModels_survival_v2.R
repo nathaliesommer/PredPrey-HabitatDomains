@@ -333,6 +333,12 @@ HR_plot <- ggplot(HR_summ,
              size = 4,
              position = position_dodge(width = 0.3)) +
   theme_bw(base_size = 14) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
   scale_fill_viridis_d(begin = 0.2, end = 0.8) +
   scale_color_viridis_d(begin = 0.2, end = 0.8) +
   ylab("Hazard Ratio") +
