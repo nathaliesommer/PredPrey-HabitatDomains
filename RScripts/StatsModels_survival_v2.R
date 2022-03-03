@@ -43,11 +43,11 @@ ipak(packages)
 
 
 # load data ----
-oneyr <- read.csv("Data/NCvsC_1year_TSH_Nov29.csv") %>%
-  mutate(ModelType = 1)
-
-oneyr_null <- read.csv("Data/NCvsC_Nullyear_TSH_Nov19.csv") %>%
-  mutate(ModelType = 0)
+# oneyr <- read.csv("Data/NCvsC_1year_TSH_Nov29.csv") %>%
+#   mutate(ModelType = 1)
+# 
+# oneyr_null <- read.csv("Data/NCvsC_Nullyear_TSH_Nov19.csv") %>%
+#   mutate(ModelType = 0)
 
 fiveyr <- read.csv("Data/NCvsC_5year_TSH_Nov29.csv")%>%
   mutate(ModelType = 1)
@@ -131,6 +131,8 @@ ggsurvplot(
 
 # test for difference between Null and NCE
 # survival curves (logrank test) 
+
+
 Allmod <- survdiff(Surv(year, status) ~ ModelType + Pred.Strat, data=FiveYearNullandTrue2)
 
 # look for differences based on shifts
@@ -168,7 +170,7 @@ haz.table <- FiveYearNCE %>%
 ## Look at hazard ratio of behavioral changes by predator strategy
 
 ## Active predators
-Active5 <- FiveYearTrue %>%
+Active5 <- FiveYearNullandTrue2 %>%
   subset(Pred.Strat == "Active")
 
 # Small/Small
@@ -419,6 +421,18 @@ for (i in Predator.Prey) {
 
 
 
+
+
+for (i in Predator.Prey) {
+  print(i)
+  subset1 <- FiveYearNullandTrue.Active_surv %>%
+    subset(Pred.Prey_Domain == i)
+  survobj <- with(subset1, Surv(year, status)) %>%
+    mod[i] <- survfit(survobj ~ ModelType, data = subset1)
+print(summary(mod[i]))
+}
+
+
 ActivePlots <- arrange_ggsurvplots(
   splots,
   print = TRUE,
@@ -506,10 +520,85 @@ SWPlots <- arrange_ggsurvplots(
 
 ggsave(SWPlots, filename = "Output_Figures/SWPredSurv.png", dpi = 300, width = 9, height = 7)
 
+## Comparing consumptive vs. non-consumptive effects ----
 
+## Active survival models
 
+FiveYearNullandTrue.A <- FiveYearNullandTrue %>%
+  subset(Pred.Strat == "Active") %>%
+  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
 
-## Sit-and-Pursue
+FiveYearNullandTrue.A_surv <- FiveYearNullandTrue.A %>%
+  mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
+  mutate(year = ticks/365/24)
+
+# SW small/small
+A_SS <- FiveYearNullandTrue.A_surv %>%
+  subset(Pred.Prey_Domain == "Small.Small")
+# Get regression median and p-value of Null vs. NCE
+ASSmod <- survfit(Surv(year, status) ~ ModelType, data = A_SS)
+ASSmod
+
+# A small/large
+A_SL <- FiveYearNullandTrue.A_surv %>%
+  subset(Pred.Prey_Domain == "Small.Large")
+# Get regression median and p-value of Null vs. NCE
+ASLmod <- survfit(Surv(year, status) ~ ModelType, data = A_SL)
+ASLmod
+
+# A large/small
+A_LS <- FiveYearNullandTrue.A_surv %>%
+  subset(Pred.Prey_Domain == "Large.Small")
+# Get regression median and p-value of Null vs. NCE
+ALSmod <- survfit(Surv(year, status) ~ ModelType, data = A_LS)
+ALSmod
+
+# A large/large
+A_LL <- FiveYearNullandTrue.A_surv %>%
+  subset(Pred.Prey_Domain == "Large.Large")
+# Get regression median and p-value of Null vs. NCE
+ALLmod <- survfit(Surv(year, status) ~ ModelType, data = A_LL)
+ALLmod
+
+## Sit-and-wait survival models
+
+FiveYearNullandTrue.SW <- FiveYearNullandTrue %>%
+  subset(Pred.Strat == "Sit-and-Wait") %>%
+  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
+
+FiveYearNullandTrue.SW_surv <- FiveYearNullandTrue.SW %>%
+  mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
+  mutate(year = ticks/365/24)
+
+# SW small/small
+SW_SS <- FiveYearNullandTrue.SW_surv %>%
+  subset(Pred.Prey_Domain == "Small.Small")
+# Get regression median and p-value of Null vs. NCE
+SWSSmod <- survfit(Surv(year, status) ~ ModelType, data = SW_SS)
+SWSSmod
+
+# SW small/large
+SW_SL <- FiveYearNullandTrue.SW_surv %>%
+  subset(Pred.Prey_Domain == "Small.Large")
+# Get regression median and p-value of Null vs. NCE
+SWSLmod <- survfit(Surv(year, status) ~ ModelType, data = SW_SL)
+SWSLmod
+
+# SW large/small
+SW_LS <- FiveYearNullandTrue.SW_surv %>%
+  subset(Pred.Prey_Domain == "Large.Small")
+# Get regression median and p-value of Null vs. NCE
+SWLSmod <- survfit(Surv(year, status) ~ ModelType, data = SW_LS)
+SWLSmod
+
+# SW large/large
+SW_LL <- FiveYearNullandTrue.SW_surv %>%
+  subset(Pred.Prey_Domain == "Large.Large")
+# Get regression median and p-value of Null vs. NCE
+SWLLmod <- survfit(Surv(year, status) ~ ModelType, data = SW_LL)
+SWLLmod
+
+## Sit-and-Pursue survival models
 
 FiveYearNullandTrue.SP <- FiveYearNullandTrue %>%
   subset(Pred.Strat == "Sit-and-Pursue") %>%
@@ -518,6 +607,66 @@ FiveYearNullandTrue.SP <- FiveYearNullandTrue %>%
 FiveYearNullandTrue.SP_surv <- FiveYearNullandTrue.SP %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
+
+# SP small/small
+SP_SS <- FiveYearNullandTrue.SP_surv %>%
+  subset(Pred.Prey_Domain == "Small.Small")
+# Get regression median and p-value of Null vs. NCE
+SPSSmod <- survfit(Surv(year, status) ~ ModelType, data = SP_SS)
+SPSSmod
+
+# SP small/large
+SP_SL <- FiveYearNullandTrue.SP_surv %>%
+  subset(Pred.Prey_Domain == "Small.Large")
+# Get regression median and p-value of Null vs. NCE
+SPSLmod <- survfit(Surv(year, status) ~ ModelType, data = SP_SL)
+SPSLmod
+
+# SP large/small
+SP_LS <- FiveYearNullandTrue.SP_surv %>%
+  subset(Pred.Prey_Domain == "Large.Small")
+# Get regression median and p-value of Null vs. NCE
+SPLSmod <- survfit(Surv(year, status) ~ ModelType, data = SP_LS)
+SPLSmod
+
+# SP large/large
+SP_LL <- FiveYearNullandTrue.SP_surv %>%
+  subset(Pred.Prey_Domain == "Large.Large")
+# Get regression median and p-value of Null vs. NCE
+SPLLmod <- survfit(Surv(year, status) ~ ModelType, data = SP_LL)
+SPLLmod
+
+# load saved summary data for survival
+
+NCEvCE <- read.csv("Data/NCEvNullSummary.csv", header = TRUE, fileEncoding="UTF-8-BOM")
+
+survival_plot <- ggplot(NCEvCE,
+                  aes(
+                    x = Pred.Strat,
+                    y = MedSurv,
+                    fill = p.value,
+                    group = Pred.Strat
+                  )) +
+  # geom_errorbar(
+  #   aes(ymin = LCL95, ymax = UCL95, color = Model),
+  #   width = 0.3,
+  #   position = "dodge"
+  # ) +
+  geom_point(pch = 21,
+             size = 4,
+             position = position_dodge(width = 0.3)) +
+  theme_bw(base_size = 14) +
+  scale_fill_viridis_c() +
+  ylab("Median survival time (yr)") +
+  xlab("Predator strategy") +
+  facet_grid(Pred.Start.Con ~ Prey.Start.Con)
+
+ggsave(survival_plot, filename = "Output_Figures/UglyMedSurvPlot.png", width = 8, height = 5)
+
+
+
+
+## survival plots ----
 
 Predator.Prey<- unique(FiveYearNullandTrue.SP_surv$Pred.Prey_Domain)
 
