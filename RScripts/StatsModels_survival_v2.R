@@ -337,6 +337,7 @@ HR_plot <- ggplot(HR_summ,
   scale_color_viridis_d(begin = 0.2, end = 0.8) +
   ylab("Hazard Ratio") +
   xlab("Behavior Shift") +
+  geom_hline(yintercept = 1, linetype = "dotted") +
   scale_y_continuous(
     trans = log10_trans(),
     breaks = trans_breaks("log10", function(x)
@@ -532,6 +533,26 @@ FiveYearNullandTrue.A_surv <- FiveYearNullandTrue.A %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
+## Try facet plot
+fitA <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.A_surv)
+ActiveMulti <- ggsurvplot_facet(fitA, 
+                                FiveYearNullandTrue.A_surv, 
+                                conf.int = TRUE,
+                                facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
+                                palette = c("#1F968BFF", "#73D055FF"),
+                                surv.median.line = "v", # add median survival
+                                pval = TRUE,
+                                pval.coord = c(3.5, 0.8),
+                                ggtheme = theme_bw(base_size = 12),
+                                short.panel.labs = TRUE,
+                                panel.labs = list(Prey.Start.Con = c("Prey Large Domain", "Prey Small Domain"),
+                                                  Pred.Start.Con = c("Predator Large Domain", "Predator Small Domain")),
+                                legend.labs = c("Consumptive", "Non-consumptive"),
+                                size = 1,
+                                title = "Active Predators")
+
+ggsave(ActiveMulti, "Output_Figures/ActivePredSurv.png", dpi = 300, height = 7, width = 9)
+
 # SW small/small
 A_SS <- FiveYearNullandTrue.A_surv %>%
   subset(Pred.Prey_Domain == "Small.Small")
@@ -620,12 +641,6 @@ all_active <-
   labels = "auto")
 
 
-
-ggsave(allgrowth,
-       dpi = 600,
-       filename = "growth_figure_v5.pdf",
-       height = 9,
-       width = 6)
 
 ## Sit-and-wait survival models
 
