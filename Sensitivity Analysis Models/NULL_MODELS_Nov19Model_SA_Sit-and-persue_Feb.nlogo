@@ -320,7 +320,7 @@ end
 ;;;  Submodels
 to prey-move ;;; Need to think about new ways to move - move on patches based on fear value of patch, if there are a number of equal patch types, randomly chose one.
   ask preys [
-  let p min-one-of neighbors in-radius Prey-Dist [LOF] ; i feel like they shouldn't be able to move 2 patches, especially if their whole habitat domain is 11x5 - to avoid being eaten by same pred over and over
+  let p min-one-of neighbors in-radius 2 [LOF] ; i feel like they shouldn't be able to move 2 patches, especially if their whole habitat domain is 11x5 - to avoid being eaten by same pred over and over
       move-to p
   ]
 end
@@ -670,21 +670,6 @@ Hours-Pred-Active-Until
 14
 12.0
 2
-1
-NIL
-HORIZONTAL
-
-SLIDER
-140
-430
-312
-463
-Prey-Dist
-Prey-Dist
-1
-3
-1.0
-1
 1
 NIL
 HORIZONTAL
