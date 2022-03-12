@@ -323,6 +323,10 @@ HRsumm_new$Pred.Start.Con <- factor(HRsumm_new$Pred.Start.Con,
 HRsumm_new$Prey.Start.Con <- factor(HRsumm_new$Prey.Start.Con, 
                                     levels = c("Small", "Large"))
 
+# create new labels for the facets
+new_labels <- c("Small" = "Predator Small Domain", "Large" = "Predator Large Domain")
+new_labels2 <- c("Small" = "Prey Small Domain", "Large" = "Prey Large Domain")
+
 # Plot of hazard ratios
 HR_plot <- ggplot(HRsumm_new,
                   aes(
@@ -359,7 +363,10 @@ HR_plot <- ggplot(HRsumm_new,
   ) +
   scale_x_discrete(labels=c("Habitat" = "Habitat", "PredFree" = "Time",
                             "SafeSpace" = "Space")) +
-  facet_grid(Pred.Start.Con ~ Prey.Start.Con)
+  facet_grid(Pred.Start.Con ~ Prey.Start.Con,
+             labeller = labeller(Pred.Start.Con = new_labels,
+                                Prey.Start.Con = new_labels2))
+
 
 print(HR_plot)
 
