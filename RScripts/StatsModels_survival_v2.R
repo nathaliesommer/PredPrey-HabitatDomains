@@ -35,7 +35,8 @@ packages <- c("remotes",
               "gridExtra",
               "dplyr",
               "gtsummary",
-              "scales")
+              "scales",
+              "viridisLite")
 
 #Run the ipak loop
 ipak(packages)
@@ -410,6 +411,12 @@ summary(survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue_surv2
 
 #################### Prepping separate huntings and looking at surivial plots across all of the data
 
+## to get colors to match the other plot, I am using viridisLite to get the hex codes
+# > viridis(11, alpha = 1, begin = 0, end = 1, direction = 1, option = "D")
+# [1] "#440154FF" "#482576FF" "#414487FF" "#35608DFF" "#2A788EFF" "#21908CFF" "#22A884FF"
+# [8] "#43BF71FF" "#7AD151FF" "#BBDF27FF" "#FDE725FF"
+
+
 ## Active 
 FiveYearNullandTrue.Active <- FiveYearNullandTrue %>%
   subset(Pred.Strat == "Active") %>%
@@ -547,6 +554,10 @@ ggsave(SWPlots, filename = "Output_Figures/SWPredSurv.png", dpi = 300, width = 9
 
 ## Comparing consumptive vs. non-consumptive effects ----
 
+# > viridis(11, alpha = 1, begin = 0, end = 1, direction = 1, option = "D")
+# [1] "#440154FF" "#482576FF" "#414487FF" "#35608DFF" "#2A788EFF" "#21908CFF" "#22A884FF"
+# [8] "#43BF71FF" "#7AD151FF" "#BBDF27FF" "#FDE725FF"
+
 ## Active survival models
 
 FiveYearNullandTrue.A <- FiveYearNullandTrue %>%
@@ -557,20 +568,26 @@ FiveYearNullandTrue.A_surv <- FiveYearNullandTrue.A %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
+# reorder
+FiveYearNullandTrue.A_surv$Pred.Start.Con <- factor(FiveYearNullandTrue.A_surv$Pred.Start.Con, 
+                                    levels = c("Small", "Large"))
+FiveYearNullandTrue.A_surv$Prey.Start.Con <- factor(FiveYearNullandTrue.A_surv$Prey.Start.Con, 
+                                    levels = c("Small", "Large"))
+
 ## Facet plot for active predators
 fitA <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.A_surv)
 ActiveMulti <- ggsurvplot_facet(fitA, 
                                 FiveYearNullandTrue.A_surv, 
                                 conf.int = TRUE,
                                 facet.by = c("Prey.Start.Con", "Pred.Start.Con"),
-                                palette = c("#1F968BFF", "#73D055FF"),
+                                palette = c("gray", "#414487FF"),
                                 surv.median.line = "v", # add median survival
                                 pval = TRUE,
                                 pval.coord = c(3.5, 0.8),
                                 ggtheme = theme_bw(base_size = 12),
                                 short.panel.labs = TRUE,
-                                panel.labs = list(Prey.Start.Con = c("Prey large domain", "Prey small domain"),
-                                                  Pred.Start.Con = c("Predator large domain", "Predator small domain")),
+                                panel.labs = list(Prey.Start.Con = c("Prey Large Domain", "Prey Small Domain"),
+                                                  Pred.Start.Con = c("Predator Large Domain", "Predator Small Domain")),
                                 legend.labs = c("Consumptive", "Non-consumptive"),
                                 size = 1,
                                 title = "Active Predator Survival Curves") +
@@ -580,7 +597,7 @@ ActiveMulti <- ggsurvplot_facet(fitA,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   )
-
+print(ActiveMulti)
 ggsave("Output_Figures/ActivePredSurv.png", dpi = 300, height = 6, width = 7)
 
 # A small/small
@@ -595,7 +612,7 @@ ASSplot <-
     ASSmod,
     conf.int = TRUE, # add 95% confidence intervals
     size = 1,        # change line size
-    palette = c("#1F968BFF", "#73D055FF"), # custom color palettes
+    palette = c("gray", "#73D055FF"), # custom color palettes
     pval = TRUE, # add p-value
     surv.median.line = "hv", # add median survival
     legend.labs = c("Consumptive", "Non-consumptive"),
@@ -688,14 +705,14 @@ SWMulti <- ggsurvplot_facet(fitSW,
                                 FiveYearNullandTrue.SW_surv, 
                                 conf.int = TRUE,
                                 facet.by = c("Prey.Start.Con", "Pred.Start.Con"),
-                                palette = c("#1F968BFF", "#73D055FF"),
+                                palette = c("gray", "#7AD151FF"),
                                 surv.median.line = "v", # add median survival
                                 pval = TRUE,
                                 pval.coord = c(0.1, 0.2),
                                 ggtheme = theme_bw(base_size = 12),
                                 short.panel.labs = TRUE,
-                                panel.labs = list(Prey.Start.Con = c("Prey large domain", "Prey small domain"),
-                                                  Pred.Start.Con = c("Predator large domain", "Predator small domain")),
+                                panel.labs = list(Prey.Start.Con = c("Prey Large Domain", "Prey Small Domain"),
+                                                  Pred.Start.Con = c("Predator Large Domain", "Predator Small Domain")),
                                 legend.labs = c("Consumptive", "Non-consumptive"),
                                 size = 1,
                                 title = "Sit-and-Wait Predator Survival Curves") +
@@ -705,7 +722,7 @@ SWMulti <- ggsurvplot_facet(fitSW,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   )
-
+print(SWMulti)
 ggsave("Output_Figures/SWPredSurv.png", dpi = 300, height = 6, width = 7)
 
 # SW small/small
