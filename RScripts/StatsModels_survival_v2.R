@@ -2,7 +2,7 @@
 
 # Adapted from KDO script Jan 2022
 # KDO and FER
-# Last updated Feb 2022 by FER
+# Last updated March 2022 by FER
 
 
 ipak <- function(pkg){
@@ -316,8 +316,15 @@ HR_summ$Pred.Start.Con <- as.factor(HR_summ$Pred.Start.Con)
 HR_summ$Prey.Start.Con <- as.factor(HR_summ$Prey.Start.Con)
 HR_summ$HR.Type <- as.factor(HR_summ$HR.Type)
 
+# reorder
+HRsumm_new <- HR_summ
+HRsumm_new$Pred.Start.Con <- factor(HRsumm_new$Pred.Start.Con, 
+                                       levels = c("Small", "Large"))
+HRsumm_new$Prey.Start.Con <- factor(HRsumm_new$Prey.Start.Con, 
+                                    levels = c("Small", "Large"))
+
 # Plot of hazard ratios
-HR_plot <- ggplot(HR_summ,
+HR_plot <- ggplot(HRsumm_new,
                   aes(
                     x = HR.Type,
                     y = HazardRatio,
@@ -339,8 +346,8 @@ HR_plot <- ggplot(HR_summ,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   ) +
-  scale_fill_viridis_d(begin = 0.2, end = 0.8) +
-  scale_color_viridis_d(begin = 0.2, end = 0.8) +
+  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
+  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
   ylab("Hazard Ratio") +
   xlab("Behavior Shift") +
   geom_hline(yintercept = 1, linetype = "dotted") +
@@ -350,7 +357,11 @@ HR_plot <- ggplot(HR_summ,
       10 ^ x),
     labels = trans_format("log10", math_format(10 ^ .x))
   ) +
+  scale_x_discrete(labels=c("Habitat" = "Habitat", "PredFree" = "Time",
+                            "SafeSpace" = "Space")) +
   facet_grid(Pred.Start.Con ~ Prey.Start.Con)
+
+print(HR_plot)
 
 ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", width = 8, height = 5)
 
