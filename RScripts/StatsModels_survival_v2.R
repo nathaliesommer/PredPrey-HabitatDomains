@@ -770,14 +770,14 @@ SPMulti <- ggsurvplot_facet(fitSP,
                             FiveYearNullandTrue.SP_surv, 
                             conf.int = TRUE,
                             facet.by = c("Prey.Start.Con", "Pred.Start.Con"),
-                            palette = c("#1F968BFF", "#73D055FF"),
+                            palette = c("gray", "#21908CFF"),
                             surv.median.line = "v", # add median survival
                             pval = TRUE,
                             pval.coord = c(3.5, 0.8),
                             ggtheme = theme_bw(base_size = 12),
                             short.panel.labs = TRUE,
-                            panel.labs = list(Prey.Start.Con = c("Prey large domain", "Prey small domain"),
-                                              Pred.Start.Con = c("Predator large domain", "Predator small domain")),
+                            panel.labs = list(Prey.Start.Con = c("Prey Large Domain", "Prey Small Domain"),
+                                              Pred.Start.Con = c("Predator Large Domain", "Predator Small Domain")),
                             legend.labs = c("Consumptive", "Non-consumptive"),
                             size = 1,
                             title = "Sit-and-Pursue Predator Survival Curves") +
@@ -787,7 +787,7 @@ SPMulti <- ggsurvplot_facet(fitSP,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   )
-
+print(SPMulti)
 ggsave("Output_Figures/SPPredSurv.png", dpi = 300, height = 6, width = 7)
 
 # SP small/small
