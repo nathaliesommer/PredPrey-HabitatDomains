@@ -200,32 +200,46 @@ Sit_And_Wait.SA.plot<-ggplot(Sit_And_Wait.SA, aes(x=mustar, y=sigma)) +
 
 
 #=====Sit And Pursue======
-Sit_And_Pursue.SA <- read.csv("Sit-And-Persue-SA2-LOF.csv")%>%
-  mutate_if(is.logical, as.character)%>%
-  group_by(parameter, index)%>%
+Sit_And_Pursue.SA <- read.csv("Sit-and-Pursue-SA2-LOF.csv")%>%
+  mutate_if(is.logical, as.character)%>% 
+  group_by(parameter, index)%>%  
   summarize(value = mean(value))%>%
   pivot_wider(names_from = index, values_from = value)
 
 Sit_And_Pursue.SA.plot<-ggplot(Sit_And_Pursue.SA, aes(x=mustar, y=sigma)) + 
   geom_point(shape=22, fill = "black", size=2)+
-  ggtitle("Sit and Pursue")+
-  xlab("mustar") +
-  ylab("sigma")+
- # ylim(0, 50)+
-  #  xlim(0, 1100)+
-  #geom_text(aes(label=parameter), size=3, hjust=-0.1, vjust=0)+
-  geom_text_repel(aes(label = parameter),
-                  box.padding   = 0.35, 
-                  point.padding = 0.15,
-                  segment.color = 'grey50',
-                  size = 3) +
-  theme(axis.text.x = element_text(size=12,  colour = "black"),
-        axis.text.y = element_text(size=12,  colour = "black"),
-        axis.ticks = element_line(colour = "black"),
-        panel.background = element_rect(fill= "white"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_rect(fill = NA, colour = "black", size = 1)) 
+  ggtitle("Active")+  xlab("mustar") +  ylab("sigma")+   ylim(70, 130)+  xlim(70, 130) +
+  geom_text_repel(aes(label = parameter),  box.padding   = 0.35, point.padding = 0.15, segment.color = 'grey50', size = 3) +
+  theme(axis.text.x = element_text(size=12,  colour = "black"), axis.text.y = element_text(size=12,  colour = "black"), axis.ticks = element_line(colour = "black"), panel.background = element_rect(fill= "white"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_rect(fill = NA, colour = "black", size = 1)) 
+
+
+Sit_And_Pursue.SA2 <- read.csv("Sit-and-Pursue-SA2-LOF2.csv")%>%
+  mutate_if(is.logical, as.character)%>% 
+  group_by(parameter, index)%>%  
+  summarize(value = mean(value))%>%
+  pivot_wider(names_from = index, values_from = value)
+
+Sit_And_Pursue.SA2.plot<-ggplot(Sit_And_Pursue.SA2, aes(x=mustar, y=sigma)) + 
+  geom_point(shape=22, fill = "black", size=2)+
+  ggtitle("Active")+  xlab("mustar") +  ylab("sigma")+ ylim(70, 130)+  xlim(70, 130) +
+  geom_text_repel(aes(label = parameter),  box.padding   = 0.35, point.padding = 0.15, segment.color = 'grey50', size = 3) +
+  theme(axis.text.x = element_text(size=12,  colour = "black"), axis.text.y = element_text(size=12,  colour = "black"), axis.ticks = element_line(colour = "black"), panel.background = element_rect(fill= "white"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_rect(fill = NA, colour = "black", size = 1)) 
+
+
+Sit_And_Pursue.SA3 <- read.csv("Sit-and-Pursue-SA2-LOF3.csv")%>%
+  mutate_if(is.logical, as.character)%>% 
+  group_by(parameter, index)%>%  
+  summarize(value = mean(value))%>%
+  pivot_wider(names_from = index, values_from = value)
+
+Sit_And_Pursue.SA3.plot<-ggplot(Sit_And_Pursue.SA3, aes(x=mustar, y=sigma)) + 
+  geom_point(shape=22, fill = "black", size=2)+
+  ggtitle("Active")+  xlab("mustar") +  ylab("sigma")+ ylim(70, 130)+  xlim(70, 130)+
+  geom_text_repel(aes(label = parameter),  box.padding   = 0.35, point.padding = 0.15, segment.color = 'grey50', size = 3) +
+  theme(axis.text.x = element_text(size=12,  colour = "black"), axis.text.y = element_text(size=12,  colour = "black"), axis.ticks = element_line(colour = "black"), panel.background = element_rect(fill= "white"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_rect(fill = NA, colour = "black", size = 1)) 
+
+quartz()
+allplots<-grid.arrange(Sit_And_Pursue.SA.plot, Sit_And_Pursue.SA2.plot, Sit_And_Pursue.SA3.plot, ncol=2, nrow=2) 
 
 
 
@@ -473,3 +487,19 @@ quartz()
 allplots
 
 
+
+
+#Plots to use ---- 
+Active.SA3 <- read.csv("Active-SA2-LOF3.csv")%>%
+  mutate_if(is.logical, as.character)%>% 
+  group_by(parameter, index)%>%  
+  summarize(value = mean(value))%>%
+  pivot_wider(names_from = index, values_from = value)
+
+Active.SA3.plot<-ggplot(Active.SA3, aes(x=mustar, y=sigma)) + 
+  geom_point(shape=22, fill = "black", size=2)+
+  ggtitle("Active")+  xlab("mustar") +  ylab("sigma")+ #  ylim(0, 50)+  xlim(0, 1100)+
+  geom_text_repel(aes(label = parameter),  box.padding   = 0.35, point.padding = 0.15, segment.color = 'grey50', size = 3) +
+  theme(axis.text.x = element_text(size=12,  colour = "black"), axis.text.y = element_text(size=12,  colour = "black"), axis.ticks = element_line(colour = "black"), panel.background = element_rect(fill= "white"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_rect(fill = NA, colour = "black", size = 1)) 
+
+Active.SA3.plot
