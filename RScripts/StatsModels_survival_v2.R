@@ -98,11 +98,11 @@ FiveYearNullandTrue_surv <-   active5.Large.Large %>%
 survobj<- with(FiveYearNullandTrue_surv, Surv(year, status))
 
 # Looking at the data (both null and NCE model together)
-fit0 <- survfit(survobj~1, data=FiveYearNullandTrue_surv)
-summary(fit0)
-plot(fit0, xlab="Survival Time in Years", 
-     ylab="% Surviving", yscale=100,
-     main="Survival Distribution (Overall)") 
+# fit0 <- survfit(survobj~1, data=FiveYearNullandTrue_surv)
+# summary(fit0)
+# plot(fit0, xlab="Survival Time in Years", 
+#      ylab="% Surviving", yscale=100,
+#      main="Survival Distribution (Overall)") 
 
 ######## Compare the survival distributions of null and true (what we really want)
 survobj<- with(FiveYearNullandTrue, Surv(year,status)) # same as above
@@ -111,23 +111,23 @@ fit1.5.A.S.S <- survfit(survobj~ModelType, data=FiveYearNullandTrue)
 
 
 # Plot of 5 year null vs. modeled survival
-ggsurvplot(
-  fit1.5.A.S.S,
-  data = FiveYearNullandTrue_surv,
-  size = 1,                 # change line size
-  palette =
-    c("#E7B800", "#2E9FDF"),# custom color palettes
-  conf.int = TRUE,          # Add confidence interval
-  pval = TRUE,              # Add p-value
-  risk.table = TRUE,        # Add risk table
-  risk.table.col = "strata",# Risk table color by groups
-  surv.median.line = "hv",  # add the median survival pointer.
-  title = "5 yr Active Small/Small",
-  legend.labs =
-    c("Null", "NCE"),    # Change legend labels
-  risk.table.height = 0.25, # Useful to change when you have multiple groups
-  ggtheme = theme_bw()      # Change ggplot2 theme
-)
+# ggsurvplot(
+#   fit1.5.A.S.S,
+#   data = FiveYearNullandTrue_surv,
+#   size = 1,                 # change line size
+#   palette =
+#     c("#E7B800", "#2E9FDF"),# custom color palettes
+#   conf.int = TRUE,          # Add confidence interval
+#   pval = TRUE,              # Add p-value
+#   risk.table = TRUE,        # Add risk table
+#   risk.table.col = "strata",# Risk table color by groups
+#   surv.median.line = "hv",  # add the median survival pointer.
+#   title = "5 yr Active Small/Small",
+#   legend.labs =
+#     c("Null", "NCE"),    # Change legend labels
+#   risk.table.height = 0.25, # Useful to change when you have multiple groups
+#   ggtheme = theme_bw()      # Change ggplot2 theme
+# )
 
 
 # test for difference between Null and NCE
@@ -378,31 +378,31 @@ ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", width = 8, hei
 
 
 ## Now, we want to look at only the NCE model
-FiveYearNullandTrue_surv2<- FiveYearNullandTrue_surv %>%
-  subset(ModelType == 1) %>%
-  mutate(yearprop = year/5)
-
-survobj2<- with(FiveYearNullandTrue_surv2, Surv(year, status))
-
-OnlyNCE<- coxph(survobj2 ~ propHabitat + propSafeSpace + propPredFree,
-                data=FiveYearNullandTrue_surv2) 
-
-OnlyNCE %>% 
-  gtsummary::tbl_regression(exp = TRUE) 
-
-Null.NCE<- coxph(survobj ~ propHabitat + propSafeSpace + propPredFree,
-                 data=FiveYearNullandTrue_surv)
-# display results 
-OnlyNCE
-Null.NCE
-
-plot(survfit(OnlyNCE))
-plot(survfit(Null.NCE))
-
-median(FiveYearNullandTrue_surv2$year) # dies around 2 years anyways, so this plot isn't great
-
-summary(survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue_surv2),
-        times = 1) # get estimate of surviving 1 yr
+# FiveYearNullandTrue_surv2<- FiveYearNullandTrue_surv %>%
+#   subset(ModelType == 1) %>%
+#   mutate(yearprop = year/5)
+# 
+# survobj2<- with(FiveYearNullandTrue_surv2, Surv(year, status))
+# 
+# OnlyNCE<- coxph(survobj2 ~ propHabitat + propSafeSpace + propPredFree,
+#                 data=FiveYearNullandTrue_surv2) 
+# 
+# OnlyNCE %>% 
+#   gtsummary::tbl_regression(exp = TRUE) 
+# 
+# Null.NCE<- coxph(survobj ~ propHabitat + propSafeSpace + propPredFree,
+#                  data=FiveYearNullandTrue_surv)
+# # display results 
+# OnlyNCE
+# Null.NCE
+# 
+# plot(survfit(OnlyNCE))
+# plot(survfit(Null.NCE))
+# 
+# median(FiveYearNullandTrue_surv2$year) # dies around 2 years anyways, so this plot isn't great
+# 
+# summary(survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue_surv2),
+#         times = 1) # get estimate of surviving 1 yr
 
 # # evaluate the proportional hazards assumption 
 # cox.zph(MaleMod) ## this is something I think we need to explore more but I'm not sure
@@ -427,57 +427,58 @@ FiveYearNullandTrue.Active_surv <- FiveYearNullandTrue.Active %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
-Predator.Prey<- unique(FiveYearNullandTrue.Active_surv$Pred.Prey_Domain)
+# Predator.Prey<- unique(FiveYearNullandTrue.Active_surv$Pred.Prey_Domain)
+# 
+# splots<- list()
+# for (i in Predator.Prey) {
+#   print(i)
+#   subset1 <- FiveYearNullandTrue.Active_surv %>%
+#     subset(Pred.Prey_Domain == i)
+#   survobj <- with(subset1, Surv(year, status))
+#   ThePlot <- survfit(survobj ~ ModelType, data = subset1)
+#   splots[[i]] <-
+#     ggsurvplot(
+#       ThePlot,
+#       conf.int = TRUE, # add 95% confidence intervals
+#       size = 1,        # change line size
+#       palette = c("#E7B800", "#2E9FDF"), # custom color palettes
+#       pval = TRUE, # add p-value
+#       surv.median.line = "hv", # add median survival
+#       legend.labs = c("Null", "NCE"),
+#       ggtheme = theme_bw()
+#     ) +
+#     ggtitle(paste0(i, " (Predator.Prey)"))
+#   #assign(paste("ThePlot", i, sep = ""), plot)
+# }
+# 
+# 
+# 
+# 
+# 
+# for (i in Predator.Prey) {
+#   print(i)
+#   subset1 <- FiveYearNullandTrue.Active_surv %>%
+#     subset(Pred.Prey_Domain == i)
+#   survobj <- with(subset1, Surv(year, status)) %>%
+#     mod[i] <- survfit(survobj ~ ModelType, data = subset1)
+# print(summary(mod[i]))
+# }
+# 
+# 
+# ActivePlots <- arrange_ggsurvplots(
+#   splots,
+#   print = TRUE,
+#   ncol = 2,
+#   nrow = 2,
+#   title = "Survival Distributions for Active Hunting Strategy"
+# )
 
-splots<- list()
-for (i in Predator.Prey) {
-  print(i)
-  subset1 <- FiveYearNullandTrue.Active_surv %>%
-    subset(Pred.Prey_Domain == i)
-  survobj <- with(subset1, Surv(year, status))
-  ThePlot <- survfit(survobj ~ ModelType, data = subset1)
-  splots[[i]] <-
-    ggsurvplot(
-      ThePlot,
-      conf.int = TRUE, # add 95% confidence intervals
-      size = 1,        # change line size
-      palette = c("#E7B800", "#2E9FDF"), # custom color palettes
-      pval = TRUE, # add p-value
-      surv.median.line = "hv", # add median survival
-      legend.labs = c("Null", "NCE"),
-      ggtheme = theme_bw()
-    ) +
-    ggtitle(paste0(i, " (Predator.Prey)"))
-  #assign(paste("ThePlot", i, sep = ""), plot)
-}
+# ggsave(ActivePlots, filename = "Output_Figures/ActivePredSurv.png", dpi = 300, width = 9, height = 7)
 
 
 
-
-
-for (i in Predator.Prey) {
-  print(i)
-  subset1 <- FiveYearNullandTrue.Active_surv %>%
-    subset(Pred.Prey_Domain == i)
-  survobj <- with(subset1, Surv(year, status)) %>%
-    mod[i] <- survfit(survobj ~ ModelType, data = subset1)
-print(summary(mod[i]))
-}
-
-
-ActivePlots <- arrange_ggsurvplots(
-  splots,
-  print = TRUE,
-  ncol = 2,
-  nrow = 2,
-  title = "Survival Distributions for Active Hunting Strategy"
-)
-
-ggsave(ActivePlots, filename = "Output_Figures/ActivePredSurv.png", dpi = 300, width = 9, height = 7)
 
 ## Sit-and-Wait ----
-
-
 
 FiveYearNullandTrue.SW <- FiveYearNullandTrue %>%
   subset(Pred.Strat == "Sit-and-Wait") %>%
@@ -494,65 +495,67 @@ FiveYearNullandTrue.SW_surv <- FiveYearNullandTrue.SW %>%
 FiveYearNullandTrue.SW_surv$Prey.Start.Con <- as.factor(FiveYearNullandTrue.SW_surv$Prey.Start.Con)
 FiveYearNullandTrue.SW_surv$Pred.Start.Con <- as.factor(FiveYearNullandTrue.SW_surv$Pred.Start.Con)
 
-## blerg. It's not working. FER will troubleshoot later.
-fit <- survfit(Surv(year, status) ~ ModelType + Pred.Strat, data = FiveYearNullandTrue2 )
-SWplot <- survminer::ggsurvplot_facet(
-  panel.labs = list(Prey.Start.Con = c("Large", "Small"), 
-                    Pred.Start.Con = c("Large", "Small")),
-  fit,
-  legend.position = "right",
-  FiveYearNullandTrue2,
-  facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
-  #palette = "jco",
-  palette = c("#cccccc", "#969696", "#636363", "#bae4b3", "#74c476", "#31a354"),
-  legend.labs = c("Null Active", 
-                  "Null Sit-and-Pursue", 
-                  "Null Sit-and-Wait",
-                  "NCE Active", 
-                  "NCE Sit-and-Pursue",
-                  "NCE Sit-and-Wait"),
-  pval = TRUE,
-  conf.int = TRUE
-)
-print(SWplot)
+# ## all together
+# fit <- survfit(Surv(year, status) ~ ModelType + Pred.Strat, data = FiveYearNullandTrue2 )
+# SWplot <- survminer::ggsurvplot_facet(
+#   panel.labs = list(Prey.Start.Con = c("Large", "Small"), 
+#                     Pred.Start.Con = c("Large", "Small")),
+#   fit,
+#   legend.position = "right",
+#   FiveYearNullandTrue2,
+#   facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
+#   #palette = "jco",
+#   palette = c("#cccccc", "#969696", "#636363", "#bae4b3", "#74c476", "#31a354"),
+#   legend.labs = c("Null Active", 
+#                   "Null Sit-and-Pursue", 
+#                   "Null Sit-and-Wait",
+#                   "NCE Active", 
+#                   "NCE Sit-and-Pursue",
+#                   "NCE Sit-and-Wait"),
+#   pval = TRUE,
+#   conf.int = TRUE
+# )
+# print(SWplot)
+# 
+# ggsave(SWplot, filename = "Output_Figures/AllSurvival.png", dpi = 300, width = 8, height = 6)
 
-ggsave(SWplot, filename = "Output_Figures/AllSurvival.png", dpi = 300, width = 8, height = 6)
-
-# Kaggie's method that works well
-
-Predator.Prey<- unique(FiveYearNullandTrue.SW_surv$Pred.Prey_Domain)
-
-splots<- list()
-for (i in Predator.Prey) {
-  subset1 <- FiveYearNullandTrue.SW_surv %>%
-    subset(Pred.Prey_Domain == i)
-  survobj <- with(subset1, Surv(year, status))
-  ThePlot <- survfit(survobj ~ ModelType, data = subset1)
-  splots[[i]] <-
-    ggsurvplot(
-      ThePlot,
-      conf.int = TRUE, # add 95% confidence intervals
-      size = 1,        # change line size
-      palette = c("#E7B800", "#2E9FDF"), # custom color palettes
-      pval = TRUE, # add p-value
-      surv.median.line = "hv", # add median survival
-      legend.labs = c("Null", "NCE"),
-      ggtheme = theme_bw()
-    ) + 
-    ggtitle(paste0(i, " (Predator.Prey)"))
-  #assign(paste("ThePlot", i, sep = ""), plot)
-}
-SWPlots <- arrange_ggsurvplots(
-  splots,
-  print = TRUE,
-  ncol = 2,
-  nrow = 2,
-  title = "Survival Distributions for Sit-and-Wait Hunting Strategy"
-)
-
-ggsave(SWPlots, filename = "Output_Figures/SWPredSurv.png", dpi = 300, width = 9, height = 7)
+# # Kaggie's method that works well
+# 
+# Predator.Prey<- unique(FiveYearNullandTrue.SW_surv$Pred.Prey_Domain)
+# 
+# splots<- list()
+# for (i in Predator.Prey) {
+#   subset1 <- FiveYearNullandTrue.SW_surv %>%
+#     subset(Pred.Prey_Domain == i)
+#   survobj <- with(subset1, Surv(year, status))
+#   ThePlot <- survfit(survobj ~ ModelType, data = subset1)
+#   splots[[i]] <-
+#     ggsurvplot(
+#       ThePlot,
+#       conf.int = TRUE, # add 95% confidence intervals
+#       size = 1,        # change line size
+#       palette = c("#E7B800", "#2E9FDF"), # custom color palettes
+#       pval = TRUE, # add p-value
+#       surv.median.line = "hv", # add median survival
+#       legend.labs = c("Null", "NCE"),
+#       ggtheme = theme_bw()
+#     ) + 
+#     ggtitle(paste0(i, " (Predator.Prey)"))
+#   #assign(paste("ThePlot", i, sep = ""), plot)
+# }
+# SWPlots <- arrange_ggsurvplots(
+#   splots,
+#   print = TRUE,
+#   ncol = 2,
+#   nrow = 2,
+#   title = "Survival Distributions for Sit-and-Wait Hunting Strategy"
+# )
+# 
+# ggsave(SWPlots, filename = "Output_Figures/SWPredSurv.png", dpi = 300, width = 9, height = 7)
 
 ## Comparing consumptive vs. non-consumptive effects ----
+# Figures for manuscript?
+
 
 # > viridis(11, alpha = 1, begin = 0, end = 1, direction = 1, option = "D")
 # [1] "#440154FF" "#482576FF" "#414487FF" "#35608DFF" "#2A788EFF" "#21908CFF" "#22A884FF"
@@ -579,15 +582,15 @@ fitA <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.A_su
 ActiveMulti <- ggsurvplot_facet(fitA, 
                                 FiveYearNullandTrue.A_surv, 
                                 conf.int = TRUE,
-                                facet.by = c("Prey.Start.Con", "Pred.Start.Con"),
+                                facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
                                 palette = c("gray", "#414487FF"),
                                 surv.median.line = "v", # add median survival
                                 pval = TRUE,
                                 pval.coord = c(3.5, 0.8),
                                 ggtheme = theme_bw(base_size = 12),
-                                #short.panel.labs = TRUE,
-                                #panel.labs = list(Prey.Start.Con = c("Prey Large Domain", "Prey Small Domain"),
-                                #                  Pred.Start.Con = c("Predator Large Domain", "Predator Small Domain")),
+                                short.panel.labs = TRUE,
+                                panel.labs = list(Prey.Start.Con = c("Prey Small Domain", "Prey Large Domain"),
+                                                  Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
                                 legend.labs = c("Consumptive", "Non-consumptive"),
                                 size = 1,
                                 title = "Active Predator Survival Curves") +
@@ -699,20 +702,26 @@ FiveYearNullandTrue.SW_surv <- FiveYearNullandTrue.SW %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
+# reorder
+FiveYearNullandTrue.SW_surv$Pred.Start.Con <- factor(FiveYearNullandTrue.SW_surv$Pred.Start.Con, 
+                                                    levels = c("Small", "Large"))
+FiveYearNullandTrue.SW_surv$Prey.Start.Con <- factor(FiveYearNullandTrue.SW_surv$Prey.Start.Con, 
+                                                    levels = c("Small", "Large"))
+
 # SW facet plot
 fitSW <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.SW_surv)
 SWMulti <- ggsurvplot_facet(fitSW, 
                                 FiveYearNullandTrue.SW_surv, 
                                 conf.int = TRUE,
-                                facet.by = c("Prey.Start.Con", "Pred.Start.Con"),
+                                facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
                                 palette = c("gray", "#7AD151FF"),
                                 surv.median.line = "v", # add median survival
                                 pval = TRUE,
                                 pval.coord = c(0.1, 0.2),
                                 ggtheme = theme_bw(base_size = 12),
-                                #short.panel.labs = TRUE,
-                                #panel.labs = list(Prey.Start.Con = c("Prey Large Domain", "Prey Small Domain"),
-                                 #                 Pred.Start.Con = c("Predator Large Domain", "Predator Small Domain")),
+                                short.panel.labs = TRUE,
+                                panel.labs = list(Prey.Start.Con = c("Prey Small Domain", "Prey Large Domain"),
+                                                 Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
                                 legend.labs = c("Consumptive", "Non-consumptive"),
                                 size = 1,
                                 title = "Sit-and-Wait Predator Survival Curves") +
@@ -763,6 +772,12 @@ FiveYearNullandTrue.SP_surv <- FiveYearNullandTrue.SP %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
+# reorder
+FiveYearNullandTrue.SP_surv$Pred.Start.Con <- factor(FiveYearNullandTrue.SP_surv$Pred.Start.Con, 
+                                                     levels = c("Small", "Large"))
+FiveYearNullandTrue.SP_surv$Prey.Start.Con <- factor(FiveYearNullandTrue.SP_surv$Prey.Start.Con, 
+                                                     levels = c("Small", "Large"))
+
 # SP facet plot
 
 fitSP <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.SP_surv)
@@ -775,9 +790,9 @@ SPMulti <- ggsurvplot_facet(fitSP,
                             pval = TRUE,
                             pval.coord = c(3.5, 0.8),
                             ggtheme = theme_bw(base_size = 12),
-                            short.panel.labs = FALSE,
-                            #panel.labs = list(Prey.Start.Con = c("Prey Small Domain", "Prey Large Domain"),
-                            #                  Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
+                            short.panel.labs = TRUE,
+                            panel.labs = list(Prey.Start.Con = c("Prey Small Domain", "Prey Large Domain"),
+                                              Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
                             legend.labs = c("Consumptive", "Non-consumptive"),
                             size = 1,
                             title = "Sit-and-Pursue Predator Survival Curves") +
