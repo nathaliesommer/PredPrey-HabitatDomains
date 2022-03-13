@@ -13,11 +13,11 @@ For each of these, the p-value is survival difference between the consumptive (n
 # Active survival
 ![Figure 1](Output_Figures/ActivePredSurv.png)
 
-# Sit-and-wait survival
-![Figure 2](Output_Figures/SWPredSurv.png)
-
 # Sit-and-pursue survival
 ![Figure 3](Output_Figures/SPPredSurv.png)
+
+# Sit-and-wait survival
+![Figure 2](Output_Figures/SWPredSurv.png)
 
 # All survival compared
 ![Figure 4](Output_Figures/AllSurvival.png)
