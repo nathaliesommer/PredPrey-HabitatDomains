@@ -74,5 +74,7 @@ Hazard ratio summary figure. HR = 1 (no benefit or detriment) is dotted. I think
 # Behavioral shifts at year one
 ![oneyrshifts](Output_Figures/OneYrShifts.png)
 
+To make tweaks: https://mjskay.github.io/ggdist/reference/stat_halfeye.html
+
 # Next steps
 - [ ] Figure out how the heck to specify which order panels facet in and the labels on facet_grid
