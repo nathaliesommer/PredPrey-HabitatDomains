@@ -427,14 +427,14 @@ oneyrshift_plot <- ggplot(oneyrshifts,
   ggdist::stat_halfeye(
     adjust = 1,
     normalize = "groups",
-    position = "dodge",
+    position = position_dodge(width = 0.5),
     # width = 1, 
     # height = 1,
     
     ## set slab interval to show IQR and 95% data range
     .width = c(.5, .95),
     aes(fill = Pred.Strat),
-    alpha = 0.9
+    slab_alpha = 0.7
   ) + 
   # gghalves::geom_half_point(
   #   ## draw jitter on the left
