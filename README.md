@@ -76,6 +76,10 @@ Hazard ratio summary figure. HR = 1 (no benefit or detriment) is dotted. I think
 
 To make tweaks: https://mjskay.github.io/ggdist/reference/stat_halfeye.html
 
+# Behavioral shifts at year five
+![fiveyrshifts](Output_Figures/FiveYrShifts.png)
+
+
 # Next steps
 - [ ] make five year figure
 - [ ] edit results in manuscript for survival
