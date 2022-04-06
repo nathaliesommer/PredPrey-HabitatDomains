@@ -66,10 +66,13 @@ This is cool.
 
 All hazard ratio data for each combination are summarized in [HazardRatioSummary_Feb2022.csv](Data/HazardRatioSummary_Feb2022.png)
 
-# Potential summary figure
+# Hazard ratio summary figure
 ![HRFigure](Output_Figures/HazardRatiosPlot.png)
 
 Hazard ratio summary figure. HR = 1 (no benefit or detriment) is dotted. I think we should do something like this.
+
+# Behavioral shifts at year one
+![oneyrshifts](Output_Figures/OneYrShifts.png)
 
 # Next steps
 - [ ] Figure out how the heck to specify which order panels facet in and the labels on facet_grid
