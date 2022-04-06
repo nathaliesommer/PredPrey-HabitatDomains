@@ -439,6 +439,93 @@ oneyrshift_plot <- ggplot(oneyrshifts,
     position = "dodge",
     # width = 1, 
     # height = 1,
+    
+    ## set slab interval to show IQR and 95% data range
+    .width = c(.5, .95),
+    aes(fill = Pred.Strat),
+    alpha = 0.9
+  ) + 
+  # gghalves::geom_half_point(
+  #   ## draw jitter on the left
+  #   side = "l", 
+  #   ## control range of jitter
+  #   range_scale = .1, 
+  #   ## add some transparency
+  #   alpha = .3
+  # geom_point(
+  #   size = 0.5,
+  #   postition = position_dodge(width = 0.5), 
+  #   alpha = .3,
+  #     position = position_dodge(width = 0.3)
+  #   ) +
+  theme_bw(base_size = 14) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
+  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
+  ylab("Proportional of predator free space or time") +
+  xlab("Behavior Shift") +
+  scale_x_discrete(labels=c("propHabitat" = "Habitat", "propSafeSpace" = "Space",
+                            "propPredFree" = "Time")) +
+  facet_grid(Pred.Start.Con ~ Prey.Start.Con,
+             labeller = labeller(Pred.Start.Con = new_labels,
+                                 Prey.Start.Con = new_labels2)) +
+  ggtitle("Shifts at one year")
+
+
+print(oneyrshift_plot)
+
+# ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, height = 5)
+
+
+
+
+
+
+
+#### Five year data behavioral shifts
+##### One yr data
+
+# reorder
+oneyr_new <- oneyr_use
+oneyr_new$Pred.Start.Con <- factor(oneyr_new$Pred.Start.Con, 
+                                   levels = c("Small", "Large"))
+oneyr_new$Prey.Start.Con <- factor(oneyr_new$Prey.Start.Con, 
+                                   levels = c("Small", "Large"))
+
+# create new labels for the facets
+new_labels <- c("Small" = "Predator Small Domain", "Large" = "Predator Large Domain")
+new_labels2 <- c("Small" = "Prey Small Domain", "Large" = "Prey Large Domain")
+
+## melt the dataframe for extra column for shift
+# add unique row id
+oneyr_new$index <- 1:nrow(oneyr_new)
+head(oneyr_new)
+molted <- melt(value.name = "BehaviorShift", oneyr_new[,c(65:67, 70)],id.vars=c("index"))
+molted
+
+oneyrshifts <- left_join(molted, oneyr_new[,c(1:4,69:70)], by = "index")
+summary(oneyrshifts)
+
+
+### Plot of behavioral shifts
+oneyrshift_plot <- ggplot(oneyrshifts,
+                          aes(
+                            x = variable,
+                            y = BehaviorShift,
+                            fill = Pred.Strat,
+                            group = Pred.Strat
+                          )) +
+  ggdist::stat_halfeye(
+    adjust = 1,
+    position = position_dodge(),
+    normalize = "groups",
+    # width = 1, 
+    # height = 1,
     ## set slab interval to show IQR and 95% data range
     .width = c(.5, .95),
     aes(fill = Pred.Strat),
@@ -455,9 +542,9 @@ oneyrshift_plot <- ggplot(oneyrshifts,
   #   size = 0.5,
   #   postition = position_dodge(width = 0.5), 
   #   alpha = .3,
-  #     position = position_dodge(width = 0.3)
-  #   ) +
-  theme_bw(base_size = 14) +
+#     position = position_dodge(width = 0.3)
+#   ) +
+theme_bw(base_size = 14) +
   theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
