@@ -413,18 +413,7 @@ molted
 oneyrshifts <- left_join(molted, oneyr_new[,c(1:4,69:70)], by = "index")
 summary(oneyrshifts)
 
-# # get mean and 95% CI
-# onedata <- oneyrshifts %>%
-#   group_by("Pred.Strat", "Pred.Start.Con", "Prey.Start.Con", "variable") %>%
-#   summarise(
-#     N = length(BehaviorShift),
-#     mean = mean(BehaviorShift),
-#     sd   = sd(BehaviorShift),
-#     Lower95CI = mean(BehaviorShift) - 1.96 * sd(BehaviorShift),
-#     Upper95CI = mean(BehaviorShift) + 1.96 * sd(BehaviorShift)
-#   )
-# 
-# onedata
+
 
 # Plot of behavioral shifts
 oneyrshift_plot <- ggplot(oneyrshifts,
@@ -434,8 +423,10 @@ oneyrshift_plot <- ggplot(oneyrshifts,
                     fill = Pred.Strat,
                     group = Pred.Strat
                   )) +
+  geom_hline(yintercept = 0.5, linetype = "dotted") +
   ggdist::stat_halfeye(
     adjust = 1,
+    normalize = "groups",
     position = "dodge",
     # width = 1, 
     # height = 1,
@@ -479,7 +470,7 @@ oneyrshift_plot <- ggplot(oneyrshifts,
 
 print(oneyrshift_plot)
 
-# ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, height = 5)
+ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, height = 5)
 
 
 
