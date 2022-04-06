@@ -413,6 +413,11 @@ molted
 oneyrshifts <- left_join(molted, oneyr_new[,c(1:4,69:70)], by = "index")
 summary(oneyrshifts)
 
+# reorder behavior shifts
+oneyrshifts$variable <- factor(oneyrshifts$variable, 
+                                   levels = c("propHabitat", "propPredFree", "propSafeSpace"))
+
+
 
 
 # Plot of behavioral shifts
@@ -469,7 +474,7 @@ oneyrshift_plot <- ggplot(oneyrshifts,
 
 print(oneyrshift_plot)
 
-# ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, height = 5)
+ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, height = 5)
 
 
 
@@ -545,8 +550,8 @@ theme_bw(base_size = 14) +
   scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
   ylab("Proportional of predator free space or time") +
   xlab("Behavior Shift") +
-  scale_x_discrete(labels=c("propHabitat" = "Habitat", "propSafeSpace" = "Space",
-                            "propPredFree" = "Time")) +
+  scale_x_discrete(labels=c("propHabitat" = "Habitat", "propPredFree" = "Time", 
+                            "SafeSpace" = "Space")) +
   facet_grid(Pred.Start.Con ~ Prey.Start.Con,
              labeller = labeller(Pred.Start.Con = new_labels,
                                  Prey.Start.Con = new_labels2)) +
