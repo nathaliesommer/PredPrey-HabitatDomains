@@ -2,7 +2,7 @@
 
 # Adapted from KDO script Jan 2022
 # KDO and FER
-# Last updated March 2022 by FER
+# Last updated April 2022 by FER
 
 
 ipak <- function(pkg){
@@ -44,8 +44,8 @@ ipak(packages)
 
 
 # load data ----
-# oneyr <- read.csv("Data/NCvsC_1year_TSH_Nov29.csv") %>%
-#   mutate(ModelType = 1)
+oneyr <- read.csv("Data/NCvsC_1year_TSH_Nov29.csv") %>%
+  mutate(ModelType = 1)
 # 
 # oneyr_null <- read.csv("Data/NCvsC_Nullyear_TSH_Nov19.csv") %>%
 #   mutate(ModelType = 0)
@@ -57,6 +57,17 @@ fiveyr_null <- read.csv("Data/NCvsC_NULL_5year_TSH_Nov29.csv")  %>%
   mutate(ModelType = 0)
 
 
+###### Reformat 1 yr data for plotting
+oneyr_use <- oneyr %>%
+  mutate(propHabitat = White.Table/(Black.Table + White.Table)) %>%
+  mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap)) %>%
+  mutate(propPredFree = rowSums(.[28:39])/rowSums(.[16:39]))%>%
+  mutate(interactions = rowSums(.[41:63])) %>%
+  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
+
+oneyr_use$Pred.Strat <- as.factor(oneyr_use$Pred.Strat)
+oneyr_use$Pred.Start.Con <- as.factor(oneyr_use$Pred.Start.Con)
+oneyr_use$Prey.Start.Con <- as.factor(oneyr_use$Prey.Start.Con)
 
 ###### Just looking at 5 years for now
 
@@ -81,7 +92,8 @@ FiveYearNullandTrue2$Pred.Strat <- as.factor(FiveYearNullandTrue2$Pred.Strat)
 FiveYearNullandTrue2$Pred.Start.Con <- as.factor(FiveYearNullandTrue2$Pred.Start.Con)
 FiveYearNullandTrue2$Prey.Start.Con <- as.factor(FiveYearNullandTrue2$Prey.Start.Con)
 
-### Need to look at each predator hunting type, and each habitat domain size combination separtely, so first separate Active.Large.Large
+
+### Need to look at each predator hunting type, and each habitat domain size combination separately, so first separate Active.Large.Large
 
 active5.Large.Large <-  subset(FiveYearNullandTrue, Pred.Strat == "Active") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
@@ -148,13 +160,6 @@ FiveYearTrue <-
 FiveYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = FiveYearTrue)
-haz.table <- FiveYearNCE %>%
-  gtsummary::tbl_regression(exp = TRUE) 
-
-
-# predator strategy only
-FiveYearNCE <- coxph(Surv(year, status) ~ Pred.Strat,
-                     data = FiveYearTrue)
 haz.table <- FiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
@@ -371,11 +376,82 @@ HR_plot <- ggplot(HRsumm_new,
 
 print(HR_plot)
 
-ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", width = 8, height = 5)
+# ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", width = 8, height = 5)
 
 
 
 
+
+
+
+
+
+## make time plots for yr = 1, 2.5, and 5 to look at shifts
+
+##### One yr data
+
+# reorder
+oneyr_new <- oneyr_use
+oneyr_new$Pred.Start.Con <- factor(oneyr_new$Pred.Start.Con, 
+                                    levels = c("Small", "Large"))
+oneyr_new$Prey.Start.Con <- factor(oneyr_new$Prey.Start.Con, 
+                                    levels = c("Small", "Large"))
+
+# create new labels for the facets
+new_labels <- c("Small" = "Predator Small Domain", "Large" = "Predator Large Domain")
+new_labels2 <- c("Small" = "Prey Small Domain", "Large" = "Prey Large Domain")
+
+# melt the dataframe for extra column for shift
+melt(oneyr_new, value.name = "Shift") %>% select(Month)
+molted <- melt(oneyr_new[,c(1, 65:67)],id.vars=c("run.Number"))
+molted
+
+oneyrshifts <- left_join(molted, oneyr_new, by = run.Number)
+
+# Plot of hazard ratios
+HR_plot <- ggplot(oneyr_new,
+                  aes(
+                    x = HR.Type,
+                    y = HazardRatio,
+                    fill = Pred.Strat,
+                    group = Pred.Strat
+                  )) +
+  geom_errorbar(
+    aes(ymin = Lower95CI, ymax = Upper95CI, color = Pred.Strat),
+    width = 0.3,
+    position = "dodge"
+  ) +
+  geom_point(pch = 21,
+             size = 4,
+             position = position_dodge(width = 0.3)) +
+  theme_bw(base_size = 14) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
+  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
+  ylab("Hazard Ratio") +
+  xlab("Behavior Shift") +
+  geom_hline(yintercept = 1, linetype = "dotted") +
+  scale_y_continuous(
+    trans = log10_trans(),
+    breaks = trans_breaks("log10", function(x)
+      10 ^ x),
+    labels = trans_format("log10", math_format(10 ^ .x))
+  ) +
+  scale_x_discrete(labels=c("Habitat" = "Habitat", "PredFree" = "Time",
+                            "SafeSpace" = "Space")) +
+  facet_grid(Pred.Start.Con ~ Prey.Start.Con,
+             labeller = labeller(Pred.Start.Con = new_labels,
+                                 Prey.Start.Con = new_labels2))
+
+
+print(HR_plot)
+
+# ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", width = 8, height = 5)
 
 ## Now, we want to look at only the NCE model
 # FiveYearNullandTrue_surv2<- FiveYearNullandTrue_surv %>%
