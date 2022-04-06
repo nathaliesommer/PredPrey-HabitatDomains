@@ -81,6 +81,6 @@ To make tweaks: https://mjskay.github.io/ggdist/reference/stat_halfeye.html
 
 
 # Next steps
-- [ ] make five year figure
+- [x] make five year figure
 - [ ] edit results in manuscript for survival
 - [ ] edit results in manuscript for shifts
