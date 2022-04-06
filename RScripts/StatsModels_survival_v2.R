@@ -401,29 +401,44 @@ oneyr_new$Prey.Start.Con <- factor(oneyr_new$Prey.Start.Con,
 new_labels <- c("Small" = "Predator Small Domain", "Large" = "Predator Large Domain")
 new_labels2 <- c("Small" = "Prey Small Domain", "Large" = "Prey Large Domain")
 
-# melt the dataframe for extra column for shift
-melt(oneyr_new, value.name = "Shift") %>% select(Month)
-molted <- melt(oneyr_new[,c(1, 65:67)],id.vars=c("run.Number"))
+## melt the dataframe for extra column for shift
+# add unique row id
+oneyr_new$index <- 1:nrow(oneyr_new)
+head(oneyr_new)
+molted <- melt(value.name = "BehaviorShift", oneyr_new[,c(65:67, 70)],id.vars=c("index"))
 molted
 
-oneyrshifts <- left_join(molted, oneyr_new, by = run.Number)
+oneyrshifts <- left_join(molted, oneyr_new[,c(1:4,69:70)], by = "index")
+summary(oneyrshifts)
 
-# Plot of hazard ratios
-HR_plot <- ggplot(oneyr_new,
+# get mean and 95% CI
+onedata <- oneyrshifts %>%
+  group_by("Pred.Strat", "Pred.Start.Con", "Prey.Start.Con", "variable") %>%
+  summarise(
+    N = length(BehaviorShift),
+    mean = mean(BehaviorShift),
+    sd   = sd(BehaviorShift),
+    Lower95CI = mean(BehaviorShift) - 1.96 * sd(BehaviorShift),
+    Upper95CI = mean(BehaviorShift) + 1.96 * sd(BehaviorShift)
+  )
+
+onedata
+
+# Plot of behavioral shifts
+oneyrshift_plot <- ggplot(oneyrshifts,
                   aes(
-                    x = HR.Type,
-                    y = HazardRatio,
+                    x = variable,
+                    y = BehaviorShift,
                     fill = Pred.Strat,
                     group = Pred.Strat
                   )) +
-  geom_errorbar(
-    aes(ymin = Lower95CI, ymax = Upper95CI, color = Pred.Strat),
-    width = 0.3,
-    position = "dodge"
-  ) +
-  geom_point(pch = 21,
-             size = 4,
-             position = position_dodge(width = 0.3)) +
+  ggdist::stat_halfeye(
+    adjust = .8,
+    width = 1, 
+    ## set slab interval to show IQR and 95% data range
+    .width = c(.5, .95),
+    aes(fill = Pred.Strat)
+  ) + 
   theme_bw(base_size = 14) +
   theme(
     panel.grid.major.y = element_blank(),
@@ -433,25 +448,19 @@ HR_plot <- ggplot(oneyr_new,
   ) +
   scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
   scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
-  ylab("Hazard Ratio") +
+  ylab("Proportional of predator free space or time") +
   xlab("Behavior Shift") +
-  geom_hline(yintercept = 1, linetype = "dotted") +
-  scale_y_continuous(
-    trans = log10_trans(),
-    breaks = trans_breaks("log10", function(x)
-      10 ^ x),
-    labels = trans_format("log10", math_format(10 ^ .x))
-  ) +
-  scale_x_discrete(labels=c("Habitat" = "Habitat", "PredFree" = "Time",
-                            "SafeSpace" = "Space")) +
+  scale_x_discrete(labels=c("propHabitat" = "Habitat", "propSafeSpace" = "Space",
+                            "propPredFree" = "Time")) +
   facet_grid(Pred.Start.Con ~ Prey.Start.Con,
              labeller = labeller(Pred.Start.Con = new_labels,
-                                 Prey.Start.Con = new_labels2))
+                                 Prey.Start.Con = new_labels2)) +
+  ggtitle("Shifts at one yr")
 
 
-print(HR_plot)
+print(oneyrshift_plot)
 
-# ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", width = 8, height = 5)
+ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, height = 5)
 
 ## Now, we want to look at only the NCE model
 # FiveYearNullandTrue_surv2<- FiveYearNullandTrue_surv %>%
