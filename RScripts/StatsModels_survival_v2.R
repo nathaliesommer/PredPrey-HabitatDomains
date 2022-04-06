@@ -36,7 +36,9 @@ packages <- c("remotes",
               "dplyr",
               "gtsummary",
               "scales",
-              "viridisLite")
+              "viridisLite",
+              "gghalves",
+              "ggdist")
 
 #Run the ipak loop
 ipak(packages)
@@ -411,18 +413,18 @@ molted
 oneyrshifts <- left_join(molted, oneyr_new[,c(1:4,69:70)], by = "index")
 summary(oneyrshifts)
 
-# get mean and 95% CI
-onedata <- oneyrshifts %>%
-  group_by("Pred.Strat", "Pred.Start.Con", "Prey.Start.Con", "variable") %>%
-  summarise(
-    N = length(BehaviorShift),
-    mean = mean(BehaviorShift),
-    sd   = sd(BehaviorShift),
-    Lower95CI = mean(BehaviorShift) - 1.96 * sd(BehaviorShift),
-    Upper95CI = mean(BehaviorShift) + 1.96 * sd(BehaviorShift)
-  )
-
-onedata
+# # get mean and 95% CI
+# onedata <- oneyrshifts %>%
+#   group_by("Pred.Strat", "Pred.Start.Con", "Prey.Start.Con", "variable") %>%
+#   summarise(
+#     N = length(BehaviorShift),
+#     mean = mean(BehaviorShift),
+#     sd   = sd(BehaviorShift),
+#     Lower95CI = mean(BehaviorShift) - 1.96 * sd(BehaviorShift),
+#     Upper95CI = mean(BehaviorShift) + 1.96 * sd(BehaviorShift)
+#   )
+# 
+# onedata
 
 # Plot of behavioral shifts
 oneyrshift_plot <- ggplot(oneyrshifts,
@@ -433,12 +435,28 @@ oneyrshift_plot <- ggplot(oneyrshifts,
                     group = Pred.Strat
                   )) +
   ggdist::stat_halfeye(
-    adjust = .8,
-    width = 1, 
+    adjust = 1,
+    position = "dodge",
+    # width = 1, 
+    # height = 1,
     ## set slab interval to show IQR and 95% data range
     .width = c(.5, .95),
-    aes(fill = Pred.Strat)
+    aes(fill = Pred.Strat),
+    alpha = 0.7
   ) + 
+  # gghalves::geom_half_point(
+  #   ## draw jitter on the left
+  #   side = "l", 
+  #   ## control range of jitter
+  #   range_scale = .1, 
+  #   ## add some transparency
+  #   alpha = .3
+  # geom_point(
+  #   size = 0.5,
+  #   postition = position_dodge(width = 0.5), 
+  #   alpha = .3,
+  #     position = position_dodge(width = 0.3)
+  #   ) +
   theme_bw(base_size = 14) +
   theme(
     panel.grid.major.y = element_blank(),
@@ -455,7 +473,7 @@ oneyrshift_plot <- ggplot(oneyrshifts,
   facet_grid(Pred.Start.Con ~ Prey.Start.Con,
              labeller = labeller(Pred.Start.Con = new_labels,
                                  Prey.Start.Con = new_labels2)) +
-  ggtitle("Shifts at one yr")
+  ggtitle("Shifts at one year")
 
 
 print(oneyrshift_plot)
