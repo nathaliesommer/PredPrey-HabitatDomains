@@ -430,7 +430,6 @@ oneyrshift_plot <- ggplot(oneyrshifts,
     position = position_dodge(width = 0.5),
     # width = 1, 
     # height = 1,
-    
     ## set slab interval to show IQR and 95% data range
     .width = c(.5, .95),
     aes(fill = Pred.Strat),
@@ -470,7 +469,7 @@ oneyrshift_plot <- ggplot(oneyrshifts,
 
 print(oneyrshift_plot)
 
-ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, height = 5)
+# ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, height = 5)
 
 
 
@@ -479,13 +478,12 @@ ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, 
 
 
 #### Five year data behavioral shifts
-##### One yr data
 
 # reorder
-oneyr_new <- oneyr_use
-oneyr_new$Pred.Start.Con <- factor(oneyr_new$Pred.Start.Con, 
+fiveyr_new <- FiveYearTrue
+fiveyr_new$Pred.Start.Con <- factor(fiveyr_new$Pred.Start.Con, 
                                    levels = c("Small", "Large"))
-oneyr_new$Prey.Start.Con <- factor(oneyr_new$Prey.Start.Con, 
+fiveyr_new$Prey.Start.Con <- factor(fiveyr_new$Prey.Start.Con, 
                                    levels = c("Small", "Large"))
 
 # create new labels for the facets
@@ -494,33 +492,34 @@ new_labels2 <- c("Small" = "Prey Small Domain", "Large" = "Prey Large Domain")
 
 ## melt the dataframe for extra column for shift
 # add unique row id
-oneyr_new$index <- 1:nrow(oneyr_new)
-head(oneyr_new)
-molted <- melt(value.name = "BehaviorShift", oneyr_new[,c(65:67, 70)],id.vars=c("index"))
+fiveyr_new$index <- 1:nrow(fiveyr_new)
+head(fiveyr_new)
+molted <- melt(value.name = "BehaviorShift", fiveyr_new[,c(65:67, 72)],id.vars=c("index"))
 molted
 
-oneyrshifts <- left_join(molted, oneyr_new[,c(1:4,69:70)], by = "index")
-summary(oneyrshifts)
+fiveyrshifts <- left_join(molted, fiveyr_new[,c(2:4,69:70, 72)], by = "index")
+summary(fiveyrshifts)
 
 
 ### Plot of behavioral shifts
-oneyrshift_plot <- ggplot(oneyrshifts,
+fiveyrshift_plot <- ggplot(fiveyrshifts,
                           aes(
                             x = variable,
                             y = BehaviorShift,
                             fill = Pred.Strat,
                             group = Pred.Strat
                           )) +
+  geom_hline(yintercept = 0.5, linetype = "dotted") +
   ggdist::stat_halfeye(
     adjust = 1,
-    position = position_dodge(),
     normalize = "groups",
+    position = position_dodge(width = 0.5),
     # width = 1, 
     # height = 1,
     ## set slab interval to show IQR and 95% data range
     .width = c(.5, .95),
     aes(fill = Pred.Strat),
-    alpha = 0.7
+    slab_alpha = 0.7
   ) + 
   # gghalves::geom_half_point(
   #   ## draw jitter on the left
@@ -551,43 +550,13 @@ theme_bw(base_size = 14) +
   facet_grid(Pred.Start.Con ~ Prey.Start.Con,
              labeller = labeller(Pred.Start.Con = new_labels,
                                  Prey.Start.Con = new_labels2)) +
-  ggtitle("Shifts at one year")
+  ggtitle("Shifts at five years")
 
 
-print(oneyrshift_plot)
+print(fiveyrshift_plot)
 
-ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, height = 5)
+ggsave(fiveyrshift_plot, filename = "Output_Figures/FiveYrShifts.png", width = 8, height = 5)
 
-## Now, we want to look at only the NCE model
-# FiveYearNullandTrue_surv2<- FiveYearNullandTrue_surv %>%
-#   subset(ModelType == 1) %>%
-#   mutate(yearprop = year/5)
-# 
-# survobj2<- with(FiveYearNullandTrue_surv2, Surv(year, status))
-# 
-# OnlyNCE<- coxph(survobj2 ~ propHabitat + propSafeSpace + propPredFree,
-#                 data=FiveYearNullandTrue_surv2) 
-# 
-# OnlyNCE %>% 
-#   gtsummary::tbl_regression(exp = TRUE) 
-# 
-# Null.NCE<- coxph(survobj ~ propHabitat + propSafeSpace + propPredFree,
-#                  data=FiveYearNullandTrue_surv)
-# # display results 
-# OnlyNCE
-# Null.NCE
-# 
-# plot(survfit(OnlyNCE))
-# plot(survfit(Null.NCE))
-# 
-# median(FiveYearNullandTrue_surv2$year) # dies around 2 years anyways, so this plot isn't great
-# 
-# summary(survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue_surv2),
-#         times = 1) # get estimate of surviving 1 yr
-
-# # evaluate the proportional hazards assumption 
-# cox.zph(MaleMod) ## this is something I think we need to explore more but I'm not sure
-# 
 
 
 #################### Prepping separate huntings and looking at surivial plots across all of the data
@@ -607,54 +576,6 @@ FiveYearNullandTrue.Active <- FiveYearNullandTrue %>%
 FiveYearNullandTrue.Active_surv <- FiveYearNullandTrue.Active %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
-
-# Predator.Prey<- unique(FiveYearNullandTrue.Active_surv$Pred.Prey_Domain)
-# 
-# splots<- list()
-# for (i in Predator.Prey) {
-#   print(i)
-#   subset1 <- FiveYearNullandTrue.Active_surv %>%
-#     subset(Pred.Prey_Domain == i)
-#   survobj <- with(subset1, Surv(year, status))
-#   ThePlot <- survfit(survobj ~ ModelType, data = subset1)
-#   splots[[i]] <-
-#     ggsurvplot(
-#       ThePlot,
-#       conf.int = TRUE, # add 95% confidence intervals
-#       size = 1,        # change line size
-#       palette = c("#E7B800", "#2E9FDF"), # custom color palettes
-#       pval = TRUE, # add p-value
-#       surv.median.line = "hv", # add median survival
-#       legend.labs = c("Null", "NCE"),
-#       ggtheme = theme_bw()
-#     ) +
-#     ggtitle(paste0(i, " (Predator.Prey)"))
-#   #assign(paste("ThePlot", i, sep = ""), plot)
-# }
-# 
-# 
-# 
-# 
-# 
-# for (i in Predator.Prey) {
-#   print(i)
-#   subset1 <- FiveYearNullandTrue.Active_surv %>%
-#     subset(Pred.Prey_Domain == i)
-#   survobj <- with(subset1, Surv(year, status)) %>%
-#     mod[i] <- survfit(survobj ~ ModelType, data = subset1)
-# print(summary(mod[i]))
-# }
-# 
-# 
-# ActivePlots <- arrange_ggsurvplots(
-#   splots,
-#   print = TRUE,
-#   ncol = 2,
-#   nrow = 2,
-#   title = "Survival Distributions for Active Hunting Strategy"
-# )
-
-# ggsave(ActivePlots, filename = "Output_Figures/ActivePredSurv.png", dpi = 300, width = 9, height = 7)
 
 
 
@@ -676,63 +597,7 @@ FiveYearNullandTrue.SW_surv <- FiveYearNullandTrue.SW %>%
 FiveYearNullandTrue.SW_surv$Prey.Start.Con <- as.factor(FiveYearNullandTrue.SW_surv$Prey.Start.Con)
 FiveYearNullandTrue.SW_surv$Pred.Start.Con <- as.factor(FiveYearNullandTrue.SW_surv$Pred.Start.Con)
 
-# ## all together
-# fit <- survfit(Surv(year, status) ~ ModelType + Pred.Strat, data = FiveYearNullandTrue2 )
-# SWplot <- survminer::ggsurvplot_facet(
-#   panel.labs = list(Prey.Start.Con = c("Large", "Small"), 
-#                     Pred.Start.Con = c("Large", "Small")),
-#   fit,
-#   legend.position = "right",
-#   FiveYearNullandTrue2,
-#   facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
-#   #palette = "jco",
-#   palette = c("#cccccc", "#969696", "#636363", "#bae4b3", "#74c476", "#31a354"),
-#   legend.labs = c("Null Active", 
-#                   "Null Sit-and-Pursue", 
-#                   "Null Sit-and-Wait",
-#                   "NCE Active", 
-#                   "NCE Sit-and-Pursue",
-#                   "NCE Sit-and-Wait"),
-#   pval = TRUE,
-#   conf.int = TRUE
-# )
-# print(SWplot)
-# 
-# ggsave(SWplot, filename = "Output_Figures/AllSurvival.png", dpi = 300, width = 8, height = 6)
 
-# # Kaggie's method that works well
-# 
-# Predator.Prey<- unique(FiveYearNullandTrue.SW_surv$Pred.Prey_Domain)
-# 
-# splots<- list()
-# for (i in Predator.Prey) {
-#   subset1 <- FiveYearNullandTrue.SW_surv %>%
-#     subset(Pred.Prey_Domain == i)
-#   survobj <- with(subset1, Surv(year, status))
-#   ThePlot <- survfit(survobj ~ ModelType, data = subset1)
-#   splots[[i]] <-
-#     ggsurvplot(
-#       ThePlot,
-#       conf.int = TRUE, # add 95% confidence intervals
-#       size = 1,        # change line size
-#       palette = c("#E7B800", "#2E9FDF"), # custom color palettes
-#       pval = TRUE, # add p-value
-#       surv.median.line = "hv", # add median survival
-#       legend.labs = c("Null", "NCE"),
-#       ggtheme = theme_bw()
-#     ) + 
-#     ggtitle(paste0(i, " (Predator.Prey)"))
-#   #assign(paste("ThePlot", i, sep = ""), plot)
-# }
-# SWPlots <- arrange_ggsurvplots(
-#   splots,
-#   print = TRUE,
-#   ncol = 2,
-#   nrow = 2,
-#   title = "Survival Distributions for Sit-and-Wait Hunting Strategy"
-# )
-# 
-# ggsave(SWPlots, filename = "Output_Figures/SWPredSurv.png", dpi = 300, width = 9, height = 7)
 
 ## Comparing consumptive vs. non-consumptive effects ----
 # Figures for manuscript?
