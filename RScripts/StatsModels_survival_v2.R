@@ -572,7 +572,7 @@ theme_bw(base_size = 14) +
 
 print(fiveyrshift_plot)
 
-ggsave(fiveyrshift_plot, filename = "Output_Figures/FiveYrShifts.png", width = 8, height = 5)
+ggsave(fiveyrshift_plot, filename = "Output_Figures/FiveYrShifts.png", dpi = 300, width = 8, height = 5)
 
 
 
