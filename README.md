@@ -35,9 +35,9 @@ A **HR < 1 indicates reduced hazard of death** whereas a **HR > 1 indicates an i
 So a HR = 0.59 implies that around 0.6 times as many females are dying as males, at any given time.
 
 **For reference:
-- propHabitat = proportion of time spent on white vs. black spaces = **space shift**
+- propHabitat = proportion of time spent on white vs. black spaces = **habitat shift**
 - propPredFree = proportion of time spent in hrs where predators are not active = **time shift**
-- propSafeSpace = proportional habitat shift to areas where predators are excluded (so only in Prey.Start.Con = Large and Pred.Start.Con = Small) = **habitat shift**
+- propSafeSpace = proportional habitat shift to areas where predators are excluded (so only in Prey.Start.Con = Large and Pred.Start.Con = Small) = **space shift**
 
 ### Model 1: Prey behavioral changes and hazard ratio
 
