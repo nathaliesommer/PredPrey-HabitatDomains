@@ -505,6 +505,10 @@ molted
 fiveyrshifts <- left_join(molted, fiveyr_new[,c(2:4,69:70, 72)], by = "index")
 summary(fiveyrshifts)
 
+# reorder behavior shifts
+fiveyrshifts$variable <- factor(fiveyrshifts$variable, 
+                               levels = c("propHabitat", "propPredFree", "propSafeSpace"))
+
 
 ### Plot of behavioral shifts
 fiveyrshift_plot <- ggplot(fiveyrshifts,
