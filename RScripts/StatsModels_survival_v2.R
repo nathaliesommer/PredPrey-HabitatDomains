@@ -558,7 +558,7 @@ theme_bw(base_size = 14) +
   ylab("Proportional of predator free space or time") +
   xlab("Behavior Shift") +
   scale_x_discrete(labels=c("propHabitat" = "Habitat", "propPredFree" = "Time", 
-                            "SafeSpace" = "Space")) +
+                            "propSafeSpace" = "Space")) +
   facet_grid(Pred.Start.Con ~ Prey.Start.Con,
              labeller = labeller(Pred.Start.Con = new_labels,
                                  Prey.Start.Con = new_labels2)) +
