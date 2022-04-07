@@ -478,7 +478,7 @@ oneyrshift_plot <- ggplot(oneyrshifts,
 
 print(oneyrshift_plot)
 
-ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", width = 8, height = 5)
+ggsave(oneyrshift_plot, filename = "Output_Figures/OneYrShifts.png", dpi = 300, width = 8, height = 5)
 
 
 
