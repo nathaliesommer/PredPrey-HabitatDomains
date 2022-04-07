@@ -509,6 +509,9 @@ summary(fiveyrshifts)
 fiveyrshifts$variable <- factor(fiveyrshifts$variable, 
                                levels = c("propHabitat", "propPredFree", "propSafeSpace"))
 
+fiveyrshifts$BehaviorShift <- ifelse(fiveyrshifts$BehaviorShift == 0, "NA", fiveyrshifts$BehaviorShift)
+fiveyrshifts$BehaviorShift <- as.numeric(as.character(fiveyrshifts$BehaviorShift))
+summary(fiveyrshifts)
 
 ### Plot of behavioral shifts
 fiveyrshift_plot <- ggplot(fiveyrshifts,
