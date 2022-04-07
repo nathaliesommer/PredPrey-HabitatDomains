@@ -80,7 +80,3 @@ To make tweaks: https://mjskay.github.io/ggdist/reference/stat_halfeye.html
 ![fiveyrshifts](Output_Figures/FiveYrShifts.png)
 
 
-# Next steps
-- [x] make five year figure
-- [ ] edit results in manuscript for survival
-- [ ] edit results in manuscript for shifts
