@@ -417,7 +417,10 @@ summary(oneyrshifts)
 oneyrshifts$variable <- factor(oneyrshifts$variable, 
                                    levels = c("propHabitat", "propPredFree", "propSafeSpace"))
 
-
+# make zeros into NA for space shifts
+oneyrshifts$BehaviorShift <- ifelse(oneyrshifts$BehaviorShift == 0, "NA", oneyrshifts$BehaviorShift)
+oneyrshifts$BehaviorShift <- as.numeric(as.character(oneyrshifts$BehaviorShift))
+summary(oneyrshifts)
 
 
 # Plot of behavioral shifts
