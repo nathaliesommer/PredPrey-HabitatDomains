@@ -40,9 +40,9 @@ ipak(packages)
 # load data ----
 oneyr <- read.csv("Data/NCvsC_1year_TSH_Nov29.csv") %>%
   mutate(ModelType = 1)
-# 
-# oneyr_null <- read.csv("Data/NCvsC_Nullyear_TSH_Nov19.csv") %>%
-#   mutate(ModelType = 0)
+
+oneyr_null <- read.csv("Data/NCvsC_Nullyear_TSH_Nov19.csv") %>%
+  mutate(ModelType = 0)
 
 fiveyr <- read.csv("Data/NCvsC_5year_TSH_Nov29.csv")%>%
   mutate(ModelType = 1)
@@ -100,47 +100,7 @@ FiveYearNullandTrue_surv <-   active5.Large.Large %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
-#create the survival obejct:
-survobj<- with(FiveYearNullandTrue_surv, Surv(year, status))
 
-# Looking at the data (both null and NCE model together)
-# fit0 <- survfit(survobj~1, data=FiveYearNullandTrue_surv)
-# summary(fit0)
-# plot(fit0, xlab="Survival Time in Years", 
-#      ylab="% Surviving", yscale=100,
-#      main="Survival Distribution (Overall)") 
-
-######## Compare the survival distributions of null and true (what we really want)
-survobj<- with(FiveYearNullandTrue, Surv(year,status)) # same as above
-
-fit1.5.A.S.S <- survfit(survobj~ModelType, data=FiveYearNullandTrue)
-
-
-# Plot of 5 year null vs. modeled survival
-# ggsurvplot(
-#   fit1.5.A.S.S,
-#   data = FiveYearNullandTrue_surv,
-#   size = 1,                 # change line size
-#   palette =
-#     c("#E7B800", "#2E9FDF"),# custom color palettes
-#   conf.int = TRUE,          # Add confidence interval
-#   pval = TRUE,              # Add p-value
-#   risk.table = TRUE,        # Add risk table
-#   risk.table.col = "strata",# Risk table color by groups
-#   surv.median.line = "hv",  # add the median survival pointer.
-#   title = "5 yr Active Small/Small",
-#   legend.labs =
-#     c("Null", "NCE"),    # Change legend labels
-#   risk.table.height = 0.25, # Useful to change when you have multiple groups
-#   ggtheme = theme_bw()      # Change ggplot2 theme
-# )
-
-
-# test for difference between Null and NCE
-# survival curves (logrank test) 
-
-
-Allmod <- survdiff(Surv(year, status) ~ ModelType + Pred.Strat, data=FiveYearNullandTrue2)
 
 # look for differences based on shifts
 FiveYearTrue <-
@@ -350,8 +310,8 @@ HR_plot <- ggplot(HRsumm_new,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   ) +
-  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
-  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
+  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
+  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
   ylab("Hazard Ratio") +
   xlab("Behavior Shift") +
   geom_hline(yintercept = 1, linetype = "dotted") +
