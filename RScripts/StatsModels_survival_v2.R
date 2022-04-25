@@ -338,7 +338,7 @@ HR_plot <- ggplot(HRsumm_new,
 
 print(HR_plot)
 
-# ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", width = 8, height = 5)
+ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", dpi = 300, width = 8, height = 5)
 
 
 
