@@ -292,6 +292,7 @@ new_labels <- c("Small" = "Predator Small Domain", "Large" = "Predator Large Dom
 new_labels2 <- c("Small" = "Prey Small Domain", "Large" = "Prey Large Domain")
 
 # Plot of hazard ratios
+# tried annotation logsticks and it looked like garbage
 HR_plot <- ggplot(HRsumm_new,
                   aes(
                     x = HR.Type,
@@ -318,6 +319,9 @@ HR_plot <- ggplot(HRsumm_new,
   scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
   ylab("Hazard Ratio") +
   xlab("Behavior Shift") +
+  # annotation_logticks(sides = 'l',
+  #                     short = unit(0, "mm"),
+  #                     mid = unit(0, "mm")) +
   geom_hline(yintercept = 1, linetype = "dotted") +
   scale_y_continuous(
     trans = log10_trans(),
