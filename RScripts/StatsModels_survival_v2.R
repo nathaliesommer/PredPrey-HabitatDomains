@@ -107,9 +107,13 @@ FiveYearTrue <-
   FiveYearNullandTrue2 %>%
   subset(ModelType == 1)
 
+FiveYearCE <-
+  FiveYearNullandTrue2 %>%
+  subset(ModelType == 0)
+
 
 ## Make Hazard Ratio tables ----
-# prey behavioral changes
+# prey behavioral changes for NCE
 # FER thinks we should use this one
 FiveYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
@@ -118,12 +122,12 @@ haz.table <- FiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
-# kitchen sink of starting conditions
+# kitchen sink of starting conditions for CE
 # FER thinks we should use this one
-FiveYearNCE <-
+FiveYearCEmod <-
   coxph(Surv(year, status) ~ Pred.Strat + Pred.Start.Con*Prey.Start.Con,
-        data = FiveYearTrue)
-haz.table <- FiveYearNCE %>%
+        data = FiveYearCE)
+haz.table <- FiveYearCEmod %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
@@ -530,6 +534,19 @@ ggsave(fiveyrshift_plot, filename = "Output_Figures/FiveYrShifts.png", dpi = 300
 
 #################### Prepping separate huntings and looking at surivial plots across all of the data
 
+## overall models
+## all
+FiveYearNullandTrue <- FiveYearNullandTrue %>%
+  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
+
+FiveYearNullandTrue_surv <- FiveYearNullandTrue %>%
+  mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
+  mutate(year = ticks/365/24)
+
+allmod <- survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue_surv)
+
+
+
 ## to get colors to match the other plot, I am using viridisLite to get the hex codes
 # > viridis(11, alpha = 1, begin = 0, end = 1, direction = 1, option = "D")
 # [1] "#440154FF" "#482576FF" "#414487FF" "#35608DFF" "#2A788EFF" "#21908CFF" "#22A884FF"
@@ -591,6 +608,8 @@ FiveYearNullandTrue.A_surv$Pred.Start.Con <- factor(FiveYearNullandTrue.A_surv$P
                                     levels = c("Small", "Large"))
 FiveYearNullandTrue.A_surv$Prey.Start.Con <- factor(FiveYearNullandTrue.A_surv$Prey.Start.Con, 
                                     levels = c("Small", "Large"))
+
+
 
 ## Facet plot for active predators
 fitA <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.A_surv)
