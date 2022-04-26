@@ -756,13 +756,13 @@ SWMulti <- ggsurvplot_facet(fitSW,
                                 surv.median.line = "v", # add median survival
                                 pval = TRUE,
                                 pval.coord = c(0.1, 0.2),
-                                ggtheme = theme_bw(base_size = 12),
+                                ggtheme = theme_bw(base_size = 16),
                                 short.panel.labs = TRUE,
                                 panel.labs = list(Prey.Start.Con = c("Prey Small Domain", "Prey Large Domain"),
                                                  Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
-                                legend.labs = c("Consumptive", "Non-consumptive"),
+                                legend.labs = c("Consumptive", "Nonconsumptive"),
                                 size = 1,
-                                title = "Sit-and-Wait Predator Survival Curves") +
+                                title = "Sit-and-Wait Hunting Survival Curves") +
   theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
