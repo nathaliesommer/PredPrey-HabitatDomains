@@ -762,7 +762,7 @@ SWMulti <- ggsurvplot_facet(fitSW,
                                                  Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
                                 legend.labs = c("Consumptive", "Nonconsumptive"),
                                 size = 1,
-                                title = "Sit-and-Wait Hunting Survival Curves") +
+                                title = "(c) Sit-and-Wait Hunting Survival Curves") +
   theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
