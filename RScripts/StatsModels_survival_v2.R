@@ -424,9 +424,9 @@ oneyrshift_plot <- ggplot(oneyrshifts,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   ) +
-  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
-  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
-  ylab("Prey proportional low-risk space or time") +
+  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
+  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
+  ylab("Prey proportional shift to safety") +
   xlab("Behavior Shift") +
   scale_x_discrete(labels=c("propHabitat" = "Habitat", "propSafeSpace" = "Space",
                             "propPredFree" = "Time")) +
@@ -518,9 +518,9 @@ theme_bw(base_size = 14) +
     panel.grid.minor.x = element_blank()
   ) +
   ylim(0, 1) +
-  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
-  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Predator Strategy") +
-  ylab("Prey proportional low-risk space or time") +
+  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
+  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
+  ylab("Prey proportional shift to safety") +
   xlab("Behavior Shift") +
   scale_x_discrete(labels=c("propHabitat" = "Habitat", "propPredFree" = "Time", 
                             "propSafeSpace" = "Space")) +
