@@ -520,7 +520,7 @@ theme_bw(base_size = 14) +
   ylim(0, 1) +
   scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
   scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
-  ylab("Prey proportional shift to safety") +
+  ylab("Prey Proportional Shift to Safety") +
   xlab("Behavior Shift") +
   scale_x_discrete(labels=c("propHabitat" = "Habitat", "propPredFree" = "Time", 
                             "propSafeSpace" = "Space")) +
