@@ -63,6 +63,25 @@ oneyr_use$Pred.Strat <- as.factor(oneyr_use$Pred.Strat)
 oneyr_use$Pred.Start.Con <- as.factor(oneyr_use$Pred.Start.Con)
 oneyr_use$Prey.Start.Con <- as.factor(oneyr_use$Prey.Start.Con)
 
+# one yr data for models
+OneYearNullandTrue <- rbind(oneyr, oneyr_null)
+
+OneYearNullandTrue <- OneYearNullandTrue  %>%
+  mutate(propHabitat = White.Table/(Black.Table + White.Table)) %>%
+  mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap)) %>%
+  mutate(propPredFree = rowSums(.[28:39])/rowSums(.[16:39]))%>%
+  mutate(interactions = rowSums(.[41:63])) %>%
+  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
+
+# make a dataframe with all 5 year data
+OneYearNullandTrue2 <- OneYearNullandTrue %>%
+  mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
+  mutate(year = ticks/365/24)
+
+OneYearNullandTrue2$Pred.Strat <- as.factor(OneYearNullandTrue2$Pred.Strat)
+OneYearNullandTrue2$Pred.Start.Con <- as.factor(OneYearNullandTrue2$Pred.Start.Con)
+OneYearNullandTrue2$Prey.Start.Con <- as.factor(OneYearNullandTrue2$Prey.Start.Con)
+
 ###### Just looking at 5 years for now
 
 # load data ----
@@ -599,6 +618,14 @@ FiveYearNullandTrue.SW_surv$Pred.Start.Con <- as.factor(FiveYearNullandTrue.SW_s
 
 ## Active survival models
 
+OneYearNullandTrue.A <- OneYearNullandTrue %>%
+  subset(Pred.Strat == "Active") %>%
+  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
+
+OneYearNullandTrue.A_surv <- OneYearNullandTrue.A %>%
+  mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
+  mutate(year = ticks/365/24)
+
 FiveYearNullandTrue.A <- FiveYearNullandTrue %>%
   subset(Pred.Strat == "Active") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
@@ -608,6 +635,11 @@ FiveYearNullandTrue.A_surv <- FiveYearNullandTrue.A %>%
   mutate(year = ticks/365/24)
 
 # reorder
+OneYearNullandTrue.A_surv$Pred.Start.Con <- factor(OneYearNullandTrue.A_surv$Pred.Start.Con, 
+                                                    levels = c("Small", "Large"))
+OneYearNullandTrue.A_surv$Prey.Start.Con <- factor(OneYearNullandTrue.A_surv$Prey.Start.Con, 
+                                                    levels = c("Small", "Large"))
+
 FiveYearNullandTrue.A_surv$Pred.Start.Con <- factor(FiveYearNullandTrue.A_surv$Pred.Start.Con, 
                                     levels = c("Small", "Large"))
 FiveYearNullandTrue.A_surv$Prey.Start.Con <- factor(FiveYearNullandTrue.A_surv$Prey.Start.Con, 
@@ -616,9 +648,10 @@ FiveYearNullandTrue.A_surv$Prey.Start.Con <- factor(FiveYearNullandTrue.A_surv$P
 
 
 ## Facet plot for active predators
+fitA1 <- survfit( Surv(year, status) ~ ModelType, data = OneYearNullandTrue.A_surv)
 fitA <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.A_surv)
 ActiveMulti <- ggsurvplot_facet(fitA, 
-                                FiveYearNullandTrue.A_surv, 
+                                OneYearNullandTrue.A_surv, 
                                 conf.int = TRUE,
                                 facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
                                 palette = c("gray", "#414487FF"),
@@ -638,8 +671,30 @@ ActiveMulti <- ggsurvplot_facet(fitA,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   )
+ActiveMultiOne <- ggsurvplot_facet(fitA1, 
+                                OneYearNullandTrue.A_surv, 
+                                conf.int = TRUE,
+                                facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
+                                palette = c("gray", "#414487FF"),
+                                surv.median.line = "v", # add median survival
+                                pval = TRUE,
+                                pval.coord = c(0.02, 0.2),
+                                ggtheme = theme_bw(base_size = 16),
+                                short.panel.labs = TRUE,
+                                panel.labs = list(Prey.Start.Con = c("Prey Small Domain", "Prey Large Domain"),
+                                                  Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
+                                legend.labs = c("Consumptive", "Nonconsumptive"),
+                                size = 1,
+                                title = "(a) Active Hunting") +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
+print(ActiveMultiOne)
 print(ActiveMulti)
-ggsave("Output_Figures/ActivePredSurv.png", dpi = 300, height = 6, width = 7)
+ggsave("Output_Figures/OneYr_ActivePredSurv.png", dpi = 300, height = 6, width = 7)
 
 # A small/small
 A_SS <- FiveYearNullandTrue.A_surv %>%
