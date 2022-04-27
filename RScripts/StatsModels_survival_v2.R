@@ -631,7 +631,7 @@ ActiveMulti <- ggsurvplot_facet(fitA,
                                                   Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
                                 legend.labs = c("Consumptive", "Nonconsumptive"),
                                 size = 1,
-                                title = "(a) Active Hunting Survival Curves") +
+                                title = "(a) Active Hunting") +
   theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
@@ -762,7 +762,7 @@ SWMulti <- ggsurvplot_facet(fitSW,
                                                  Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
                                 legend.labs = c("Consumptive", "Nonconsumptive"),
                                 size = 1,
-                                title = "(c) Sit-and-Wait Hunting Survival Curves") +
+                                title = "(c) Sit-and-Wait Hunting") +
   theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
@@ -833,7 +833,7 @@ SPMulti <- ggsurvplot_facet(fitSP,
                                               Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
                             legend.labs = c("Consumptive", "Nonconsumptive"),
                             size = 1,
-                            title = "(b) Sit-and-Pursue Hunting Survival Curves") +
+                            title = "(b) Sit-and-Pursue Hunting") +
   theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
