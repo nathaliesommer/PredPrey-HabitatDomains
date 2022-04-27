@@ -827,13 +827,13 @@ SPMulti <- ggsurvplot_facet(fitSP,
                             surv.median.line = "v", # add median survival
                             pval = TRUE,
                             pval.coord = c(3.5, 0.8),
-                            ggtheme = theme_bw(base_size = 12),
+                            ggtheme = theme_bw(base_size = 16),
                             short.panel.labs = TRUE,
                             panel.labs = list(Prey.Start.Con = c("Prey Small Domain", "Prey Large Domain"),
                                               Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
-                            legend.labs = c("Consumptive", "Non-consumptive"),
+                            legend.labs = c("Consumptive", "Nonconsumptive"),
                             size = 1,
-                            title = "Sit-and-Pursue Predator Survival Curves") +
+                            title = "(b) Sit-and-Pursue Hunting Survival Curves") +
   theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
