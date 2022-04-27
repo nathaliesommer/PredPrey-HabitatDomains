@@ -787,6 +787,14 @@ all_active <-
 
 ## Sit-and-wait survival models
 
+OneYearNullandTrue.SW <- OneYearNullandTrue %>%
+  subset(Pred.Strat == "Sit-and-Wait") %>%
+  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
+
+OneYearNullandTrue.SW_surv <- OneYearNullandTrue.SW %>%
+  mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
+  mutate(year = ticks/365/24)
+
 FiveYearNullandTrue.SW <- FiveYearNullandTrue %>%
   subset(Pred.Strat == "Sit-and-Wait") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
@@ -796,12 +804,18 @@ FiveYearNullandTrue.SW_surv <- FiveYearNullandTrue.SW %>%
   mutate(year = ticks/365/24)
 
 # reorder
+OneYearNullandTrue.SW_surv$Pred.Start.Con <- factor(OneYearNullandTrue.SW_surv$Pred.Start.Con, 
+                                                     levels = c("Small", "Large"))
+OneYearNullandTrue.SW_surv$Prey.Start.Con <- factor(OneYearNullandTrue.SW_surv$Prey.Start.Con, 
+                                                     levels = c("Small", "Large"))
+
 FiveYearNullandTrue.SW_surv$Pred.Start.Con <- factor(FiveYearNullandTrue.SW_surv$Pred.Start.Con, 
                                                     levels = c("Small", "Large"))
 FiveYearNullandTrue.SW_surv$Prey.Start.Con <- factor(FiveYearNullandTrue.SW_surv$Prey.Start.Con, 
                                                     levels = c("Small", "Large"))
 
 # SW facet plot
+fitSW1 <- survfit( Surv(year, status) ~ ModelType, data = OneYearNullandTrue.SW_surv)
 fitSW <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.SW_surv)
 SWMulti <- ggsurvplot_facet(fitSW, 
                                 FiveYearNullandTrue.SW_surv, 
@@ -824,8 +838,30 @@ SWMulti <- ggsurvplot_facet(fitSW,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   )
+SWMulti1 <- ggsurvplot_facet(fitSW1, 
+                            OneYearNullandTrue.SW_surv, 
+                            conf.int = TRUE,
+                            facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
+                            palette = c("gray", "#7AD151FF"),
+                            surv.median.line = "v", # add median survival
+                            pval = TRUE,
+                            pval.coord = c(0.1, 0.2),
+                            ggtheme = theme_bw(base_size = 16),
+                            short.panel.labs = TRUE,
+                            panel.labs = list(Prey.Start.Con = c("Prey Small Domain", "Prey Large Domain"),
+                                              Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
+                            legend.labs = c("Consumptive", "Nonconsumptive"),
+                            size = 1,
+                            title = "(c) Sit-and-Wait Hunting") +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  )
+print(SWMulti1)
 print(SWMulti)
-ggsave("Output_Figures/SWPredSurv.png", dpi = 300, height = 6, width = 7)
+ggsave("Output_Figures/OneYr_SWPredSurv.png", dpi = 300, height = 6, width = 7)
 
 # SW small/small
 SW_SS <- FiveYearNullandTrue.SW_surv %>%
