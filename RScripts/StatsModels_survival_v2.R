@@ -334,8 +334,8 @@ HR_plot <- ggplot(HRsumm_new,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   ) +
-  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
-  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Strategy") +
+  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Mode") +
+  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Mode") +
   ylab("Hazard Ratio") +
   xlab("Behavior Shift") +
   # annotation_logticks(sides = 'l',
