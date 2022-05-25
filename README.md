@@ -83,4 +83,4 @@ To make tweaks: https://mjskay.github.io/ggdist/reference/stat_halfeye.html
 - [ ] hunting strategy to "hunting mode"
 - [ ] CE and CE + NCE instead of consumptive and nonconsumptive
 - [ ] Interactions and the number of interactions that occur. Trend with whether consumptive or nonconsumptive is dominant
-- [ ] 
+- [ ] Clean up script
