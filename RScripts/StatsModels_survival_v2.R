@@ -958,7 +958,7 @@ SPMulti1 <- ggsurvplot_facet(fitSP1,
                             short.panel.labs = TRUE,
                             panel.labs = list(Prey.Start.Con = c("Prey Small Domain", "Prey Large Domain"),
                                               Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
-                            legend.labs = c("CE", "NCE"),
+                            legend.labs = c("CE", "CE + NCE"),
                             size = 1,
                             title = "(b) Sit-and-Pursue Hunting Mode") +
   theme(
@@ -998,68 +998,5 @@ SP_LL <- FiveYearNullandTrue.SP_surv %>%
 SPLLmod <- survfit(Surv(year, status) ~ ModelType, data = SP_LL)
 SPLLmod
 
-# # load saved summary data for survival
-# 
-# NCEvCE <- read.csv("Data/NCEvNullSummary.csv", header = TRUE, fileEncoding="UTF-8-BOM")
-# 
-# survival_plot <- ggplot(NCEvCE,
-#                   aes(
-#                     x = Pred.Strat,
-#                     y = MedSurv,
-#                     fill = p.value,
-#                     group = Pred.Strat
-#                   )) +
-#   geom_line(aes(group = Pred.Strat)) +
-#   # geom_errorbar(
-#   #   aes(ymin = LCL95, ymax = UCL95, color = Model),
-#   #   width = 0.3,
-#   #   position = "dodge"
-#   # ) +
-#   geom_point(pch = 21,
-#              size = 4,
-#              position = position_dodge(width = 0.3)) +
-#   theme_bw(base_size = 14) +
-#   scale_fill_viridis_c() +
-#   ylab("Median survival time (yr)") +
-#   xlab("Hunting Mode") +
-#   facet_grid(Pred.Start.Con ~ Prey.Start.Con)
-# 
-# ggsave(survival_plot, filename = "Output_Figures/UglyMedSurvPlot.png", width = 8, height = 5)
 
-
-
-
-## survival plots ----
-
-# Predator.Prey<- unique(FiveYearNullandTrue.SP_surv$Pred.Prey_Domain)
-# 
-# splots <- list()
-# for (i in Predator.Prey) {
-#   subset1 <- FiveYearNullandTrue.SP_surv %>%
-#     subset(Pred.Prey_Domain == i)
-#   survobj <- with(subset1, Surv(year, status))
-#   ThePlot <- survfit(survobj ~ ModelType, data = subset1)
-#   splots[[i]] <-
-#     ggsurvplot(
-#       ThePlot,
-#       conf.int = TRUE, # add 95% confidence intervals
-#       size = 1,        # change line size
-#       palette = c("#E7B800", "#2E9FDF"), # custom color palettes
-#       pval = TRUE, # add p-value
-#       surv.median.line = "hv", # add median survival
-#       legend.labs = c("Null", "NCE"),
-#       ggtheme = theme_bw()
-#     ) + 
-#     ggtitle(paste0(i, " (Predator.Prey)"))
-#   #assign(paste("ThePlot", i, sep = ""), plot)
-# }
-# SPPlots <- arrange_ggsurvplots(
-#   splots,
-#   print = TRUE,
-#   ncol = 2,
-#   nrow = 2,
-#   title = "Survival Distributions for Sit-and-Pursue Hunting Strategy"
-# )
-# 
-# ggsave(SPPlots, filename = "Output_Figures/SPPredSurv.png", dpi = 300, width = 9, height = 7)
 
