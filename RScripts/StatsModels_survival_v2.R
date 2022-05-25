@@ -651,7 +651,7 @@ FiveYearNullandTrue.A_surv$Prey.Start.Con <- factor(FiveYearNullandTrue.A_surv$P
 fitA1 <- survfit( Surv(year, status) ~ ModelType, data = OneYearNullandTrue.A_surv)
 fitA <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.A_surv)
 ActiveMulti <- ggsurvplot_facet(fitA, 
-                                OneYearNullandTrue.A_surv, 
+                                FiveYearNullandTrue.A_surv, 
                                 conf.int = TRUE,
                                 facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
                                 palette = c("gray", "#414487FF"),
@@ -664,7 +664,7 @@ ActiveMulti <- ggsurvplot_facet(fitA,
                                                   Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
                                 legend.labs = c("CE", "CE + NCE"),
                                 size = 1,
-                                title = "(a) Active Hunting") +
+                                title = "(a) Active Hunting Mode") +
   theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
@@ -683,9 +683,9 @@ ActiveMultiOne <- ggsurvplot_facet(fitA1,
                                 short.panel.labs = TRUE,
                                 panel.labs = list(Prey.Start.Con = c("Prey Small Domain", "Prey Large Domain"),
                                                   Pred.Start.Con = c("Predator Small Domain", "Predator Large Domain")),
-                                legend.labs = c("CE only", "CE + NCE"),
+                                legend.labs = c("CE", "CE + NCE"),
                                 size = 1,
-                                title = "(a) Active Hunting") +
+                                title = "(a) Active Hunting Mode") +
   theme(
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
@@ -693,8 +693,11 @@ ActiveMultiOne <- ggsurvplot_facet(fitA1,
     panel.grid.minor.x = element_blank()
   )
 print(ActiveMultiOne)
-print(ActiveMulti)
 ggsave("Output_Figures/OneYr_ActivePredSurv.png", dpi = 300, height = 6, width = 7)
+
+print(ActiveMulti)
+ggsave(plot = ActiveMulti, "Output_Figures/FiveYr_ActivePredSurv.png", dpi = 300, height = 6, width = 7)
+
 
 # A small/small
 A_SS <- FiveYearNullandTrue.A_surv %>%
