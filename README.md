@@ -19,8 +19,6 @@ For each of these, the p-value is survival difference between the consumptive (n
 # Sit-and-wait survival
 ![Figure 2](Output_Figures/SWPredSurv.png)
 
-# All survival compared
-![Figure 4](Output_Figures/AllSurvival.png)
 
 ## Five year NCE data hazard tables
 
@@ -39,28 +37,8 @@ So a HR = 0.59 implies that around 0.6 times as many females are dying as males,
 - propPredFree = proportion of time spent in hrs where predators are not active = **time shift**
 - propSafeSpace = proportional habitat shift to areas where predators are excluded (so only in Prey.Start.Con = Large and Pred.Start.Con = Small) = **space shift**
 
-### Model 1: Prey behavioral changes and hazard ratio
-
-*mod1 <- coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace* 
-Note: this model does NOT account for predator strategy. So this is general for all predator strategies. But I think we use this because it assesses how survival changes based on prey behavior. Which allows us to directly compare.
-
-![Table 1](Output_Figures/FiveYrNCEHazardTable.png)
-
-So if we group all predators together, prey can significantly reduce mortality with behavior. In order from best to worst ways to increase probability of survival 1) shift time, 2) use predator free area, and 3) shift space. 
 
 
-### Model 4: Kitchen sink of starting conditions
-*mod <- coxph(Surv(year, status) ~ Pred.Strat + Pred.Start.Con * Prey.Start.Con*
-
-![Table 4](Output_Figures/FiveYrNCEHazardTable_KitchSink2.png)
-
-**FER opinion: I think this is the one we should use**
-This is cool. 
-
-- Predator strategy mirrors what we've known a while (Risk in Active = Sit-and-Puruse > Sit-and-Wait)
-- Prey are significantly less likely to die when predators constrained to a small domain
-- Prey starting condition doesn't seem to matter much
-- Huge hazard increase when both predator and prey are in small starting domain! Almost 3x more prey are dying in that than other starting conditions.
 
 ### The hazard ratios of each predator strategy/predator domain/prey domain combination
 
@@ -71,14 +49,11 @@ All hazard ratio data for each combination are summarized in [HazardRatioSummary
 
 Hazard ratio summary figure. HR = 1 (no benefit or detriment) is dotted. I think we should do something like this.
 
-# Behavioral shifts at year one
+# Behavioral shifts at one year
 ![oneyrshifts](Output_Figures/OneYrShifts.png)
 
 To make tweaks: https://mjskay.github.io/ggdist/reference/stat_halfeye.html
 
-# Behavioral shifts at year five
+# Behavioral shifts at five years
 ![fiveyrshifts](Output_Figures/FiveYrShifts.png)
 
-# Freya to-do
-- [ ] Interactions and the number of interactions that occur. Trend with whether consumptive or nonconsumptive is dominant
-- [ ] Clean up script
