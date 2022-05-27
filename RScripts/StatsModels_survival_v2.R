@@ -1,6 +1,5 @@
-# Script for survival analyses
+# Script for survival analyses, survival figures, and behavioral shift figures
 
-# Adapted from KDO script Jan 2022
 # KDO and FER
 # Last updated May 2022 by FER
 
@@ -82,13 +81,14 @@ OneYearNullandTrue2$Pred.Strat <- as.factor(OneYearNullandTrue2$Pred.Strat)
 OneYearNullandTrue2$Pred.Start.Con <- as.factor(OneYearNullandTrue2$Pred.Start.Con)
 OneYearNullandTrue2$Prey.Start.Con <- as.factor(OneYearNullandTrue2$Prey.Start.Con)
 
-###### Just looking at 5 years for now
+###### 5 year data cleanup
 
-# load data ----
+# clean data ----
 
-
+# bind CE only and CE + NCE model results
 FiveYearNullandTrue <- rbind(fiveyr, fiveyr_null)
 
+# calculate prop safe space, prop habitat, and prop time shifts
 FiveYearNullandTrue <- FiveYearNullandTrue  %>%
   mutate(propHabitat = White.Table/(Black.Table + White.Table)) %>%
   mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap)) %>%
@@ -96,11 +96,14 @@ FiveYearNullandTrue <- FiveYearNullandTrue  %>%
   mutate(interactions = rowSums(.[41:63])) %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
 
-# make a dataframe with all 5 year data
+# make a dataframe and convert ticks to 'years' and set alive vs. dead status
+# prepping the data for the 'survivor' package - need a column called status which is binary
+# to determine if the 'event' (dying) occurred or not
 FiveYearNullandTrue2 <- FiveYearNullandTrue %>%
   mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
+# make sure starting conditions are factors
 FiveYearNullandTrue2$Pred.Strat <- as.factor(FiveYearNullandTrue2$Pred.Strat)
 FiveYearNullandTrue2$Pred.Start.Con <- as.factor(FiveYearNullandTrue2$Pred.Start.Con)
 FiveYearNullandTrue2$Prey.Start.Con <- as.factor(FiveYearNullandTrue2$Prey.Start.Con)
@@ -112,28 +115,22 @@ active5.Large.Large <-  subset(FiveYearNullandTrue, Pred.Strat == "Active") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
   subset(Pred.Prey_Domain == "Large.Large")
 
+
+
 #######################SURIVAL PACKAGE
-## prepping the data for the 'survivor' package - need a column called status which is binary
-#to determine if the 'event' (dying) occurred or not
-FiveYearNullandTrue_surv <-   active5.Large.Large %>%
-  mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
-  mutate(year = ticks/365/24)
 
-
-
-# look for differences based on shifts
+# CE + NCE effects
 FiveYearTrue <-
   FiveYearNullandTrue2 %>%
   subset(ModelType == 1)
 
+# only CE
 FiveYearCE <-
   FiveYearNullandTrue2 %>%
   subset(ModelType == 0)
 
 
 ## Make Hazard Ratio tables ----
-# prey behavioral changes for NCE
-# FER thinks we should use this one
 FiveYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = FiveYearTrue)
@@ -141,8 +138,7 @@ haz.table <- FiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
-# kitchen sink of starting conditions for CE
-# FER thinks we should use this one
+# behavioral changes for CE only
 FiveYearCEmod <-
   coxph(Surv(year, status) ~ Pred.Strat + Pred.Start.Con*Prey.Start.Con,
         data = FiveYearCE)
@@ -150,7 +146,7 @@ haz.table <- FiveYearCEmod %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
-## Look at hazard ratio of behavioral changes by predator strategy
+## Look at hazard ratio of behavioral changes by predator hunting mode
 
 ## Active predators
 Active5 <- FiveYearNullandTrue2 %>%
@@ -289,8 +285,12 @@ haz.table <- SWFiveYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
-## Plot the data
-# made a summary file
+
+
+
+
+## Plot the hazard ratio data ----
+# load summary file
 HR_summ <- read.csv("Data/HazardRatioSummary_Feb2022.csv", header = TRUE, fileEncoding="UTF-8-BOM")
 
 # I know there is a better way to do this, but I can't remember it. Ha.
@@ -311,7 +311,6 @@ new_labels <- c("Small" = "Predator Small Domain", "Large" = "Predator Large Dom
 new_labels2 <- c("Small" = "Prey Small Domain", "Large" = "Prey Large Domain")
 
 # Plot of hazard ratios
-# tried annotation logsticks and it looked like garbage
 HR_plot <- ggplot(HRsumm_new,
                   aes(
                     x = HR.Type,
@@ -338,9 +337,6 @@ HR_plot <- ggplot(HRsumm_new,
   scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Mode") +
   ylab("Hazard Ratio") +
   xlab("Behavior Shift") +
-  # annotation_logticks(sides = 'l',
-  #                     short = unit(0, "mm"),
-  #                     mid = unit(0, "mm")) +
   geom_hline(yintercept = 1, linetype = "dotted") +
   scale_y_continuous(
     trans = log10_trans(),
@@ -367,7 +363,7 @@ ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", dpi = 300, wid
 
 
 
-## make time plots for yr = 1 and 5 to look at shifts
+## make time plots for yr = 1 and 5 to look at shifts ----
 
 ##### One yr data
 
@@ -422,19 +418,6 @@ oneyrshift_plot <- ggplot(oneyrshifts,
     aes(fill = Pred.Strat),
     slab_alpha = 0.7
   ) + 
-  # gghalves::geom_half_point(
-  #   ## draw jitter on the left
-  #   side = "l", 
-  #   ## control range of jitter
-  #   range_scale = .1, 
-  #   ## add some transparency
-  #   alpha = .3
-  # geom_point(
-  #   size = 0.5,
-  #   postition = position_dodge(width = 0.5), 
-  #   alpha = .3,
-  #     position = position_dodge(width = 0.3)
-  #   ) +
   theme_bw(base_size = 14) +
   ylim(0,1) +
   theme(
@@ -509,26 +492,10 @@ fiveyrshift_plot <- ggplot(fiveyrshifts,
     adjust = 1,
     normalize = "groups",
     position = position_dodge(width = 0.5),
-    # width = 1, 
-    # height = 1,
     ## set slab interval to show IQR and 95% data range
     .width = c(.5, .95),
     aes(fill = Pred.Strat),
-    slab_alpha = 0.7
-  ) + 
-  # gghalves::geom_half_point(
-  #   ## draw jitter on the left
-  #   side = "l", 
-  #   ## control range of jitter
-  #   range_scale = .1, 
-  #   ## add some transparency
-  #   alpha = .3
-  # geom_point(
-  #   size = 0.5,
-  #   postition = position_dodge(width = 0.5), 
-  #   alpha = .3,
-#     position = position_dodge(width = 0.3)
-#   ) +
+    slab_alpha = 0.7) +
 theme_bw(base_size = 14) +
   theme(
     panel.grid.major.y = element_blank(),
