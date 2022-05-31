@@ -8,7 +8,7 @@
 
 ## Current figures
 
-For each of these, the p-value is survival difference between the consumptive (null) and non-consumptive (NCE) models. The vertical lines show the median survival of each curve. Suggestions on colors or tweaks are welcome. All code is under [RScripts/StatsModels_survival_v2.R](RScripts/StatsModels_survival_v2.R)
+For each of these, the p-value is survival difference between the consumptive (CE) and consumptive + non-consumptive (CE + NCE) models. The vertical lines show the median survival of each curve. Suggestions on colors or tweaks are welcome. All code is under [RScripts/StatsModels_survival_v2.R](RScripts/StatsModels_survival_v2.R)
 
 # Active survival
 ![Figure 1](Output_Figures/ActivePredSurv.png)
