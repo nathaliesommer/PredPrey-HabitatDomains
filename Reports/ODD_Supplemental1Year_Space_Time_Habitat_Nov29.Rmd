@@ -1,6 +1,5 @@
 ---
-title: "Habitat Domains and Predator-Prey Consumptive and Non-Consumptive Effects:
-  shifts in space, time and habitat for 1 year"
+title: "1-Year Supplemental: Disentangling the role of predator hunting mode, spatial domain size, and habitat complexity: An agent-based examination of consumptive and nonconsumptive effects""
 author: "Netlogo Working Group"
 date: "Nov 29 2021"
 output: html_document
