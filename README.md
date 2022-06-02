@@ -30,6 +30,6 @@ NetLogo Outputs
 
 ##### (5) Sensitivity Analysis Models
 
-##### Output_Figures
+##### (6) Output_Figures
 
 Contains all figures, including supplemental, generated from the R scripts
