@@ -30,6 +30,9 @@ Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
 ##### (5) Sensitivity Analysis Models
 
+- Code for main and null models
+- Summary data of output
+
 ##### (6) Output_Figures
 
 - Contains all figures, including supplemental, generated from the R scripts
