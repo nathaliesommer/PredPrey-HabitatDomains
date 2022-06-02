@@ -1,4 +1,8 @@
-# PredPrey-HabitatDomains
+# Description
+
+Code and data for Orrick et al "_Disentangling the role of predator hunting mode, spatial domain size, and habitat complexity: An agent-based examinination of consumptive and nonconsumptive effects_", in review at Ecography
+
+Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
 #### Collaborators:
 - Kaggie Orrick
@@ -6,54 +10,38 @@
 - Nathalie Sommer
 - Kristy Ferraro
 
-## Current figures
+## Contents
 
-For each of these, the p-value is survival difference between the consumptive (null) and non-consumptive (NCE) models. The vertical lines show the median survival of each curve. Suggestions on colors or tweaks are welcome. All code is under [RScripts/StatsModels_survival_v2.R](RScripts/StatsModels_survival_v2.R)
+#### (1) Reports
 
-# Active survival
-![Figure 1](Output_Figures/ActivePredSurv.png)
+_Start here. The ODDs contain the full model descriptions_
 
-# Sit-and-pursue survival
-![Figure 3](Output_Figures/SPPredSurv.png)
+- ODD for the 5-year Netlogo model
+- ODD for the supplemental 1-year Netlogo model
 
-# Sit-and-wait survival
-![Figure 2](Output_Figures/SWPredSurv.png)
+#### (2) NetLogo Scripts
 
+_Requires [NetLogo](http://ccl.northwestern.edu/netlogo/index.shtml)_
 
-## Five year NCE data hazard tables
+- Code for the 5-year model
+- Code for the supplemental 1-year model
 
-[Explanation of hazard ratio table](<https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html#Estimating_survival_curves_with_the_Kaplan-Meier_method>)
+#### (3) Data
 
-The quantity of interest from a Cox regression model is a hazard ratio (HR). The HR represents the ratio of hazards between two groups at any particular point in time.
-The HR is interpreted as the instantaneous rate of occurrence of the event of interest in those who are still at risk for the event. It is not a risk, though it is commonly interpreted as such.
+- All NetLogo outputs (see [Data/README.md](/Data/README.md) for complete file list)
 
-If you have a regression parameter β (from column estimate in our coxph) then HR = exp(β).
+#### (4) RScripts
 
-A **HR < 1 indicates reduced hazard of death** whereas a **HR > 1 indicates an increased hazard of death**.
-So a HR = 0.59 implies that around 0.6 times as many females are dying as males, at any given time.
+_Analyzes NetLogo outputs_
 
-**For reference:
-- propHabitat = proportion of time spent on white vs. black spaces = **habitat shift**
-- propPredFree = proportion of time spent in hrs where predators are not active = **time shift**
-- propSafeSpace = proportional habitat shift to areas where predators are excluded (so only in Prey.Start.Con = Large and Pred.Start.Con = Small) = **space shift**
+- StatsModels_survival_v2.R 
+- PredPrey_SensitivityAnalysis_Jan.R
 
+#### (5) Sensitivity Analysis Models
 
+- Code for main and null models
+- Summary data of output
 
+#### (6) Output_Figures
 
-### The hazard ratios of each predator strategy/predator domain/prey domain combination
-
-All hazard ratio data for each combination are summarized in [HazardRatioSummary_Feb2022.csv](Data/HazardRatioSummary_Feb2022.png)
-
-# Hazard ratio summary figure
-![HRFigure](Output_Figures/HazardRatiosPlot.png)
-
-Hazard ratio summary figure. HR = 1 (no benefit or detriment) is dotted. I think we should do something like this.
-
-# Behavioral shifts at one year
-![oneyrshifts](Output_Figures/OneYrShifts.png)
-
-To make tweaks: https://mjskay.github.io/ggdist/reference/stat_halfeye.html
-
-# Behavioral shifts at five years
-![fiveyrshifts](Output_Figures/FiveYrShifts.png)
-
+- Contains all figures, including supplemental, generated from the R scripts

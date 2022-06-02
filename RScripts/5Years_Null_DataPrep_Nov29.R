@@ -1,5 +1,3 @@
-
-
 #Import Data
 
 ipak <- function(pkg){
@@ -20,23 +18,20 @@ packages <- c("remotes",
 #Run the ipak loop
 ipak(packages)
 
-
-setwd("/Users/kaggieorrick/Desktop/OneDrive - Yale University/NetLogo/Pred-Prey/Pred_PreyHabitatDomains/PredPrey-HabitatDomains/RScripts")
-FILE_TO_READ <- "../Data/YEAR5_NULL_8x12_death_Space_Time_Habitat_Nov29Final YEAR5_MODELS-table.csv"
+FILE_TO_READ <- "Data/YEAR5_NULL_8x12_death_Space_Time_Habitat_Nov29Final YEAR5_MODELS-table.csv"
 
 data<- read.csv(FILE_TO_READ, skip = 6, stringsAsFactors = FALSE, col.names=c("run Number", "Pred-Strat", "Prey-Start-Con",  "Pred-Start-Con", "Detect-Black",  "Detect-White", "Step", "ticks", "nearby", "mapAware-table", "Hour-Map",  "Black-Table", "White-Table", "DomainOverlap", "Domain-Prey"))
 
-# KO manipulating data
+# KO cleaning data
 list_of_list<- as.list(as.list(data$Hour.Map))
 
 #Removing of the brackets
-shortened<- str_split(list_of_list, "] ", simplify = TRUE ) # spliting by the "]" bracket (can't do it the other way because R thinks you are doing something)
+shortened<- str_split(list_of_list, "] ", simplify = TRUE ) # spliting by the "]" bracket 
 shortened1 <- substring(shortened, 2) #removing the open bracket "["
 shortened2<- as.data.frame(shortened1) #making into a dataframe
 shortened2$V1<-substring(shortened2$V1, 2) #"manually" removing the extra bracket in the first column
 shortened2$V24<-substring(shortened2$V24, 1, nchar(shortened2$V24) - 2) #"manually" removing the last 2 brackets in the last column
 
-#I seriously am unsure if all are needed but this puts the table together
 transposed<- t(shortened2) %>% #first transpose the list, so it's
   str_split(" ")
 
@@ -256,9 +251,7 @@ data <- final2 %>%
   mutate(nearby = gsub("\\[|\\]", "", data$nearby))
 
 
-
-
-NAME_OF_CLEAN_DATA <- "/Users/kaggieorrick/Desktop/OneDrive - Yale University/NetLogo/Pred-Prey/Pred_PreyHabitatDomains/PredPrey-HabitatDomains/Data/NCvsC_NULL_5year_TSH_Nov29.csv"
+NAME_OF_CLEAN_DATA <- "/Data/NCvsC_NULL_5year_TSH_Nov29.csv"
 
 write.csv(data, NAME_OF_CLEAN_DATA, row.names = FALSE)
 getwd()
