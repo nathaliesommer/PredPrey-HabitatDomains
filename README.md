@@ -24,7 +24,7 @@ Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
 ##### (3) Data
 
-- NetLogo Outputs
+- All NetLogo outputs (see [Data/ReadMe.md](Data/ReadMe.md))
 
 ##### (4) RScripts
 
