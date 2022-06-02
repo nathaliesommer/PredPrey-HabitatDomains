@@ -32,4 +32,4 @@ NetLogo Outputs
 
 ##### (6) Output_Figures
 
-Contains all figures, including supplemental, generated from the R scripts
+- Contains all figures, including supplemental, generated from the R scripts
