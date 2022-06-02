@@ -1,4 +1,4 @@
-# Scripts ReadME
+# RScripts ReadME
 
 ### File List: 
 [Jan_PredPrey_SensitivityAnalysis.R](Jan_PredPrey_SenistivityAnalysis.R): A script to run the data outputs from the sensitivity analysis

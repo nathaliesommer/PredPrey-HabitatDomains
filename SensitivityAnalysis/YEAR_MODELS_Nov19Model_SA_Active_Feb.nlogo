@@ -1,5 +1,5 @@
 ;; DESCRIPTION:
-; this is a Sensetivity Analysis Model for Active Hunting Modes
+; this is a Sensitivity Analysis Model for Active Hunting Modes
 
 extensions [
   table ]
