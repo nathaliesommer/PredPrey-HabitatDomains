@@ -34,7 +34,7 @@ _Requires [NetLogo](http://ccl.northwestern.edu/netlogo/index.shtml)_
 
 _Analyzes NetLogo outputs_
 
-- StatsModels_survival_v2.R 
+- StatsModels_Figures.R 
 - PredPrey_SensitivityAnalysis_Jan.R
 
 #### (5) Sensitivity Analysis Models
