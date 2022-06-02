@@ -24,7 +24,7 @@ Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
 ##### (3) Data
 
-NetLogo Outputs
+- NetLogo Outputs
 
 ##### (4) RScripts
 
