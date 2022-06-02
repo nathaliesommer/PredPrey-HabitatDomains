@@ -14,6 +14,8 @@ Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
 ##### NetLogo Scripts
 
+- Code for the 5-year model
+- Code for the supplemental 1-year model
 ##### Data
 
 ##### RScripts
@@ -23,7 +25,7 @@ Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 ##### Reports
 
 - ODD for the 5-year Netlogo model
-- ODD for the 1-year Netlogo model
+- ODD for the supplemental 1-year Netlogo model
 
 ##### Output_Figures
 
