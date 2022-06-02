@@ -5,4 +5,4 @@
 
 [RScripts/StatsModels_survival_v2.R](RScripts/StatsModels_survival_v2.R): Current script for survival models and figures for the manuscript
 
-[RScripts/Dataprep_Final.R](RScripts/Dataprep_Final.R): Current script used to import table output from Netlogo and clean it up to be used in R.
+[RScripts/DataPrep_Final.R](RScripts/DataPrep_Final.R): Current script used to import table output from Netlogo and clean it up to be used in R.
