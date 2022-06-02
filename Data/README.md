@@ -1,5 +1,5 @@
 ## README
-In this folder are the data for the different versions run on Netlogo.
+In this folder are the data for the different versions run on Netlogo and summarized data for models.
 
 The most up-to-date files are: (From Nov 29 and 30 2021)
 1 Year
@@ -25,3 +25,5 @@ Last part of any name is the date that the simulation was run.
 - NCvsC_1year_Nov11.csv :prey die, the simulation runs for 1 year, simulation run on the cluster Nov 11
 - NCvsC_5years_Nov11.csv :prey die, the simulation runs for 5 years, simulation run on the cluster Nov 11
 - NCvsC_everymonth_Nov1o.csv :prey die, the simulation runs for 10 years but gives an output every month, simulation run on the cluster on Nov 10
+- HazardRatioSummary_Feb2022.csv : summary file for the survival hazard ratio models for each model condition
+- NCEvNullSummary.csv : summary file with median survival, 95% CI on median survival, p-value for difference between CE and CE + NCE models
