@@ -12,35 +12,36 @@ Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
 ## Contents
 
-##### (1) Reports
+#### (1) Reports
 
-_Start here. The ODDs contain the full model descriptions
+_Start here. The ODDs contain the full model descriptions_
 
 - ODD for the 5-year Netlogo model
 - ODD for the supplemental 1-year Netlogo model
 
-##### (2) NetLogo Scripts
+#### (2) NetLogo Scripts
 
-_Requires [NetLogo](http://ccl.northwestern.edu/netlogo/index.shtml)
+_Requires [NetLogo](http://ccl.northwestern.edu/netlogo/index.shtml)_
 
 - Code for the 5-year model
 - Code for the supplemental 1-year model
 
-##### (3) Data
+#### (3) Data
 
 - All NetLogo outputs (see [Data/README.md](/Data/README.md) for complete file list)
 
-##### (4) RScripts
-_Analyzes NetLogo outputs
+#### (4) RScripts
+
+_Analyzes NetLogo outputs_
 
 - StatsModels_survival_v2.R 
 - PredPrey_SensitivityAnalysis_Jan.R
 
-##### (5) Sensitivity Analysis Models
+#### (5) Sensitivity Analysis Models
 
 - Code for main and null models
 - Summary data of output
 
-##### (6) Output_Figures
+#### (6) Output_Figures
 
 - Contains all figures, including supplemental, generated from the R scripts
