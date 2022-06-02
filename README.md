@@ -1,6 +1,6 @@
 # Description
 
-Code and data for Orrick et al "Disentangling the role of predator hunting mode, spatial domain size, and habitat complexity: An agent-based examinination of consumptive and nonconsumptive effects", in review at Ecography
+Code and data for Orrick et al "_Disentangling the role of predator hunting mode, spatial domain size, and habitat complexity: An agent-based examinination of consumptive and nonconsumptive effects_", in review at Ecography
 
 Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
@@ -14,19 +14,27 @@ Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
 ##### (1) Reports
 
+_Start here. The ODDs contain the full model descriptions
+
 - ODD for the 5-year Netlogo model
 - ODD for the supplemental 1-year Netlogo model
 
 ##### (2) NetLogo Scripts
+
+_Requires [NetLogo](http://ccl.northwestern.edu/netlogo/index.shtml)
 
 - Code for the 5-year model
 - Code for the supplemental 1-year model
 
 ##### (3) Data
 
-- All NetLogo outputs (see [Data/README.md](/Data/README.md))
+- All NetLogo outputs (see [Data/README.md](/Data/README.md) for complete file list)
 
 ##### (4) RScripts
+_Analyzes NetLogo outputs
+
+- StatsModels_survival_v2.R 
+- PredPrey_SensitivityAnalysis_Jan.R
 
 ##### (5) Sensitivity Analysis Models
 
