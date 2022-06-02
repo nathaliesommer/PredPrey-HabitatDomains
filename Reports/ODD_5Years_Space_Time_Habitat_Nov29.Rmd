@@ -3,9 +3,8 @@ title: "5 years"
 output: html_document
 ---
 ---
-title: "Habitat Domains and Predator-Prey Consumptive and Non-Consumptive Effects:
-  shifts in space, time and habitat for 5 years"
-author: "Netlogo Working Group"
+title: "Disentangling the role of predator hunting mode, spatial domain size, and habitat complexity: An agent-based examination of consumptive and nonconsumptive effects"
+author: "Orrick et al"
 date: "Nov 21 2021"
 output: html_document
 ---
