@@ -12,20 +12,23 @@ Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
 ## Contents
 
-##### NetLogo Scripts
-
-- Code for the 5-year model
-- Code for the supplemental 1-year model
-##### Data
-
-##### RScripts
-
-##### Sensitivity Analysis Models
-
-##### Reports
+##### (1) Reports
 
 - ODD for the 5-year Netlogo model
 - ODD for the supplemental 1-year Netlogo model
+
+##### (2) NetLogo Scripts
+
+- Code for the 5-year model
+- Code for the supplemental 1-year model
+
+##### (3) Data
+
+NetLogo Outputs
+
+##### (4) RScripts
+
+##### (5) Sensitivity Analysis Models
 
 ##### Output_Figures
 
