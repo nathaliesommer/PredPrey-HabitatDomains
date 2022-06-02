@@ -31,6 +31,9 @@ _Requires [NetLogo](http://ccl.northwestern.edu/netlogo/index.shtml)_
 - All NetLogo outputs (see [Data/README.md](/Data/README.md) for complete file list)
 
 #### (4) RScripts
+_Preps data from NetLogo_
+
+- DataPrep_Final.R
 
 _Analyzes NetLogo outputs_
 
