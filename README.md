@@ -26,14 +26,10 @@ _Requires [NetLogo](http://ccl.northwestern.edu/netlogo/index.shtml)_
 - Contains all NetLogo outputs (see [Data/README.md](/Data/README.md) for complete file list)
 
 #### (4) RScripts
-_Cleans data outputs from NetLogo_
 
-- DataPrep_Final.R
-
-_Analyzes NetLogo outputs_
-
-- StatsModels_Figures.R 
-- PredPrey_SensitivityAnalysis_Jan.R
+- DataPrep_Final.R: _Cleans data outputs from NetLogo_
+- StatsModels_Figures.R: _Main analysis_
+- PredPrey_SensitivityAnalysis_Jan.R: _Sensitivity analysis_
 
 #### (5) Sensitivity Analysis Models
 
