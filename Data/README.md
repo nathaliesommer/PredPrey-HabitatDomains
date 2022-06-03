@@ -1,24 +1,21 @@
 ## README
 In this folder are the data for the different versions run on Netlogo and summarized data for models.
 
-The most up-to-date files are: (From Nov 29 and 30 2021)
-1 Year
-- "NCvsC_1year_TSH_Nov29.csv" - 1 year data with consumptive effects and non-consumptive effects.
-- "NCvsC_Nullyear_TSH_Nov19.csv" - 1 year data with only consumptive effects.
-- "NCvsC_1year_TSH_EqualDetection_Nov29.csv" - 1 year data with consumptive effects and non-consumptive effects and equal habitat detection set at 0.55
+#### File Descriptions
+- Any csv with 'NCvsC' means that the model includes prey dying.
+- Any csv with 'NC' means that the model does not include prey dying (predators are always unsuccessful)
+- The second part of any csv name is the length a simulation was run: 1year, 5years or unlimited (until all prey die)
+- Last part of any csv name is the date that the simulation was run.
 
-5 Years
-- "NCvsC_5year_TSH_Nov29.csv" - 5 years data with consumptive effects and non-consumptive effects.
-- "NCvsC_NULL_5year_TSH_Nov29.csv" - 5 years data with only consumptive effects.
+1 Year Models
+- "NCvsC_1year_TSH_Nov29.csv" _1 year data with consumptive effects and non-consumptive effects_
+- "NCvsC_Nullyear_TSH_Nov19.csv" _1 year data with only consumptive effects_
+- "NCvsC_1year_TSH_EqualDetection_Nov29.csv" _1 year data with consumptive effects and non-consumptive effects and equal habitat detection set at 0.55_
 
+5 Year Models
+- "NCvsC_5year_TSH_Nov29.csv" _5 years data with consumptive effects and non-consumptive effects_
+- "NCvsC_NULL_5year_TSH_Nov29.csv" _5 years data with only consumptive effects_
 
-
-Any file with 'NCvsC' means that the model has included prey dying
-Any file with 'NC' means that the model does not include prey dying (predators are always unsuccessful)
-
-The second part of any name is the length a simulation was run: 1year, 5years or unlimited (until all prey die)
-
-Last part of any name is the date that the simulation was run.
 
 #### File List
 - NCvsC_unlimited_Nov11.csv : prey die, the simulation runs until the prey is dead, simulation run on the cluster Nov 11
