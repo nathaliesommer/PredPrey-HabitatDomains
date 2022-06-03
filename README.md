@@ -11,6 +11,7 @@ Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
 _Start here. The ODDs contain the full model descriptions._
 
+- ODD for both the 5-year and 1-year Netlogo model
 - ODD for the 5-year Netlogo model
 - ODD for the supplemental 1-year Netlogo model
 
