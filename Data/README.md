@@ -1,5 +1,6 @@
 ## README
-In this folder are the data for the different versions run on Netlogo and summarized data for models.
+Data for the different models and summary data
+Data files are referenced by the [R Scripts](/RScripts).
 
 #### File Descriptions
 - Any csv with 'NCvsC' means that the model includes prey dying.
