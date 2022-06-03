@@ -9,7 +9,7 @@ Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
 #### (1) Reports
 
-_Start here. The ODDs contain the full model descriptions_
+_Start here. The ODDs contain the full model descriptions._
 
 - ODD for the 5-year Netlogo model
 - ODD for the supplemental 1-year Netlogo model
@@ -23,10 +23,10 @@ _Requires [NetLogo](http://ccl.northwestern.edu/netlogo/index.shtml)_
 
 #### (3) Data
 
-- All NetLogo outputs (see [Data/README.md](/Data/README.md) for complete file list)
+- Contains all NetLogo outputs (see [Data/README.md](/Data/README.md) for complete file list)
 
 #### (4) RScripts
-_Preps data from NetLogo_
+_Cleans data outputs from NetLogo_
 
 - DataPrep_Final.R
 
@@ -37,7 +37,7 @@ _Analyzes NetLogo outputs_
 
 #### (5) Sensitivity Analysis Models
 
-- Code for main and null models
+- Code for main and null NetLogo models
 - Summary data of output
 
 #### (6) Output_Figures
