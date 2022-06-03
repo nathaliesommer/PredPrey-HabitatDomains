@@ -5,4 +5,4 @@
 
 (2) [RScripts/StatsModels_survival_v2.R](RScripts/StatsModels_survival_v2.R): Analyses, survival models, and figures
 
-(3) [PredPrey_SensitivityAnalysis_Jan.R](PredPrey_SenistivityAnalysis_Jan.R): Sensitivity analysis
+(3) [PredPrey_SensitivityAnalysis_Jan.R](PredPrey_SensitivityAnalysis_Jan.R): Sensitivity analysis
