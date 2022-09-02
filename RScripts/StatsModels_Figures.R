@@ -3,7 +3,7 @@
 # KDO and FER
 # Last updated September 2022 by FER
 
-
+# Load packages using function ----
 ipak <- function(pkg){
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
   if (length(new.pkg)) 
@@ -11,7 +11,7 @@ ipak <- function(pkg){
   sapply(pkg, require, character.only = TRUE)
 }
 
-# Packages that I want
+# Packages that I want 
 packages <- c("remotes",
               "tidyr",
               "tidyverse",
@@ -62,7 +62,7 @@ oneyr_use$Pred.Strat <- as.factor(oneyr_use$Pred.Strat)
 oneyr_use$Pred.Start.Con <- as.factor(oneyr_use$Pred.Start.Con)
 oneyr_use$Prey.Start.Con <- as.factor(oneyr_use$Prey.Start.Con)
 
-# one yr data for models
+# one yr data for models ----
 OneYearNullandTrue <- rbind(oneyr, oneyr_null)
 
 OneYearNullandTrue <- OneYearNullandTrue  %>%
@@ -81,9 +81,7 @@ OneYearNullandTrue2$Pred.Strat <- as.factor(OneYearNullandTrue2$Pred.Strat)
 OneYearNullandTrue2$Pred.Start.Con <- as.factor(OneYearNullandTrue2$Pred.Start.Con)
 OneYearNullandTrue2$Prey.Start.Con <- as.factor(OneYearNullandTrue2$Prey.Start.Con)
 
-###### 5 year data cleanup
-
-# clean data ----
+###### 5 year data for models ----
 
 # bind CE only and CE + NCE model results
 FiveYearNullandTrue <- rbind(fiveyr, fiveyr_null)
@@ -111,7 +109,7 @@ FiveYearNullandTrue2$Prey.Start.Con <- as.factor(FiveYearNullandTrue2$Prey.Start
 
 
 
-#######################SURIVAL PACKAGE
+#######################SURIVAL PACKAGE ----
 
 # CE + NCE effects
 FiveYearTrue <-
@@ -357,7 +355,7 @@ ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot.png", dpi = 300, wid
 
 
 
-## make time plots for yr = 1 and 5 to look at shifts ----
+## make time plots for yr = 0-1 and yr = 0-5 to look at shifts ----
 
 ##### One yr data
 
@@ -516,7 +514,7 @@ ggsave(fiveyrshift_plot, filename = "Output_Figures/FiveYrShifts.png", dpi = 300
 
 
 
-#################### Prepping separate huntings and looking at surivial plots across all of the data
+#################### Prepping separate hunting modes and looking at survival plots across all of the data
 
 ## overall models
 ## all
@@ -536,41 +534,9 @@ allmod <- survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue_sur
 # [1] "#440154FF" "#25848EFF" "#BBDF27FF"
 
 
-## Active 
-FiveYearNullandTrue.Active <- FiveYearNullandTrue %>%
-  subset(Pred.Strat == "Active") %>%
-  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
 
 
-FiveYearNullandTrue.Active_surv <- FiveYearNullandTrue.Active %>%
-  mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
-  mutate(year = ticks/365/24)
-
-
-
-
-## Sit-and-Wait ----
-
-FiveYearNullandTrue.SW <- FiveYearNullandTrue %>%
-  subset(Pred.Strat == "Sit-and-Wait") %>%
-  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
-
-
-FiveYearNullandTrue.SW_surv <- FiveYearNullandTrue.SW %>%
-  mutate(status = ifelse (ticks == 43800, 0, 1)) %>%
-  mutate(year = ticks/365/24)
-
-## use facet within the survminer package
-# trying to use this method for facet https://rpkgs.datanovia.com/survminer/reference/ggsurvplot_facet.html
-# convert to factor
-FiveYearNullandTrue.SW_surv$Prey.Start.Con <- as.factor(FiveYearNullandTrue.SW_surv$Prey.Start.Con)
-FiveYearNullandTrue.SW_surv$Pred.Start.Con <- as.factor(FiveYearNullandTrue.SW_surv$Pred.Start.Con)
-
-
-
-## Comparing consumptive vs. non-consumptive effects ----
-# Figures for manuscript?
-
+####### Comparing consumptive vs. non-consumptive effects ----
 
 # > viridis(11, alpha = 1, begin = 0, end = 1, direction = 1, option = "D")
 # [1] "#440154FF" "#482576FF" "#414487FF" "#35608DFF" "#2A788EFF" "#21908CFF" "#22A884FF"
