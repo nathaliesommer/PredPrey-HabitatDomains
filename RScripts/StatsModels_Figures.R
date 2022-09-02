@@ -330,7 +330,7 @@ HR_plot <- ggplot(HRsumm_new,
   scale_fill_viridis_d(begin = 0, end = 0.9, name = "Hunting Mode") +
   scale_color_viridis_d(begin = 0, end = 0.9, name = "Hunting Mode") +
   ylab("Hazard Ratio") +
-  xlab("Behavior Shift") +
+  xlab("Type of Shift") +
   geom_hline(yintercept = 1, linetype = "dotted") +
   scale_y_continuous(
     trans = log10_trans(),
