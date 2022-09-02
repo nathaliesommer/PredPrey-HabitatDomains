@@ -327,8 +327,8 @@ HR_plot <- ggplot(HRsumm_new,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   ) +
-  scale_fill_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
-  scale_color_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
+  scale_fill_viridis_d(begin = 0, end = 0.9, name = "Hunting Mode") +
+  scale_color_viridis_d(begin = 0, end = 0.9, name = "Hunting Mode") +
   ylab("Hazard Ratio") +
   xlab("Behavior Shift") +
   geom_hline(yintercept = 1, linetype = "dotted") +
@@ -420,10 +420,10 @@ oneyrshift_plot <- ggplot(oneyrshifts,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   ) +
-  scale_fill_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
-  scale_color_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
+  scale_fill_viridis_d(begin = 0., end = 0.9, name = "Hunting Mode") +
+  scale_color_viridis_d(begin = 0., end = 0.9, name = "Hunting Mode") +
   ylab("Prey Proportional Shift to Safety") +
-  xlab("Behavior Shift") +
+  xlab("Type of Shift") +
   scale_x_discrete(labels=c("propHabitat" = "Habitat", "propSafeSpace" = "Space",
                             "propPredFree" = "Time")) +
   facet_grid(Pred.Start.Con ~ Prey.Start.Con,
@@ -498,10 +498,10 @@ theme_bw(base_size = 14) +
     panel.grid.minor.x = element_blank()
   ) +
   ylim(0, 1) +
-  scale_fill_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
-  scale_color_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
+  scale_fill_viridis_d(begin = 0., end = 0.9, name = "Hunting Mode") +
+  scale_color_viridis_d(begin = 0., end = 0.9, name = "Hunting Mode") +
   ylab("Prey Proportional Shift to Safety") +
-  xlab("Behavior Shift") +
+  xlab("Type of Shift") +
   scale_x_discrete(labels=c("propHabitat" = "Habitat", "propPredFree" = "Time", 
                             "propSafeSpace" = "Space")) +
   facet_grid(Pred.Start.Con ~ Prey.Start.Con,
