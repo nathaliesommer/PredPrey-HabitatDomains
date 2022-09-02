@@ -1,7 +1,7 @@
 # Script for survival analyses, survival figures, and behavioral shift figures
 
 # KDO and FER
-# Last updated May 2022 by FER
+# Last updated September 2022 by FER
 
 
 ipak <- function(pkg){
@@ -108,12 +108,6 @@ FiveYearNullandTrue2$Pred.Strat <- as.factor(FiveYearNullandTrue2$Pred.Strat)
 FiveYearNullandTrue2$Pred.Start.Con <- as.factor(FiveYearNullandTrue2$Pred.Start.Con)
 FiveYearNullandTrue2$Prey.Start.Con <- as.factor(FiveYearNullandTrue2$Prey.Start.Con)
 
-
-### Need to look at each predator hunting type, and each habitat domain size combination separately, so first separate Active.Large.Large
-
-active5.Large.Large <-  subset(FiveYearNullandTrue, Pred.Strat == "Active") %>%
-  mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con)) %>%
-  subset(Pred.Prey_Domain == "Large.Large")
 
 
 
@@ -333,8 +327,8 @@ HR_plot <- ggplot(HRsumm_new,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   ) +
-  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Mode") +
-  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Mode") +
+  scale_fill_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
+  scale_color_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
   ylab("Hazard Ratio") +
   xlab("Behavior Shift") +
   geom_hline(yintercept = 1, linetype = "dotted") +
@@ -426,8 +420,8 @@ oneyrshift_plot <- ggplot(oneyrshifts,
     panel.grid.major.x = element_blank(),
     panel.grid.minor.x = element_blank()
   ) +
-  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Mode") +
-  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Mode") +
+  scale_fill_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
+  scale_color_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
   ylab("Prey Proportional Shift to Safety") +
   xlab("Behavior Shift") +
   scale_x_discrete(labels=c("propHabitat" = "Habitat", "propSafeSpace" = "Space",
@@ -504,8 +498,8 @@ theme_bw(base_size = 14) +
     panel.grid.minor.x = element_blank()
   ) +
   ylim(0, 1) +
-  scale_fill_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Mode") +
-  scale_color_viridis_d(begin = 0.2, end = 0.8, name = "Hunting Mode") +
+  scale_fill_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
+  scale_color_viridis_d(begin = 0.1, end = 0.9, name = "Hunting Mode") +
   ylab("Prey Proportional Shift to Safety") +
   xlab("Behavior Shift") +
   scale_x_discrete(labels=c("propHabitat" = "Habitat", "propPredFree" = "Time", 
