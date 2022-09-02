@@ -532,9 +532,8 @@ allmod <- survfit(Surv(year, status) ~ ModelType, data = FiveYearNullandTrue_sur
 
 
 ## to get colors to match the other plot, I am using viridisLite to get the hex codes
-# > viridis(11, alpha = 1, begin = 0, end = 1, direction = 1, option = "D")
-# [1] "#440154FF" "#482576FF" "#414487FF" "#35608DFF" "#2A788EFF" "#21908CFF" "#22A884FF"
-# [8] "#43BF71FF" "#7AD151FF" "#BBDF27FF" "#FDE725FF"
+# > viridis(3, alpha = 1, begin = 0, end = 0.9, direction = 1, option = "D")
+# [1] "#440154FF" "#25848EFF" "#BBDF27FF"
 
 
 ## Active 
@@ -577,7 +576,7 @@ FiveYearNullandTrue.SW_surv$Pred.Start.Con <- as.factor(FiveYearNullandTrue.SW_s
 # [1] "#440154FF" "#482576FF" "#414487FF" "#35608DFF" "#2A788EFF" "#21908CFF" "#22A884FF"
 # [8] "#43BF71FF" "#7AD151FF" "#BBDF27FF" "#FDE725FF"
 
-## Active survival models
+## Active survival models ----
 
 OneYearNullandTrue.A <- OneYearNullandTrue %>%
   subset(Pred.Strat == "Active") %>%
@@ -660,96 +659,10 @@ print(ActiveMulti)
 ggsave(plot = ActiveMulti, "Output_Figures/FiveYr_ActivePredSurv.png", dpi = 300, height = 6, width = 7)
 
 
-# A small/small
-A_SS <- FiveYearNullandTrue.A_surv %>%
-  subset(Pred.Prey_Domain == "Small.Small")
-# Get regression median and p-value of Null vs. NCE
-ASSmod <- survfit(Surv(year, status) ~ ModelType, data = A_SS)
-ASSmod
-
-ASSplot <- 
-  ggsurvplot(
-    ASSmod,
-    conf.int = TRUE, # add 95% confidence intervals
-    size = 1,        # change line size
-    palette = c("gray", "#73D055FF"), # custom color palettes
-    pval = TRUE, # add p-value
-    surv.median.line = "hv", # add median survival
-    legend.labs = c("CE", "CE + NCE"),
-    ggtheme = theme_bw(base_size = 12)
-  )
-
-# A small/large
-A_SL <- FiveYearNullandTrue.A_surv %>%
-  subset(Pred.Prey_Domain == "Small.Large")
-# Get regression median and p-value of Null vs. NCE
-ASLmod <- survfit(Surv(year, status) ~ ModelType, data = A_SL)
-ASLmod
-
-ASLplot <- 
-  ggsurvplot(
-    ASLmod,
-    conf.int = TRUE, # add 95% confidence intervals
-    size = 1,        # change line size
-    palette = c("#1F968BFF", "#73D055FF"), # custom color palettes
-    pval = TRUE, # add p-value
-    surv.median.line = "hv", # add median survival
-    legend.labs = c("Consumptive", "Non-consumptive"),
-    ggtheme = theme_bw(base_size = 12)
-  )
-
-# A large/small
-A_LS <- FiveYearNullandTrue.A_surv %>%
-  subset(Pred.Prey_Domain == "Large.Small")
-# Get regression median and p-value of Null vs. NCE
-ALSmod <- survfit(Surv(year, status) ~ ModelType, data = A_LS)
-ALSmod
-
-ALSplot <- 
-  ggsurvplot(
-    ALSmod,
-    conf.int = TRUE, # add 95% confidence intervals
-    size = 1,        # change line size
-    palette = c("#1F968BFF", "#73D055FF"), # custom color palettes
-    pval = TRUE, # add p-value
-    surv.median.line = "hv", # add median survival
-    legend.labs = c("Consumptive", "Non-consumptive"),
-    ggtheme = theme_bw(base_size = 12)
-  )
-
-# A large/large
-A_LL <- FiveYearNullandTrue.A_surv %>%
-  subset(Pred.Prey_Domain == "Large.Large")
-# Get regression median and p-value of Null vs. NCE
-ALLmod <- survfit(Surv(year, status) ~ ModelType, data = A_LL)
-ALLmod
-
-ALLplot <- 
-  ggsurvplot(
-    ALLmod,
-    conf.int = TRUE, # add 95% confidence intervals
-    size = 1,        # change line size
-    palette = c("#1F968BFF", "#73D055FF"), # custom color palettes
-    pval = TRUE, # add p-value
-    surv.median.line = "hv", # add median survival
-    legend.labs = c("Consumptive", "Non-consumptive"),
-    ggtheme = theme_bw(base_size = 12)
-  )
-
-## multipanel
-# this isn't working. Need to try ggsurvplot_facet
-splots <- list(ASSplot, ASLplot, ALSplot, ALLplot)
-
-all_active <- 
-  arrange_ggsurvplots(
-  splots,
-  nrow = 2, ncol = 2,
-  title = "Active predators",
-  labels = "auto")
 
 
 
-## Sit-and-wait survival models
+## Sit-and-wait survival models ----
 
 OneYearNullandTrue.SW <- OneYearNullandTrue %>%
   subset(Pred.Strat == "Sit-and-Wait") %>%
@@ -778,6 +691,7 @@ FiveYearNullandTrue.SW_surv$Pred.Start.Con <- factor(FiveYearNullandTrue.SW_surv
 FiveYearNullandTrue.SW_surv$Prey.Start.Con <- factor(FiveYearNullandTrue.SW_surv$Prey.Start.Con, 
                                                     levels = c("Small", "Large"))
 
+
 # SW facet plot
 fitSW1 <- survfit( Surv(year, status) ~ ModelType, data = OneYearNullandTrue.SW_surv)
 fitSW <- survfit( Surv(year, status) ~ ModelType, data = FiveYearNullandTrue.SW_surv)
@@ -785,7 +699,7 @@ SWMulti <- ggsurvplot_facet(fitSW,
                                 FiveYearNullandTrue.SW_surv, 
                                 conf.int = TRUE,
                                 facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
-                                palette = c("gray", "#7AD151FF"),
+                                palette = c("gray", "#BBDF27FF"),
                                 surv.median.line = "v", # add median survival
                                 pval = TRUE,
                                 pval.coord = c(0.1, 0.2),
@@ -806,7 +720,7 @@ SWMulti1 <- ggsurvplot_facet(fitSW1,
                             OneYearNullandTrue.SW_surv,
                             conf.int = TRUE,
                             facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
-                            palette = c("gray", "#7AD151FF"),
+                            palette = c("gray", "#BBDF27FF"),
                             surv.median.line = "v", # add median survival
                             pval = TRUE,
                             pval.coord = c(0.1, 0.2),
@@ -825,7 +739,8 @@ SWMulti1 <- ggsurvplot_facet(fitSW1,
   )
 print(SWMulti1)
 print(SWMulti)
-ggsave("Output_Figures/OneYr_SWPredSurv.png", dpi = 300, height = 6, width = 7)
+ggsave(SWMulti1, filename = "Output_Figures/OneYr_SWPredSurv.png", dpi = 300, height = 6, width = 7)
+ggsave(SWMulti, filename = "Output_Figures/FiveYr_SWPredSurv.png", dpi = 300, height = 6, width = 7)
 
 # SW small/small
 SW_SS <- FiveYearNullandTrue.SW_surv %>%
@@ -855,7 +770,10 @@ SW_LL <- FiveYearNullandTrue.SW_surv %>%
 SWLLmod <- survfit(Surv(year, status) ~ ModelType, data = SW_LL)
 SWLLmod
 
-## Sit-and-Pursue survival models
+
+
+
+## Sit-and-Pursue survival models ----
 OneYearNullandTrue.SP <- OneYearNullandTrue %>%
   subset(Pred.Strat == "Sit-and-Pursue") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
@@ -890,7 +808,7 @@ SPMulti <- ggsurvplot_facet(fitSP,
                             FiveYearNullandTrue.SP_surv, 
                             conf.int = TRUE,
                             facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
-                            palette = c("gray", "#21908CFF"),
+                            palette = c("gray", "#25848EFF"),
                             surv.median.line = "v", # add median survival
                             pval = TRUE,
                             pval.coord = c(3.5, 0.8),
@@ -914,7 +832,7 @@ SPMulti1 <- ggsurvplot_facet(fitSP1,
                             OneYearNullandTrue.SP_surv, 
                             conf.int = TRUE,
                             facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
-                            palette = c("gray", "#21908CFF"),
+                            palette = c("gray", "#25848EFF"),
                             surv.median.line = "v", # add median survival
                             pval = TRUE,
                             pval.coord = c(0.025, 0.2),
