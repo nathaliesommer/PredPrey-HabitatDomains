@@ -1,6 +1,6 @@
 # Description
 
-Code and data for "_Disentangling the role of predator hunting mode, spatial domain size, and habitat complexity: An agent-based examinination of consumptive and nonconsumptive effects_", in review at Ecography
+Code and data for "_Predator–prey interactions across hunting mode, spatial domain size, and habitat complexities_", in review at Ecology
 
 Upon acceptance, this repository will be archived and issued a DOI via Zenodo
 
