@@ -302,8 +302,66 @@ HRsumm_new$Prey.Start.Con <- factor(HRsumm_new$Prey.Start.Con,
 new_labels <- c("Small" = "Predator Small Domain", "Large" = "Predator Large Domain")
 new_labels2 <- c("Small" = "Prey Small Domain", "Large" = "Prey Large Domain")
 
+# Removal of points that had consumptive effects
+HRsumm_new1<- HRsumm_new %>%
+  mutate(CE_or_NCE = case_when(Pred.Strat == "Active" & Pred.Prey_Domain =="Small.Small" ~ "CE",
+                               Pred.Strat == "Active" & Pred.Prey_Domain == "Large.Small" ~ "CE",
+                               Pred.Strat == "Sit-and-Pursue" & Pred.Prey_Domain == "Large.Large" ~ "CE",
+                               Pred.Strat == "Sit-and-Wait" & Pred.Prey_Domain == "Large.Large" ~ "CE")) %>%
+  mutate(CE_or_NCE = case_when(is.na(CE_or_NCE) == TRUE ~"NCE",
+                               is.na(CE_or_NCE) != TRUE ~"CE"))
+HRsumm_new1<-HRsumm_new1 %>%
+  subset(CE_or_NCE == "NCE")
+
+ # plot of hazard ratios of only non-consumptive effects
 # Plot of hazard ratios
-HR_plot <- ggplot(HRsumm_new,
+HR_plot <- ggplot(HRsumm_new1,
+                  aes(
+                    x = HR.Type,
+                    y = HazardRatio,
+                    fill = Pred.Strat,
+                    group = Pred.Strat
+                  )) +
+  geom_errorbar(
+    aes(ymin = Lower95CI, ymax = Upper95CI, color = Pred.Strat),
+    width = 0.3,
+    position = "dodge"
+  ) +
+  geom_point(pch = 21,
+             size = 4,
+             position = position_dodge(width = 0.3)) +
+  theme_bw(base_size = 14) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  scale_fill_viridis_d(begin = 0, end = 0.9, name = "Hunting Mode") +
+  scale_color_viridis_d(begin = 0, end = 0.9, name = "Hunting Mode") +
+  ylab("Hazard Ratio") +
+  xlab("Type of Shift") +
+  geom_hline(yintercept = 1, linetype = "dotted") +
+  scale_y_continuous(
+    trans = log10_trans(),
+    breaks = trans_breaks("log10", function(x)
+      10 ^ x),
+    labels = trans_format("log10", math_format(10 ^ .x))
+  ) +
+  scale_x_discrete(labels=c("Habitat" = "Habitat", "PredFree" = "Time",
+                            "SafeSpace" = "Space")) +
+  facet_grid(Pred.Start.Con ~ Prey.Start.Con,
+             labeller = labeller(Pred.Start.Con = new_labels,
+                                 Prey.Start.Con = new_labels2))
+
+
+print(HR_plot)
+
+ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot_NCEonly.png", dpi = 300, width = 8, height = 5)
+
+
+# Plot of hazard ratios of all (CE and NCE)
+HR_plot <- ggplot(HRsumm_new1,
                   aes(
                     x = HR.Type,
                     y = HazardRatio,
@@ -471,8 +529,73 @@ fiveyrshifts$BehaviorShift <- ifelse(fiveyrshifts$BehaviorShift == 0, "NA", five
 fiveyrshifts$BehaviorShift <- as.numeric(as.character(fiveyrshifts$BehaviorShift))
 summary(fiveyrshifts)
 
+
+## removing Consumptive effect
+fiveyrshifts1<- fiveyrshifts %>%
+  mutate(CE_or_NCE = case_when(Pred.Strat == "Active" & Pred.Prey_Domain =="Small.Small" ~ "CE",
+                               Pred.Strat == "Active" & Pred.Prey_Domain == "Large.Small" ~ "CE",
+                               Pred.Strat == "Sit-and-Pursue" & Pred.Prey_Domain == "Large.Large" ~ "CE",
+                               Pred.Strat == "Sit-and-Wait" & Pred.Prey_Domain == "Large.Large" ~ "CE")) %>%
+  mutate(CE_or_NCE = case_when(is.na(CE_or_NCE) == TRUE ~"NCE",
+                               is.na(CE_or_NCE) != TRUE ~"CE"))
+fiveyrshifts1<-fiveyrshifts1 %>%
+  subset(CE_or_NCE == "NCE")
+
+## Plot highlighting consumptive vs non consumptive effects
+??slab_alpha
+fiveyrshift_plot <- ggplot(fiveyrshifts1,
+                           aes(
+                             x = variable,
+                             y = BehaviorShift,
+                             color = CE_or_NCE,
+                             fill = Pred.Strat,
+                             group = Pred.Strat,
+                             #slab_alpha = as.factor(CE_or_NCE)
+                           )) +
+  geom_hline(yintercept = 0.5, linetype = "dotted") +
+  ggdist::stat_halfeye(
+    adjust = 1,
+    normalize = "groups",
+    position = position_dodge(width = 0.5),
+    ## set slab interval to show IQR and 95% data range
+    .width = c(.5, .95),
+    aes(fill = Pred.Strat, slab_alpha = CE_or_NCE)
+    ) +
+ # scale_alpha_discrete(range = c(0.35, 0.9)) +
+  theme_bw(base_size = 14) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) +
+  ylim(0, 1) +
+  scale_fill_viridis_d(begin = 0., end = 0.9, name = "Hunting Mode") +
+  scale_color_manual(values=c("#9d9d9d", "#000000")) +
+  scale_slab_alpha_discrete(range = c(.3, 0.75), guide = "none") +
+  #scale_alpha_manual(values=c(0.7, 0.7))+
+  #scale_slab_alpha_discrete(values=c(0.1, 0.7)) +
+
+  ylab("Prey Proportional Shift to Safety") +
+  xlab("Type of Shift") +
+  labs(color = "Dominant Effect\n") +
+  scale_x_discrete(labels=c("propHabitat" = "Habitat", "propPredFree" = "Time", 
+                            "propSafeSpace" = "Space")) +
+  facet_grid(Pred.Start.Con ~ Prey.Start.Con,
+             labeller = labeller(Pred.Start.Con = new_labels,
+                                 Prey.Start.Con = new_labels2)) +
+  ggtitle("Shifts at five years")
+
+
+print(fiveyrshift_plot)
+ggsave(fiveyrshift_plot, filename = "Output_Figures/FiveYrShifts_NCEvsCE.png", dpi = 300, width = 8, height = 5)
+
+
+###
+
+
 ### Plot of behavioral shifts
-fiveyrshift_plot <- ggplot(fiveyrshifts,
+fiveyrshift_plot <- ggplot(fiveyrshifts1,
                           aes(
                             x = variable,
                             y = BehaviorShift,
