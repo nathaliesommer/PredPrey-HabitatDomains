@@ -1,6 +1,6 @@
 # Description
 
-Code and data for Orrick, K., Sommer, N., Rowland, F., & Ferraro, K. (2024). Predator–prey interactions across hunting mode, spatial domain size, and habitat complexities. _Ecology_.
+Repository for Orrick, K., Sommer, N., Rowland, F., & Ferraro, K. (2024). Predator–prey interactions across hunting mode, spatial domain size, and habitat complexities. _Ecology_.
 
 
 ## Contents
