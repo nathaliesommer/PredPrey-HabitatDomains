@@ -1181,6 +1181,70 @@ NetLogo 6.2.1
       <value value="0.2"/>
     </enumeratedValueSet>
   </experiment>
+  <experiment name="YEAR10_MODELS_NULL" repetitions="100" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="87600"/>
+    <metric>ticks</metric>
+    <metric>[nearby] of preys</metric>
+    <metric>mapAware-table [1] of one-of patches</metric>
+    <metric>hour-map-prey [1]</metric>
+    <metric>[p-black] of one-of preys</metric>
+    <metric>[p-white] of one-of preys</metric>
+    <metric>[domain-overlap] of one-of preys</metric>
+    <metric>[domain-prey] of one-of preys</metric>
+    <enumeratedValueSet variable="Predator-Strategy">
+      <value value="&quot;Sit-and-Wait&quot;"/>
+      <value value="&quot;Sit-and-Pursue&quot;"/>
+      <value value="&quot;Active&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Prey-Starting-Condition">
+      <value value="&quot;Small&quot;"/>
+      <value value="&quot;Large&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Predator-Starting-Condition">
+      <value value="&quot;Small&quot;"/>
+      <value value="&quot;Large&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Detection-prob-black">
+      <value value="0.9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Detection-prob-white">
+      <value value="0.2"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="YEAR20_MODELS_NULL" repetitions="100" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="175200"/>
+    <metric>ticks</metric>
+    <metric>[nearby] of preys</metric>
+    <metric>mapAware-table [1] of one-of patches</metric>
+    <metric>hour-map-prey [1]</metric>
+    <metric>[p-black] of one-of preys</metric>
+    <metric>[p-white] of one-of preys</metric>
+    <metric>[domain-overlap] of one-of preys</metric>
+    <metric>[domain-prey] of one-of preys</metric>
+    <enumeratedValueSet variable="Predator-Strategy">
+      <value value="&quot;Sit-and-Wait&quot;"/>
+      <value value="&quot;Sit-and-Pursue&quot;"/>
+      <value value="&quot;Active&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Prey-Starting-Condition">
+      <value value="&quot;Small&quot;"/>
+      <value value="&quot;Large&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Predator-Starting-Condition">
+      <value value="&quot;Small&quot;"/>
+      <value value="&quot;Large&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Detection-prob-black">
+      <value value="0.9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Detection-prob-white">
+      <value value="0.2"/>
+    </enumeratedValueSet>
+  </experiment>
 </experiments>
 @#$#@#$#@
 @#$#@#$#@

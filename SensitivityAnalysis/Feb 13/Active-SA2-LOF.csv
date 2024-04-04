@@ -1,0 +1,16 @@
+"","metric","parameter","index","value","seed"
+"1","mean","Detection-prob-black","mustar",135.177827743932,927286511
+"2","mean","Detection-prob-white","mustar",41.3031239304029,927286511
+"3","mean","Hours-Pred-Active-Until","mustar",55.634177978508,927286511
+"4","mean","Prey-Dist","mustar",106.15533716121,927286511
+"5","mean","Pred-Dist","mustar",116.445642055961,927286511
+"6","mean","Detection-prob-black","mu",-85.4622622101521,927286511
+"7","mean","Detection-prob-white","mu",41.3031239304029,927286511
+"8","mean","Hours-Pred-Active-Until","mu",-19.7299238682677,927286511
+"9","mean","Prey-Dist","mu",-99.4299521442779,927286511
+"10","mean","Pred-Dist","mu",76.1244653947376,927286511
+"11","mean","Detection-prob-black","sigma",190.777025942206,927286511
+"12","mean","Detection-prob-white","sigma",51.6857912001768,927286511
+"13","mean","Hours-Pred-Active-Until","sigma",69.1505263912284,927286511
+"14","mean","Prey-Dist","sigma",100.186850895072,927286511
+"15","mean","Pred-Dist","sigma",160.178249489139,927286511
