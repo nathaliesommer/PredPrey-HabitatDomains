@@ -5,7 +5,7 @@ Code and data for Orrick, K., Sommer, N., Rowland, F., & Ferraro, K. (2024). Pre
 
 ## Contents
 
-#### (1) Reports
+#### (1) ODD
 
 _Start here. The ODDs contain the full model descriptions._
 
