@@ -39,20 +39,23 @@ ipak(packages)
 # load data ----
 
 
-twentyyr <- read.csv("Data/NCvsC_20year_TSH_Sept252023.csv")%>%
+tenyr <- read.csv("Data/Prepped_data/NCvsC_10year_TSH_Sept252023.csv")%>%
   mutate(ModelType = 1)
 
-twentyyr_null <- read.csv("Data/NCvsC_NULL_20year_TSH_Sept252023.csv")  %>%
+tenyr_null <- read.csv("Data/Prepped_data/NCvsC_NULL_10year_TSH_Sept252023.csv")  %>%
   mutate(ModelType = 0)
 
 
-###### 5 year data for models ----
+
+# make a dataframe with all 10 year data
+
+###### 10 year data for models ----
 
 # bind CE only and CE + NCE model results
-TwentyYearNullandTrue <- rbind(twentyyr, twentyyr_null)
+TenYearNullandTrue <- rbind(tenyr, tenyr_null)
 
 # calculate prop safe space, prop habitat, and prop time shifts
-TwentyYearNullandTrue <- TwentyYearNullandTrue  %>%
+TenYearNullandTrue <- TenYearNullandTrue  %>%
   mutate(propHabitat = White.Table/(Black.Table + White.Table)) %>%
   mutate(propSafeSpace = Domain.Prey/(Domain.Prey + DomainOverlap)) %>%
   mutate(propPredFree = rowSums(.[28:39])/rowSums(.[16:39]))%>%
@@ -62,14 +65,14 @@ TwentyYearNullandTrue <- TwentyYearNullandTrue  %>%
 # make a dataframe and convert ticks to 'years' and set alive vs. dead status
 # prepping the data for the 'survivor' package - need a column called status which is binary
 # to determine if the 'event' (dying) occurred or not
-TwentyYearNullandTrue2 <- TwentyYearNullandTrue %>%
-  mutate(status = ifelse (ticks == 175200, 0, 1)) %>%
+TenYearNullandTrue2 <- TenYearNullandTrue %>%
+  mutate(status = ifelse (ticks == 87600, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
 # make sure starting conditions are factors
-TwentyYearNullandTrue2$Pred.Strat <- as.factor(TwentyYearNullandTrue2$Pred.Strat)
-TwentyYearNullandTrue2$Pred.Start.Con <- as.factor(TwentyYearNullandTrue2$Pred.Start.Con)
-TwentyYearNullandTrue2$Prey.Start.Con <- as.factor(TwentyYearNullandTrue2$Prey.Start.Con)
+TenYearNullandTrue2$Pred.Strat <- as.factor(TenYearNullandTrue2$Pred.Strat)
+TenYearNullandTrue2$Pred.Start.Con <- as.factor(TenYearNullandTrue2$Pred.Start.Con)
+TenYearNullandTrue2$Prey.Start.Con <- as.factor(TenYearNullandTrue2$Prey.Start.Con)
 
 
 
@@ -78,29 +81,29 @@ TwentyYearNullandTrue2$Prey.Start.Con <- as.factor(TwentyYearNullandTrue2$Prey.S
 
 
 # CE + NCE effects
-TwentyYearTrue <-
-  TwentyYearNullandTrue2 %>%
+TenYearTrue <-
+  TenYearNullandTrue2 %>%
   subset(ModelType == 1)
 
 # only CE
-TwentyYearCE <-
-  TwentyYearNullandTrue2 %>%
+TenYearCE <-
+  TenYearNullandTrue2 %>%
   subset(ModelType == 0)
 
 
 ## Make Hazard Ratio tables ----
-TwentyYearNCE <-
+TenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
-        data = TwentyYearTrue)
-haz.table <- TwentyYearNCE %>%
+        data = TenYearTrue)
+haz.table <- TenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
 # behavioral changes for CE only
-TwentyYearCEmod <-
+TenYearCEmod <-
   coxph(Surv(year, status) ~ Pred.Strat + Pred.Start.Con*Prey.Start.Con,
-        data = TwentyYearCE)
-haz.table <- TwentyYearCEmod %>%
+        data = TenYearCE)
+haz.table <- TenYearCEmod %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
@@ -108,297 +111,155 @@ haz.table <- TwentyYearCEmod %>%
 ## Look at hazard ratio of behavioral changes by predator hunting mode
 
 ## Active predators
-Active10 <- TwentyYearNullandTrue2 %>%
+Active10 <- TenYearNullandTrue2 %>%
   subset(Pred.Strat == "Active")
 
 # Small/Small
 Active10SS <- Active10 %>%
   subset(Pred.Prey_Domain == "Small.Small")
-ActiveTwentyYearNCE <-
+ActiveTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = Active10SS)
-#summary(ActiveTwentyYearNCE) # Sig - not the same
-predict(ActiveTwentyYearNCE)
-exp(confint(ActiveTwentyYearNCE))
-haz.table <- ActiveTwentyYearNCE %>%
+#summary(ActiveTenYearNCE) # Sig - not the same
+predict(ActiveTenYearNCE)
+exp(confint(ActiveTenYearNCE))
+haz.table <- ActiveTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 # Small/Large
 Active10SL <- Active10 %>%
   subset(Pred.Prey_Domain == "Small.Large")
-ActiveTwentyYearNCE <-
+ActiveTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = Active10SL)
-summary(ActiveTwentyYearNCE) #no sig/ same
-exp(confint(ActiveTwentyYearNCE))
-haz.table <- ActiveTwentyYearNCE %>%
+summary(ActiveTenYearNCE) #no sig/ same
+exp(confint(ActiveTenYearNCE))
+haz.table <- ActiveTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 # Large/Small
 Active10LS <- Active10 %>%
   subset(Pred.Prey_Domain == "Large.Small")
-ActiveTwentyYearNCE <-
+ActiveTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = Active10LS)
-exp(confint(ActiveTwentyYearNCE))
-haz.table <- ActiveTwentyYearNCE %>%
+exp(confint(ActiveTenYearNCE))
+haz.table <- ActiveTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
 # Large/Large
 Active10LL <- Active10 %>%
   subset(Pred.Prey_Domain == "Large.Large")
-ActiveTwentyYearNCE <-
+ActiveTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = Active10LL)
-exp(confint(ActiveTwentyYearNCE))
-haz.table <- ActiveTwentyYearNCE %>%
+exp(confint(ActiveTenYearNCE))
+haz.table <- ActiveTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
 
 ## Sit-and-Pursue predators
-SP10 <- TwentyYearTrue %>%
+SP10 <- TenYearTrue %>%
   subset(Pred.Strat == "Sit-and-Pursue")
 
 # Small/Small
 SP10SS <- SP10 %>%
   subset(Pred.Prey_Domain == "Small.Small")
-SPTwentyYearNCE <-
+SPTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = SP10SS)
-exp(confint(SPTwentyYearNCE))
-haz.table <- SPTwentyYearNCE %>%
+exp(confint(SPTenYearNCE))
+haz.table <- SPTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 # Small/Large
 SP10SL <- SP10 %>%
   subset(Pred.Prey_Domain == "Small.Large")
-SPTwentyYearNCE <-
+SPTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = SP10SL)
-exp(confint(SPTwentyYearNCE))
-haz.table <- SPTwentyYearNCE %>%
+exp(confint(SPTenYearNCE))
+haz.table <- SPTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 # Large/Small
 SP10LS <- SP10 %>%
   subset(Pred.Prey_Domain == "Large.Small")
-SPTwentyYearNCE <-
+SPTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = SP10LS)
-exp(confint(SPTwentyYearNCE))
-haz.table <- SPTwentyYearNCE %>%
+exp(confint(SPTenYearNCE))
+haz.table <- SPTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 # Large/Large
 SP10LL <- SP10 %>%
   subset(Pred.Prey_Domain == "Large.Large")
-SPTwentyYearNCE <-
+SPTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = SP10LL)
-exp(confint(SPTwentyYearNCE)) # get HR 910% CI
-haz.table <- SPTwentyYearNCE %>%
+exp(confint(SPTenYearNCE)) # get HR 910% CI
+haz.table <- SPTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
 ## Sit-and-Wait predators
-SW10 <- TwentyYearTrue %>%
+SW10 <- TenYearTrue %>%
   subset(Pred.Strat == "Sit-and-Wait")
 
 # Small/Small
 SW10SS <- SW10 %>%
   subset(Pred.Prey_Domain == "Small.Small")
-SWTwentyYearNCE <-
+SWTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = SW10SS)
-exp(confint(SWTwentyYearNCE)) # get HR 910% CI
-haz.table <- SWTwentyYearNCE %>%
+exp(confint(SWTenYearNCE)) # get HR 910% CI
+haz.table <- SWTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 # Small/Large
 SW10SL <- SW10 %>%
   subset(Pred.Prey_Domain == "Small.Large")
-SWTwentyYearNCE <-
+SWTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = SW10SL)
-exp(confint(SWTwentyYearNCE)) # get HR 910% CI
-haz.table <- SWTwentyYearNCE %>%
+exp(confint(SWTenYearNCE)) # get HR 910% CI
+haz.table <- SWTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 # Large/Small
 SW10LS <- SW10 %>%
   subset(Pred.Prey_Domain == "Large.Small")
-SWTwentyYearNCE <-
+SWTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = SP10LS)
-exp(confint(SWTwentyYearNCE)) # get HR 910% CI
-haz.table <- SWTwentyYearNCE %>%
+exp(confint(SWTenYearNCE)) # get HR 910% CI
+haz.table <- SWTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 # Large/Large
 SW10LL <- SW10 %>%
   subset(Pred.Prey_Domain == "Large.Large")
-SWTwentyYearNCE <-
+SWTenYearNCE <-
   coxph(Surv(year, status) ~ propHabitat + propPredFree + propSafeSpace,
         data = SW10LL)
-exp(confint(SWTwentyYearNCE)) # get HR 910% CI
-haz.table <- SWTwentyYearNCE %>%
+exp(confint(SWTenYearNCE)) # get HR 910% CI
+haz.table <- SWTenYearNCE %>%
   gtsummary::tbl_regression(exp = TRUE) 
 
 
 
 
-
-
-## Plot the hazard ratio data ----
-# load summary file
-HR_summ <- read.csv("Data/HazardRatioSummary_Feb2022.csv", header = TRUE, fileEncoding="UTF-8-BOM")
-
-# I know there is a better way to do this, but I can't remember it. Ha.
-HR_summ$Pred.Strat <- as.factor(HR_summ$Pred.Strat)
-HR_summ$Pred.Start.Con <- as.factor(HR_summ$Pred.Start.Con)
-HR_summ$Prey.Start.Con <- as.factor(HR_summ$Prey.Start.Con)
-HR_summ$HR.Type <- as.factor(HR_summ$HR.Type)
+#### Tenyear data behavioral shifts
 
 # reorder
-HRsumm_new <- HR_summ
-HRsumm_new$Pred.Start.Con <- factor(HRsumm_new$Pred.Start.Con, 
+tenyr_new <- TenYearTrue
+tenyr_new$Pred.Start.Con <- factor(tenyr_new$Pred.Start.Con, 
                                     levels = c("Small", "Large"))
-HRsumm_new$Prey.Start.Con <- factor(HRsumm_new$Prey.Start.Con, 
+tenyr_new$Prey.Start.Con <- factor(tenyr_new$Prey.Start.Con, 
                                     levels = c("Small", "Large"))
-
-# create new labels for the facets
-new_labels <- c("Small" = "Predator Small Domain", "Large" = "Predator Large Domain")
-new_labels2 <- c("Small" = "Prey Small Domain", "Large" = "Prey Large Domain")
-
-# Removal of points that had consumptive effects
-HRsumm_new1<- HRsumm_new %>%
-  mutate(CE_or_NCE = case_when(Pred.Strat == "Active" & Pred.Prey_Domain =="Small.Small" ~ "CE",
-                               Pred.Strat == "Active" & Pred.Prey_Domain == "Large.Small" ~ "CE",
-                               Pred.Strat == "Sit-and-Pursue" & Pred.Prey_Domain == "Large.Large" ~ "CE",
-                               Pred.Strat == "Sit-and-Wait" & Pred.Prey_Domain == "Large.Large" ~ "CE")) %>%
-  mutate(CE_or_NCE = case_when(is.na(CE_or_NCE) == TRUE ~"NCE",
-                               is.na(CE_or_NCE) != TRUE ~"CE"))
-
-#HRsumm_new1<-HRsumm_new1 %>%
-# subset(CE_or_NCE == "NCE")
-
-# plot of hazard ratios of only non-consumptive effects
-# Plot of hazard ratios
-HR_plot <- ggplot(HRsumm_new1,
-                  aes(
-                    x = HR.Type,
-                    y = HazardRatio,
-                    fill = Pred.Strat,
-                    group = Pred.Strat
-                  )) +
-  geom_errorbar(
-    aes(ymin = Lower95CI, ymax = Upper95CI, color = Pred.Strat),
-    width = 0.3,
-    position = "dodge"
-  ) +
-  geom_point(pch = 21,
-             size = 4,
-             position = position_dodge(width = 0.3)) +
-  theme_bw(base_size = 14) +
-  theme(
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    panel.grid.minor.x = element_blank()
-  ) +
-  scale_fill_viridis_d(begin = 0, end = 0.9, name = "Hunting Mode") +
-  scale_color_viridis_d(begin = 0, end = 0.9, name = "Hunting Mode") +
-  ylab("Hazard Ratio") +
-  xlab("Type of Shift") +
-  geom_hline(yintercept = 1, linetype = "dotted") +
-  scale_y_continuous(
-    trans = log10_trans(),
-    breaks = trans_breaks("log10", function(x)
-      10 ^ x),
-    labels = trans_format("log10", math_format(10 ^ .x))
-  ) +
-  scale_x_discrete(labels=c("Habitat" = "Habitat", "PredFree" = "Time",
-                            "SafeSpace" = "Space")) +
-  facet_grid(Pred.Start.Con ~ Prey.Start.Con,
-             labeller = labeller(Pred.Start.Con = new_labels,
-                                 Prey.Start.Con = new_labels2))
-
-
-print(HR_plot)
-
-ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot_NCEonly.png", dpi = 300, width = 8, height = 5)
-
-
-# Plot of hazard ratios of all (CE and NCE)
-HR_plot <- ggplot(HRsumm_new1,
-                  aes(
-                    x = HR.Type,
-                    y = HazardRatio,
-                    fill = Pred.Strat,
-                    alpha = CE_or_NCE,
-                    group = Pred.Strat
-                  )) +
-  geom_errorbar(
-    aes(ymin = Lower95CI, ymax = Upper95CI, color = Pred.Strat),
-    width = 0.3,
-    position = "dodge"
-  ) +
-  geom_point(pch = 21,
-             size = 4,
-             position = position_dodge(width = 0.3)) +
-  theme_bw(base_size = 14) +
-  theme(
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    panel.grid.minor.x = element_blank()
-  ) +
-  scale_fill_viridis_d(begin = 0, end = 0.9, name = "Hunting Mode") +
-  scale_color_viridis_d(begin = 0, end = 0.9, name = "Hunting Mode") +
-  scale_alpha_discrete( name = "Dominant Effect") +
-  
-  ylab("Hazard Ratio") +
-  xlab("Type of Shift") +
-  geom_hline(yintercept = 1, linetype = "dotted") +
-  scale_y_continuous(
-    trans = log10_trans(),
-    breaks = trans_breaks("log10", function(x)
-      10 ^ x),
-    labels = trans_format("log10", math_format(10 ^ .x))
-  ) +
-  scale_x_discrete(labels=c("Habitat" = "Habitat", "PredFree" = "Time",
-                            "SafeSpace" = "Space")) +
-  facet_grid(Pred.Start.Con ~ Prey.Start.Con,
-             labeller = labeller(Pred.Start.Con = new_labels,
-                                 Prey.Start.Con = new_labels2))
-
-
-print(HR_plot)
-
-ggsave(HR_plot, filename = "Output_Figures/HazardRatiosPlot_CEvsNCE.png", dpi = 300, width = 8, height = 5)
-
-
-
-
-
-
-
-
-
-## make time plots for yr = 0-1 and yr = 0-5 to look at shifts ----
-
-
-
-#### Twentyyear data behavioral shifts
-
-# reorder
-twentyyr_new <- TwentyYearTrue
-twentyyr_new$Pred.Start.Con <- factor(twentyyr_new$Pred.Start.Con, 
-                                   levels = c("Small", "Large"))
-twentyyr_new$Prey.Start.Con <- factor(twentyyr_new$Prey.Start.Con, 
-                                   levels = c("Small", "Large"))
 
 # create new labels for the facets
 new_labels <- c("Small" = "Predator Small Domain", "Large" = "Predator Large Domain")
@@ -406,45 +267,45 @@ new_labels2 <- c("Small" = "Prey Small Domain", "Large" = "Prey Large Domain")
 
 ## melt the dataframe for extra column for shift
 # add unique row id
-twentyyr_new$index <- 1:nrow(twentyyr_new)
-head(twentyyr_new)
-molted <- melt(value.name = "BehaviorShift", twentyyr_new[,c(65:67, 72)],id.vars=c("index"))
+tenyr_new$index <- 1:nrow(tenyr_new)
+head(tenyr_new)
+molted <- melt(value.name = "BehaviorShift", tenyr_new[,c(65:67, 72)],id.vars=c("index"))
 molted
 
-twentyyrshifts <- left_join(molted, twentyyr_new[,c(2:4,69:70, 72)], by = "index")
-summary(twentyyrshifts)
+tenyrshifts <- left_join(molted, tenyr_new[,c(2:4,69:70, 72)], by = "index")
+summary(tenyrshifts)
 
 # reorder behavior shifts
-twentyyrshifts$variable <- factor(twentyyrshifts$variable, 
-                               levels = c("propHabitat", "propPredFree", "propSafeSpace"))
+tenyrshifts$variable <- factor(tenyrshifts$variable, 
+                                levels = c("propHabitat", "propPredFree", "propSafeSpace"))
 
-twentyyrshifts$BehaviorShift <- ifelse(twentyyrshifts$BehaviorShift == 0, "NA", twentyyrshifts$BehaviorShift)
-twentyyrshifts$BehaviorShift <- as.numeric(as.character(twentyyrshifts$BehaviorShift))
-summary(twentyyrshifts)
+tenyrshifts$BehaviorShift <- ifelse(tenyrshifts$BehaviorShift == 0, "NA", tenyrshifts$BehaviorShift)
+tenyrshifts$BehaviorShift <- as.numeric(as.character(tenyrshifts$BehaviorShift))
+summary(tenyrshifts)
 
 
 ## removing Consumptive effect
-twentyyrshifts1<- twentyyrshifts %>%
+tenyrshifts1<- tenyrshifts %>%
   mutate(CE_or_NCE = case_when(Pred.Strat == "Active" & Pred.Prey_Domain =="Small.Small" ~ "CE",
                                Pred.Strat == "Active" & Pred.Prey_Domain == "Large.Small" ~ "CE",
                                Pred.Strat == "Sit-and-Pursue" & Pred.Prey_Domain == "Large.Large" ~ "CE",
                                Pred.Strat == "Sit-and-Wait" & Pred.Prey_Domain == "Large.Large" ~ "CE")) %>%
   mutate(CE_or_NCE = case_when(is.na(CE_or_NCE) == TRUE ~"NCE",
                                is.na(CE_or_NCE) != TRUE ~"CE"))
-#twentyyrshifts1<-twentyyrshifts1 %>%
+#tenyrshifts1<-tenyrshifts1 %>%
 #  subset(CE_or_NCE == "NCE")
 
 ## Plot highlighting consumptive vs non consumptive effects
 
-twentyyrshift_plot <- ggplot(twentyyrshifts1,
-                          aes(
-                            x = variable,
-                            y = BehaviorShift,
-                            color = CE_or_NCE,
-                            fill = Pred.Strat,
-                            group = Pred.Strat,
-                            #slab_alpha = as.factor(CE_or_NCE)
-                          )) +
+tenyrshift_plot <- ggplot(tenyrshifts1,
+                           aes(
+                             x = variable,
+                             y = BehaviorShift,
+                             color = CE_or_NCE,
+                             fill = Pred.Strat,
+                             group = Pred.Strat,
+                             #slab_alpha = as.factor(CE_or_NCE)
+                           )) +
   geom_hline(yintercept = 0.5, linetype = "dotted") +
   ggdist::stat_halfeye(
     adjust = 1,
@@ -477,24 +338,24 @@ twentyyrshift_plot <- ggplot(twentyyrshifts1,
   facet_grid(Pred.Start.Con ~ Prey.Start.Con,
              labeller = labeller(Pred.Start.Con = new_labels,
                                  Prey.Start.Con = new_labels2)) +
-  ggtitle("Shifts at twenty years")
+  ggtitle("Shifts at ten years")
 
 
-print(twentyyrshift_plot)
-ggsave(twentyyrshift_plot, filename = "Output_Figures/TwentyYrShifts_NCEvsCE.png", dpi = 300, width = 8, height = 5)
+print(tenyrshift_plot)
+ggsave(tenyrshift_plot, filename = "Output_Figures/TenYrShifts_NCEvsCE.png", dpi = 300, width = 8, height = 5)
 
 
 ###
 
 
 ### Plot of behavioral shifts
-twentyyrshift_plot <- ggplot(twentyyrshifts1,
-                          aes(
-                            x = variable,
-                            y = BehaviorShift,
-                            fill = Pred.Strat,
-                            group = Pred.Strat
-                          )) +
+tenyrshift_plot <- ggplot(tenyrshifts1,
+                           aes(
+                             x = variable,
+                             y = BehaviorShift,
+                             fill = Pred.Strat,
+                             group = Pred.Strat
+                           )) +
   geom_hline(yintercept = 0.5, linetype = "dotted") +
   ggdist::stat_halfeye(
     adjust = 1,
@@ -521,12 +382,12 @@ twentyyrshift_plot <- ggplot(twentyyrshifts1,
   facet_grid(Pred.Start.Con ~ Prey.Start.Con,
              labeller = labeller(Pred.Start.Con = new_labels,
                                  Prey.Start.Con = new_labels2)) +
-  ggtitle("Shifts at twenty years")
+  ggtitle("Shifts at ten years")
 
 
-print(twentyyrshift_plot)
+print(tenyrshift_plot)
 
-ggsave(twentyyrshift_plot, filename = "Output_Figures/TwentyYrShifts.png", dpi = 300, width = 8, height = 5)
+ggsave(tenyrshift_plot, filename = "Output_Figures/TenYrShifts.png", dpi = 300, width = 8, height = 5)
 
 
 
@@ -534,14 +395,14 @@ ggsave(twentyyrshift_plot, filename = "Output_Figures/TwentyYrShifts.png", dpi =
 
 ## overall models
 ## all
-TwentyYearNullandTrue <- TwentyYearNullandTrue %>%
+TenYearNullandTrue <- TenYearNullandTrue %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
 
-TwentyYearNullandTrue_surv <- TwentyYearNullandTrue %>%
-  mutate(status = ifelse (ticks == 175200, 0, 1)) %>%
+TenYearNullandTrue_surv <- TenYearNullandTrue %>%
+  mutate(status = ifelse (ticks == 87600, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
-allmod <- survfit(Surv(year, status) ~ ModelType, data = TwentyYearNullandTrue_surv)
+allmod <- survfit(Surv(year, status) ~ ModelType, data = TenYearNullandTrue_surv)
 
 
 
@@ -562,28 +423,28 @@ allmod <- survfit(Surv(year, status) ~ ModelType, data = TwentyYearNullandTrue_s
 
 
 
-TwentyYearNullandTrue.A <- TwentyYearNullandTrue %>%
+TenYearNullandTrue.A <- TenYearNullandTrue %>%
   subset(Pred.Strat == "Active") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
 
-TwentyYearNullandTrue.A_surv <- TwentyYearNullandTrue.A %>%
-  mutate(status = ifelse (ticks == 175200, 0, 1)) %>%
+TenYearNullandTrue.A_surv <- TenYearNullandTrue.A %>%
+  mutate(status = ifelse (ticks == 87600, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
 # reorder
 
-TwentyYearNullandTrue.A_surv$Pred.Start.Con <- factor(TwentyYearNullandTrue.A_surv$Pred.Start.Con, 
-                                                   levels = c("Small", "Large"))
-TwentyYearNullandTrue.A_surv$Prey.Start.Con <- factor(TwentyYearNullandTrue.A_surv$Prey.Start.Con, 
-                                                   levels = c("Small", "Large"))
+TenYearNullandTrue.A_surv$Pred.Start.Con <- factor(TenYearNullandTrue.A_surv$Pred.Start.Con, 
+                                                    levels = c("Small", "Large"))
+TenYearNullandTrue.A_surv$Prey.Start.Con <- factor(TenYearNullandTrue.A_surv$Prey.Start.Con, 
+                                                    levels = c("Small", "Large"))
 
 
 
 ## Facet plot for active predators
 ?ggsurvplot_facet
-fitA <- survfit( Surv(year, status) ~ ModelType, data = TwentyYearNullandTrue.A_surv)
+fitA <- survfit( Surv(year, status) ~ ModelType, data = TenYearNullandTrue.A_surv)
 ActiveMulti <- ggsurvplot_facet(fitA, 
-                                TwentyYearNullandTrue.A_surv, 
+                                TenYearNullandTrue.A_surv, 
                                 conf.int = TRUE,
                                 facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
                                 palette = c("gray", "#440154FF"),
@@ -606,7 +467,7 @@ ActiveMulti <- ggsurvplot_facet(fitA,
   )
 
 print(ActiveMulti)
-ggsave(plot = ActiveMulti, "Output_Figures/TwentyYr_ActivePredSurv.png", dpi = 300, height = 6, width = 7)
+ggsave(plot = ActiveMulti, "Output_Figures/TenYr_ActivePredSurv.png", dpi = 300, height = 6, width = 7)
 
 
 
@@ -615,26 +476,26 @@ ggsave(plot = ActiveMulti, "Output_Figures/TwentyYr_ActivePredSurv.png", dpi = 3
 ## Sit-and-wait survival models ----
 
 
-TwentyYearNullandTrue.SW <- TwentyYearNullandTrue %>%
+TenYearNullandTrue.SW <- TenYearNullandTrue %>%
   subset(Pred.Strat == "Sit-and-Wait") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
 
-TwentyYearNullandTrue.SW_surv <- TwentyYearNullandTrue.SW %>%
-  mutate(status = ifelse (ticks == 175200, 0, 1)) %>%
+TenYearNullandTrue.SW_surv <- TenYearNullandTrue.SW %>%
+  mutate(status = ifelse (ticks == 87600, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
 # reorder
 
-TwentyYearNullandTrue.SW_surv$Pred.Start.Con <- factor(TwentyYearNullandTrue.SW_surv$Pred.Start.Con, 
-                                                    levels = c("Small", "Large"))
-TwentyYearNullandTrue.SW_surv$Prey.Start.Con <- factor(TwentyYearNullandTrue.SW_surv$Prey.Start.Con, 
-                                                    levels = c("Small", "Large"))
+TenYearNullandTrue.SW_surv$Pred.Start.Con <- factor(TenYearNullandTrue.SW_surv$Pred.Start.Con, 
+                                                     levels = c("Small", "Large"))
+TenYearNullandTrue.SW_surv$Prey.Start.Con <- factor(TenYearNullandTrue.SW_surv$Prey.Start.Con, 
+                                                     levels = c("Small", "Large"))
 
 
 # SW facet plot
-fitSW <- survfit( Surv(year, status) ~ ModelType, data = TwentyYearNullandTrue.SW_surv)
+fitSW <- survfit( Surv(year, status) ~ ModelType, data = TenYearNullandTrue.SW_surv)
 SWMulti <- ggsurvplot_facet(fitSW, 
-                            TwentyYearNullandTrue.SW_surv, 
+                            TenYearNullandTrue.SW_surv, 
                             conf.int = TRUE,
                             facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
                             palette = c("gray", "#BBDF27FF"),
@@ -656,31 +517,31 @@ SWMulti <- ggsurvplot_facet(fitSW,
   )
 
 print(SWMulti)
-ggsave(SWMulti, filename = "Output_Figures/TwentyYr_SWPredSurv.png", dpi = 300, height = 6, width = 7)
+ggsave(SWMulti, filename = "Output_Figures/TenYr_SWPredSurv.png", dpi = 300, height = 6, width = 7)
 
 # SW small/small
-SW_SS <- TwentyYearNullandTrue.SW_surv %>%
+SW_SS <- TenYearNullandTrue.SW_surv %>%
   subset(Pred.Prey_Domain == "Small.Small")
 # Get regression median and p-value of Null vs. NCE
 SWSSmod <- survfit(Surv(year, status) ~ ModelType, data = SW_SS)
 SWSSmod
 
 # SW small/large
-SW_SL <- TwentyYearNullandTrue.SW_surv %>%
+SW_SL <- TenYearNullandTrue.SW_surv %>%
   subset(Pred.Prey_Domain == "Small.Large")
 # Get regression median and p-value of Null vs. NCE
 SWSLmod <- survfit(Surv(year, status) ~ ModelType, data = SW_SL)
 SWSLmod
 
 # SW large/small
-SW_LS <- TwentyYearNullandTrue.SW_surv %>%
+SW_LS <- TenYearNullandTrue.SW_surv %>%
   subset(Pred.Prey_Domain == "Large.Small")
 # Get regression median and p-value of Null vs. NCE
 SWLSmod <- survfit(Surv(year, status) ~ ModelType, data = SW_LS)
 SWLSmod
 
 # SW large/large
-SW_LL <- TwentyYearNullandTrue.SW_surv %>%
+SW_LL <- TenYearNullandTrue.SW_surv %>%
   subset(Pred.Prey_Domain == "Large.Large")
 # Get regression median and p-value of Null vs. NCE
 SWLLmod <- survfit(Surv(year, status) ~ ModelType, data = SW_LL)
@@ -692,24 +553,24 @@ SWLLmod
 ## Sit-and-Pursue survival models ----
 
 
-TwentyYearNullandTrue.SP <- TwentyYearNullandTrue %>%
+TenYearNullandTrue.SP <- TenYearNullandTrue %>%
   subset(Pred.Strat == "Sit-and-Pursue") %>%
   mutate(Pred.Prey_Domain =interaction(Pred.Start.Con, Prey.Start.Con))
 
-TwentyYearNullandTrue.SP_surv <- TwentyYearNullandTrue.SP %>%
-  mutate(status = ifelse (ticks == 175200, 0, 1)) %>%
+TenYearNullandTrue.SP_surv <- TenYearNullandTrue.SP %>%
+  mutate(status = ifelse (ticks == 87600, 0, 1)) %>%
   mutate(year = ticks/365/24)
 
 # reorder
-TwentyYearNullandTrue.SP_surv$Pred.Start.Con <- factor(TwentyYearNullandTrue.SP_surv$Pred.Start.Con, 
-                                                    levels = c("Small", "Large"))
-TwentyYearNullandTrue.SP_surv$Prey.Start.Con <- factor(TwentyYearNullandTrue.SP_surv$Prey.Start.Con, 
-                                                    levels = c("Small", "Large"))
+TenYearNullandTrue.SP_surv$Pred.Start.Con <- factor(TenYearNullandTrue.SP_surv$Pred.Start.Con, 
+                                                     levels = c("Small", "Large"))
+TenYearNullandTrue.SP_surv$Prey.Start.Con <- factor(TenYearNullandTrue.SP_surv$Prey.Start.Con, 
+                                                     levels = c("Small", "Large"))
 
 # SP facet plot
-fitSP <- survfit( Surv(year, status) ~ ModelType, data = TwentyYearNullandTrue.SP_surv)
+fitSP <- survfit( Surv(year, status) ~ ModelType, data = TenYearNullandTrue.SP_surv)
 SPMulti <- ggsurvplot_facet(fitSP, 
-                            TwentyYearNullandTrue.SP_surv, 
+                            TenYearNullandTrue.SP_surv, 
                             conf.int = TRUE,
                             facet.by = c("Pred.Start.Con", "Prey.Start.Con"),
                             palette = c("gray", "#25848EFF"),
@@ -730,31 +591,31 @@ SPMulti <- ggsurvplot_facet(fitSP,
     panel.grid.minor.x = element_blank()
   )
 print(SPMulti)
-ggsave("Output_Figures/TwentyYr_SPPredSurv.png", dpi = 300, height = 6, width = 7)
+ggsave("Output_Figures/TenYr_SPPredSurv.png", dpi = 300, height = 6, width = 7)
 
 # SP small/small
-SP_SS <- TwentyYearNullandTrue.SP_surv %>%
+SP_SS <- TenYearNullandTrue.SP_surv %>%
   subset(Pred.Prey_Domain == "Small.Small")
 # Get regression median and p-value of Null vs. NCE
 SPSSmod <- survfit(Surv(year, status) ~ ModelType, data = SP_SS)
 SPSSmod
 
 # SP small/large
-SP_SL <- TwentyYearNullandTrue.SP_surv %>%
+SP_SL <- TenYearNullandTrue.SP_surv %>%
   subset(Pred.Prey_Domain == "Small.Large")
 # Get regression median and p-value of Null vs. NCE
 SPSLmod <- survfit(Surv(year, status) ~ ModelType, data = SP_SL)
 SPSLmod
 
 # SP large/small
-SP_LS <- TwentyYearNullandTrue.SP_surv %>%
+SP_LS <- TenYearNullandTrue.SP_surv %>%
   subset(Pred.Prey_Domain == "Large.Small")
 # Get regression median and p-value of Null vs. NCE
 SPLSmod <- survfit(Surv(year, status) ~ ModelType, data = SP_LS)
 SPLSmod
 
 # SP large/large
-SP_LL <- TwentyYearNullandTrue.SP_surv %>%
+SP_LL <- TenYearNullandTrue.SP_surv %>%
   subset(Pred.Prey_Domain == "Large.Large")
 # Get regression median and p-value of Null vs. NCE
 SPLLmod <- survfit(Surv(year, status) ~ ModelType, data = SP_LL)

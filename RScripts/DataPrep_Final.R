@@ -1,4 +1,3 @@
-#Import Data
 
 ipak <- function(pkg){
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
@@ -17,6 +16,9 @@ packages <- c("remotes",
 
 #Run the ipak loop
 ipak(packages)
+
+#Import Data
+# Do this for each file in 'Output_from_NetLogo'
 
 FILE_TO_READ <- "Data/YEAR5_NULL_8x12_death_Space_Time_Habitat_Nov29Final YEAR5_MODELS-table.csv"
 

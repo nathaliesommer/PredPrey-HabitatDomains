@@ -35,18 +35,18 @@ packages <- c("remotes",
 ipak(packages)
 
 
-
+getwd()
 # load data ----
-oneyr <- read.csv("Data/NCvsC_1year_TSH_Nov29.csv") %>%
+oneyr <- read.csv("Data/Prepped_data/NCvsC_1year_TSH_Nov29.csv") %>%
   mutate(ModelType = 1)
 
-oneyr_null <- read.csv("Data/NCvsC_Nullyear_TSH_Nov19.csv") %>%
+oneyr_null <- read.csv("Data/Prepped_data/NCvsC_NULL_1year_TSH_Nov19.csv") %>%
   mutate(ModelType = 0)
 
-fiveyr <- read.csv("Data/NCvsC_5year_TSH_Nov29.csv")%>%
+fiveyr <- read.csv("Data/Prepped_data/NCvsC_5year_TSH_Nov29.csv")%>%
   mutate(ModelType = 1)
 
-fiveyr_null <- read.csv("Data/NCvsC_NULL_5year_TSH_Nov29.csv")  %>%
+fiveyr_null <- read.csv("Data/Prepped_data/NCvsC_NULL_5year_TSH_Nov29.csv")  %>%
   mutate(ModelType = 0)
 
 
@@ -282,10 +282,11 @@ haz.table <- SWFiveYearNCE %>%
 
 
 ## Plot the hazard ratio data ----
+#For convenience, results of Hazard Ratio calculated from above now in the below table:
 # load summary file
 HR_summ <- read.csv("Data/HazardRatioSummary_Feb2022.csv", header = TRUE, fileEncoding="UTF-8-BOM")
 
-# I know there is a better way to do this, but I can't remember it. Ha.
+# 
 HR_summ$Pred.Strat <- as.factor(HR_summ$Pred.Strat)
 HR_summ$Pred.Start.Con <- as.factor(HR_summ$Pred.Start.Con)
 HR_summ$Prey.Start.Con <- as.factor(HR_summ$Prey.Start.Con)
