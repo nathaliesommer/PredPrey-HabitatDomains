@@ -21,7 +21,7 @@ _Requires [NetLogo](http://ccl.northwestern.edu/netlogo/index.shtml)_
 - Code for the supplemental 20-year model
 
 #### (3) Data
-Í
+
 - Contains all NetLogo outputs (see [Data/README.md](/Data/README.md) for complete file list)
 
 #### (4) RScripts
